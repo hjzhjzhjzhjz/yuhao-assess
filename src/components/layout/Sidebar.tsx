@@ -19,6 +19,7 @@ import {
   AreaChartOutlined,
 } from '@ant-design/icons'
 import styled from 'styled-components'
+import { 公開路徑 } from '@/utils/publicPath'
 
 const { Sider } = Layout
 
@@ -150,7 +151,7 @@ export function Sidebar({ collapsed = false, onCollapse }: SidebarProps) {
   return (
     <StyledSider collapsible collapsed={折疊狀態} trigger={null} width={150} theme="dark">
       <LogoContainer $collapsed={折疊狀態} onClick={切換折疊}>
-        <img src="/logo_blue.png" alt="宇浩輸入法" />
+        <img src={公開路徑('/logo_blue.png')} alt="宇浩輸入法" />
       </LogoContainer>
 
       {/* <CollapseTrigger onClick={切換折疊}>
