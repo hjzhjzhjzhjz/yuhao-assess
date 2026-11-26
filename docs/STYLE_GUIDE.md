@@ -127,7 +127,7 @@ import { Table } from 'antd'
 如果某個特殊場景需要不同尺寸，可以單獨指定：
 
 ```tsx
-<Table
+;<Table
   size="middle" // 或 "large"
   dataSource={data}
   columns={columns}

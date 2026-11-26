@@ -225,7 +225,10 @@ function HomePage() {
       {當前方案 && (
         <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
           {/* 元數據 */}
-          <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+          <div
+            className="responsive-grid"
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}
+          >
             <div>
               <Text type="secondary">方案名</Text>
               <Input
@@ -390,7 +393,10 @@ function HomePage() {
 
           {/* 方案參數 */}
           <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: '16px' }}>
-            <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+            <div
+              className="responsive-grid"
+              style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}
+            >
               <div style={{ gridColumn: 'span 2' }}>
                 <Text type="secondary">編碼終止指示符（直接連寫，可選）</Text>
                 <Input
@@ -476,7 +482,10 @@ function HomePage() {
           {/* 碼表元數據 */}
           {當前方案.碼表元數據 && (
             <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: '16px' }}>
-              <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+              <div
+                className="responsive-grid"
+                style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}
+              >
                 {當前方案.碼表元數據.總字符數 && (
                   <div>
                     <Text type="secondary">總字符數（已解析）</Text>

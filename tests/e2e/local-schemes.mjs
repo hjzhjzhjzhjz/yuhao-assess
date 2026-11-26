@@ -39,7 +39,15 @@ async function 等服務(毫秒 = 30000) {
 
 // 直接用 node 跑 vite 入口，不經 npx/shell：
 // Node 24 起 shell: true 帶參數會報 DEP0190，而且 shell 轉義在不同平台上各不相同
-const vite入口 = path.join(import.meta.dirname, '..', '..', 'node_modules', 'vite', 'bin', 'vite.js')
+const vite入口 = path.join(
+  import.meta.dirname,
+  '..',
+  '..',
+  'node_modules',
+  'vite',
+  'bin',
+  'vite.js'
+)
 const 服務 = spawn(
   process.execPath,
   [vite入口, 'preview', '--port', String(端口), '--strictPort'],
@@ -59,18 +67,27 @@ if (!(await 等服務())) {
 }
 
 // 優先用本機 Chrome；沒有則退回 Edge（CI / 開發機不一定裝 Chrome）
-const 瀏覽器 = await chromium.launch({
-  channel: 'chrome',
-}).catch(() => chromium.launch({
-  executablePath: 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
-}))
+const 瀏覽器 = await chromium
+  .launch({
+    channel: 'chrome',
+  })
+  .catch(() =>
+    chromium.launch({
+      executablePath: 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
+    })
+  )
 const 頁 = await 瀏覽器.newPage({ viewport: { width: 1500, height: 950 } })
 const 頁面報錯 = []
 頁.on('pageerror', e => 頁面報錯.push(String(e)))
 
 // antd v6 的類名與按鈕文字：選中值是 .ant-select-content-value，
 // 而 CJK 按鈕文字中間會被插一個空格（「確 定」），所以一律用正則配。
-const 標題 = () => 頁.locator('h1').first().innerText().then(s => s.trim())
+const 標題 = () =>
+  頁
+    .locator('h1')
+    .first()
+    .innerText()
+    .then(s => s.trim())
 const 可見選項 = () => 頁.locator('.ant-select-item-option:visible')
 const 本地存檔 = () =>
   頁.evaluate(() => {
@@ -79,9 +96,7 @@ const 本地存檔 = () =>
     return {
       列表: 列表.map(x => ({ 名: x.元數據.方案名, 結果數: Object.keys(x.測評結果 ?? {}).length })),
       當前,
-      當前的結果: Object.keys(
-        (列表.find(x => x.元數據.標識符 === 當前) ?? {}).測評結果 ?? {}
-      ),
+      當前的結果: Object.keys((列表.find(x => x.元數據.標識符 === 當前) ?? {}).測評結果 ?? {}),
     }
   })
 
@@ -91,7 +106,8 @@ await 頁.reload({ waitUntil: 'networkidle' })
 await 頁.waitForTimeout(1500)
 
 檢查(
-  (await 頁.locator('.ant-select:has(.ant-select-placeholder:text-is("切換本地方案"))').count()) === 0,
+  (await 頁.locator('.ant-select:has(.ant-select-placeholder:text-is("切換本地方案"))').count()) ===
+    0,
   '沒有本地方案時，本地方案下拉不畫出來'
 )
 
@@ -142,7 +158,10 @@ const 本地下拉 = () => 頁.locator('.ant-select').nth(1)
 await 本地下拉().click()
 await 頁.waitForTimeout(700)
 檢查((await 可見選項().count()) === 2, '本地下拉列出兩份')
-await 可見選項().filter({ hasText: new RegExp('^' + 方案名 + '$') }).first().click()
+await 可見選項()
+  .filter({ hasText: new RegExp('^' + 方案名 + '$') })
+  .first()
+  .click()
 await 頁.waitForTimeout(3000)
 檢查((await 標題()) === 方案名, `切到本地方案「${方案名}」`)
 
@@ -154,7 +173,10 @@ await 頁.getByRole('menuitem', { name: '連續當量' }).click()
 await 頁.waitForTimeout(2000)
 await 本地下拉().click()
 await 頁.waitForTimeout(700)
-await 可見選項().filter({ hasText: /Copy on/ }).first().click()
+await 可見選項()
+  .filter({ hasText: /Copy on/ })
+  .first()
+  .click()
 await 頁.waitForTimeout(3000)
 檢查((await 頁.locator('svg, canvas').count()) > 0, '切回克隆版後連續當量圖還畫得出來')
 
@@ -169,14 +191,20 @@ const 問句 = await 頁
   .first()
   .innerText()
 檢查(/確定删除本地方案/.test(問句), '清除問的是「刪除本地方案」而非「清除所有數據」')
-await 頁.getByRole('button', { name: /確\s*定/ }).first().click()
+await 頁
+  .getByRole('button', { name: /確\s*定/ })
+  .first()
+  .click()
 await 頁.waitForTimeout(2500)
 檢查((await 標題()) === 方案名, '刪除後自動切到列表裏剩下的那一個')
 
 // ── 對比頁 ───────────────────────────────────────────────────────────────────
 await 頁.getByRole('menuitem', { name: '方案對比' }).click()
 await 頁.waitForTimeout(2500)
-await 頁.getByRole('button', { name: /選\s*擇\s*對\s*比\s*方\s*案/ }).first().click()
+await 頁
+  .getByRole('button', { name: /選\s*擇\s*對\s*比\s*方\s*案/ })
+  .first()
+  .click()
 await 頁.waitForTimeout(1200)
 const 彈窗 = await 頁
   .locator('.ant-modal, [role="dialog"]')

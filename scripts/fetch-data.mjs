@@ -15,6 +15,9 @@ if (bun) {
   process.exit(結果.status ?? 1)
 } else {
   const { spawnSync } = await import('node:child_process')
-  const 結果 = spawnSync(process.execPath, ['scripts/fetch-data.js'], { cwd: 根目錄, stdio: 'inherit' })
+  const 結果 = spawnSync(process.execPath, ['scripts/fetch-data.js'], {
+    cwd: 根目錄,
+    stdio: 'inherit',
+  })
   process.exit(結果.status ?? 1)
 }

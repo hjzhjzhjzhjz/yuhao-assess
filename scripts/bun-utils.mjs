@@ -22,11 +22,9 @@ function 比較版本(甲, 乙) {
 
 /** 回傳符合最低版本的 bun 可執行檔路徑；找不到回傳 null。 */
 export function 找可用Bun(最低版本 = '1.4.3') {
-  const 候選 = [
-    process.env.BUN_PATH,
-    join(homedir(), '.bun', 'bin', 'bun' + 後綴),
-    'bun',
-  ].filter(Boolean)
+  const 候選 = [process.env.BUN_PATH, join(homedir(), '.bun', 'bin', 'bun' + 後綴), 'bun'].filter(
+    Boolean
+  )
   const 標準 = 解析版本(最低版本)
 
   for (const 路徑 of 候選) {

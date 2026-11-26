@@ -15,27 +15,18 @@
     "buildcf": "node scripts/build-cf.js",
     "typecheck": "node scripts/typecheck.mjs",
     "preview": "vite preview",
-    "lint": "eslint . --fix",
-    "format": "prettier --write \"**/*.{ts,tsx,json,md,css}\"",
+    "lint": "biome check .",
+    "format": "biome format --write .",
     "tc": "node src/utils/normalize-traditional-chars.ts \"src/**/*.ts\" \"src/**/*.tsx\" \"docs/**/*.md\"",
     "cli": "tsx src/cli/index.ts",
     "test:e2e": "node tests/e2e/local-schemes.mjs",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint:fix": "biome check --write ."
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "node src/utils/normalize-traditional-chars.ts",
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.md": [
-      "node src/utils/normalize-traditional-chars.ts",
-      "markdownlint-cli2 --fix",
-      "prettier --write"
-    ],
-    "*.{json,css}": [
-      "prettier --write"
-    ]
+    "*.{ts,tsx}": ["node src/utils/normalize-traditional-chars.ts", "biome check --write"],
+    "*.md": ["node src/utils/normalize-traditional-chars.ts", "markdownlint-cli2 --fix"],
+    "*.{json,css}": ["biome format --write"]
   },
   "dependencies": {
     "@ant-design/icons": "^6.3.4",
@@ -47,23 +38,16 @@
     "styled-components": "^6.7.0"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
+    "@biomejs/biome": "2.6.9",
     "@types/node": "^26.6.10",
     "@types/react": "^19.3.2",
     "@types/react-dom": "^19.3.0",
-    "@typescript-eslint/eslint-plugin": "^8.74.0",
-    "@typescript-eslint/parser": "^8.74.0",
     "@vitejs/plugin-react": "^6.3.0",
-    "eslint": "^10.15.0",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.1.1",
     "husky": "^9.1.7",
     "jsonc-parser": "^3.3.1",
     "lint-staged": "^17.6.2",
     "markdownlint-cli2": "^0.24.2",
-    "markdownlint-cli2-formatter-pretty": "^0.0.10",
     "playwright": "^1.65.1",
-    "prettier": "^3.10.1",
     "tsx": "^4.23.15",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "vite": "^8.3.8"

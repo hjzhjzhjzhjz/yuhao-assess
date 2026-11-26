@@ -72,11 +72,13 @@ const { runAllAnalyses } = await import('../src/cli/analyzer.ts')
 const { 簡碼效率N值列表 } = await import('../src/services/shortCodeEfficiencyService.ts')
 const { 碼表處理服務實例 } = await import('../src/services/codeTableService.ts')
 const { 字頻表服務類别 } = await import('../src/services/charFrequencyService.ts')
-const { 從碼表計算加權速度當量, 生成一級簡碼加選重鍵表, 生成二級簡碼加選重鍵表 } =
-  await import('../src/services/speedEquivalentService.ts')
+const { 從碼表計算加權速度當量, 生成一級簡碼加選重鍵表, 生成二級簡碼加選重鍵表 } = await import(
+  '../src/services/speedEquivalentService.ts'
+)
 const { 計算按鍵計數 } = await import('../src/services/keyboardHeatmapService.ts')
-const { 清洗連續文本, 蒙特卡洛連續文本當量, 計算各字頻簡碼分檔當量 } =
-  await import('../src/services/continuousEquivalentService.ts')
+const { 清洗連續文本, 蒙特卡洛連續文本當量, 計算各字頻簡碼分檔當量 } = await import(
+  '../src/services/continuousEquivalentService.ts'
+)
 const { 壓縮連續文本當量結果 } = await import('../src/atoms/continuousEquivalent.ts')
 const { analyzeStaticDuplicate } = await import('../src/cli/analyses/static-duplicate.ts')
 const { 默認選重鍵表 } = await import('../src/types/scheme.ts')

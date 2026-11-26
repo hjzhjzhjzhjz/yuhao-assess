@@ -28,7 +28,7 @@ async function 取啓用方案() {
   try {
     const 內容 = await fs.readFile(
       path.join(根目錄, 'public/settings/builtin-schemes.json'),
-      'utf8',
+      'utf8'
     )
     const 設定 = JSON.parse(內容)
     return 設定.schemes.filter(方案 => 方案.enabled).map(方案 => `schemes/${方案.key}.json`)

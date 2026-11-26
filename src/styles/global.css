@@ -40,7 +40,7 @@
   --shadow-sm: 0 1px 3px rgba(28, 43, 45, 0.1);
   --shadow-md: 0 4px 6px rgba(28, 43, 45, 0.12);
   --shadow-lg: 0 10px 25px rgba(28, 43, 45, 0.16);
-  --shadow-card: 0 2px 8px rgba(28, 43, 45, 0.10);
+  --shadow-card: 0 2px 8px rgba(28, 43, 45, 0.1);
 
   /* 圓角 */
   --radius-sm: 4px;

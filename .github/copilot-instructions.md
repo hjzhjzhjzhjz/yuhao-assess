@@ -393,9 +393,8 @@ const 字頻數據 = await loadCharFrequency() // 舊代碼
 ```json
 "lint-staged": {
   "*.{ts,tsx}": [
-    "pnpm exec tsx src/utils/normalize-traditional-chars.ts",
-    "eslint --fix",
-    "prettier --write"
+    "node src/utils/normalize-traditional-chars.ts",
+    "biome check --write"
   ]
 }
 ````

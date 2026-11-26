@@ -101,7 +101,9 @@ async function 並行下載(任務們) {
 async function main() {
   console.log('🚀 從 CDN 下載數據文件...')
   console.log(`📦 CDN: ${CDN_BASE}`)
-  console.log(`🧵 併發: ${併發數}（navigator.hardwareConcurrency = ${navigator.hardwareConcurrency}）`)
+  console.log(
+    `🧵 併發: ${併發數}（navigator.hardwareConcurrency = ${navigator.hardwareConcurrency}）`
+  )
   console.log('')
 
   for (const 目錄 of [DATA_DIR, SCHEMES_DIR, TEXTS_DIR]) {

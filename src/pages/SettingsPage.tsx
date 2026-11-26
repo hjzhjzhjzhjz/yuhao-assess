@@ -388,10 +388,8 @@ const SettingsPage: React.FC = () => {
             <Paragraph type="secondary" style={{ marginBottom: 0 }}>
               • 表格字體大小使用 <code>var(--table-font-size, 13px)</code>
               <br />• 優先使用 CSS 變量 <code>--table-font-size</code> 的值
-              <br />
-              • 如果變量未定義，才使用後備值 13px
-              <br />
-              • 當你設置爲 20px 時，實際應用的是 20px（不是 13px）
+              <br />• 如果變量未定義，才使用後備值 13px
+              <br />• 當你設置爲 20px 時，實際應用的是 20px（不是 13px）
               <br />• 所有表格單元格（包括等寬字體）都使用統一的字體大小
             </Paragraph>
           </Space>

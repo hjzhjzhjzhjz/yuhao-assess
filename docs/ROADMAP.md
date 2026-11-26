@@ -196,17 +196,15 @@ pnpm run preview # 測試生産構建（從 CDN 讀取）
 
 **已安裝依賴**：
 
-- 代碼格式化：`prettier@3.8.1`、`eslint@8.57.1`
-- TypeScript ESLint：`@typescript-eslint/parser`、`@typescript-eslint/eslint-plugin`
-- React 插件：`eslint-plugin-react@7.37.5`、`eslint-plugin-react-hooks@7.0.1`
+- 代碼格式化 + Lint：`@biomejs/biome@2.6.9`（Rust 單二進位，取代原 ESLint + Prettier，快 10~60 倍）
+- 保留 React / TypeScript / Hooks 規則（由 `biome migrate eslint --include-inspired` 轉入 `biome.json`）
 - Markdown 工具：`markdownlint-cli2@0.20.0`
 - Git Hooks：`husky@9.1.7`、`lint-staged@16.2.7`
 
 **已配置文件**：
 
 - ✅ `package.json` - lint-staged 配置
-- ✅ `eslint.config.mjs` - ESLint 配置（支持 React + TypeScript）
-- ✅ `.prettierrc.json` - Prettier 格式化規則
+- ✅ `biome.json` - Biome 配置（formatter + linter，含 React + TypeScript + Hooks 規則）
 - ✅ `.markdownlintrc.cjs` - Markdown 檢查規則
 - ✅ `src/utils/normalize-traditional-chars.ts` - 字形轉換腳本（76組映射）
 - ✅ `.husky/pre-commit` - Git 預提交鉤子
@@ -906,7 +904,7 @@ export class SchemeService {
 **UI 設計**（參考 Ant Design）：
 
 ```tsx
-<Card title="方案配置">
+;<Card title="方案配置">
   <Form layout="vertical">
     <Form.Item label="方案名稱">
       <Input />
