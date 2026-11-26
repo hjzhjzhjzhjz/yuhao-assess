@@ -702,7 +702,7 @@ const ShortCodeEfficiencyPage: React.FC = () => {
       dataIndex: '簡碼效率',
       width: 120,
       align: 'center',
-      render: (text: string) => <span style={{ color: '#059669', fontWeight: 600 }}>{text}</span>,
+      render: (text: string) => <span style={{ color: '#2a9d8f', fontWeight: 600 }}>{text}</span>,
     },
   ]
 

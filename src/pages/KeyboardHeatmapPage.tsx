@@ -87,9 +87,9 @@ const KeyButton = styled.button<{
   align-items: center;
   justify-content: center;
   gap: 2px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #ded8c8;
   border-radius: 6px;
-  background-color: #ffffff;
+  background-color: #fffdf8;
   cursor: ${props => (props.$hidden ? 'default' : 'pointer')};
   transition: all 0.2s ease;
   user-select: none;
@@ -104,7 +104,7 @@ const KeyButton = styled.button<{
   pointer-events: ${props => (props.$hidden ? 'none' : 'auto')};
 
   &:hover {
-    border-color: ${props => (props.$hidden ? 'transparent' : '#3b82f6')};
+    border-color: ${props => (props.$hidden ? 'transparent' : '#2a9d8f')};
     transform: ${props => (props.$hidden ? 'none' : 'translateY(-2px)')};
     box-shadow: ${props => (props.$hidden ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.1)')};
     z-index: 10;
@@ -143,8 +143,8 @@ const KeyButton = styled.button<{
       }
       // 全碼模式：藍色漸變
       return `linear-gradient(135deg, 
-        rgba(99, 102, 241, ${intensity * 0.9 + 0.1}), 
-        rgba(59, 130, 246, ${intensity * 0.8 + 0.1})
+        rgba(42, 157, 143, ${intensity * 0.9 + 0.1}), 
+        rgba(26, 110, 100, ${intensity * 0.8 + 0.1})
       )`
     }};
     transition: all 0.3s ease;
@@ -156,7 +156,7 @@ const KeyLabel = styled.div`
   z-index: 2;
   font-size: calc(0.2rem + 1.2vw);
   font-weight: normal;
-  color: #1f2937;
+  color: #1c2b2d;
   text-transform: uppercase;
   font-family: monospace;
   min-height: 1.2em;
@@ -185,7 +185,7 @@ const StatsTitle = styled.h4`
   color: #333;
   margin: 0 0 20px 0;
   padding-bottom: 8px;
-  border-bottom: 2px solid #1890ff;
+  border-bottom: 2px solid #2a9d8f;
 `
 
 const StatsSection = styled.div`
@@ -214,14 +214,14 @@ const StatItem = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 10px 14px;
-  background: #f5f5f5;
+  background: #ebe6d9;
   border-radius: 6px;
-  border: 1px solid #e8e8e8;
+  border: 1px solid #ded8c8;
   transition: all 0.2s ease;
 
   &:hover {
-    background: #e6f7ff;
-    border-color: #91d5ff;
+    background: #e4f2ef;
+    border-color: #9fd4cb;
   }
 `
 
@@ -234,7 +234,7 @@ const StatLabel = styled.span`
 const StatValue = styled.span`
   font-size: 14px;
   font-weight: 600;
-  color: #1890ff;
+  color: #2a9d8f;
 `
 
 const TabsContainer = styled.div`

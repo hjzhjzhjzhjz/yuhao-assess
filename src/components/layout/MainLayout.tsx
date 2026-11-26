@@ -14,7 +14,7 @@ const StyledLayout = styled(Layout)`
 `
 
 const StyledHeader = styled(Header)`
-  background: #001529;
+  background: #1c2b2d;
   color: white;
   padding: 0 24px;
   display: flex;
@@ -33,7 +33,7 @@ const StyledHeader = styled(Header)`
 
 const StyledContent = styled(Content)`
   padding: 24px;
-  background: #f0f2f5;
+  background: #f5f2ea;
   overflow: auto;
 
   @media (max-width: 768px) {
@@ -44,10 +44,10 @@ const StyledContent = styled(Content)`
 const ContentInner = styled.div`
   max-width: 1400px;
   margin: 0 auto;
-  background: white;
+  background: #fffdf8;
   padding: 24px;
   border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 10px rgba(28, 43, 45, 0.08);
 
   @media (max-width: 768px) {
     padding: 12px;
@@ -57,7 +57,7 @@ const ContentInner = styled.div`
 
 const StyledFooter = styled(Footer)`
   text-align: center;
-  background: #f0f2f5;
+  background: #f5f2ea;
   color: rgba(0, 0, 0, 0.45);
 `
 

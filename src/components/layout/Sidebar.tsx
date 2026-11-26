@@ -25,7 +25,7 @@ const { Sider } = Layout
 
 const StyledSider = styled(Sider)`
   .ant-layout-sider-trigger {
-    background: #001529;
+    background: #1c2b2d;
   }
 
   /* 移動端抽屜：窄屏時側欄浮在內容之上，滑入滑出，不擠壓正文寬度 */
@@ -91,13 +91,13 @@ const LogoContainer = styled.div<{ $collapsed: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #001529;
+  background: #1c2b2d;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   transition: background 0.2s;
 
   &:hover {
-    background: #002140;
+    background: #16332f;
   }
 
   img {
@@ -112,7 +112,7 @@ const LogoContainer = styled.div<{ $collapsed: boolean }>`
 //   cursor: pointer;
 //   text-align: center;
 //   color: rgba(255, 255, 255, 0.65);
-//   background: #002140;
+//   background: #16332f;
 //   transition: all 0.2s;
 
 //   &:hover {

@@ -521,7 +521,7 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
         render: (text, record) =>
           record.可點擊 ? (
             <span
-              style={{ cursor: 'pointer', color: '#1890ff' }}
+              style={{ cursor: 'pointer', color: '#2a9d8f' }}
               onClick={() => record.點擊處理?.('全碼')}
             >
               {text}
@@ -542,7 +542,7 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
         render: (text, record) =>
           record.可點擊 ? (
             <span
-              style={{ cursor: 'pointer', color: '#1890ff' }}
+              style={{ cursor: 'pointer', color: '#2a9d8f' }}
               onClick={() => record.點擊處理?.('簡碼')}
             >
               {text}

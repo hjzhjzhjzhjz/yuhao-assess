@@ -556,7 +556,7 @@ const SpeedEquivalentPage: React.FC = () => {
         width: 110,
         render: (value: string, record) => (
           <span
-            style={{ cursor: 'pointer', color: '#1890ff', textDecoration: 'underline' }}
+            style={{ cursor: 'pointer', color: '#2a9d8f', textDecoration: 'underline' }}
             onClick={() => 顯示當量例字(record.key)}
           >
             {value}
@@ -571,7 +571,7 @@ const SpeedEquivalentPage: React.FC = () => {
         width: 80,
         render: (value: number, record) => (
           <span
-            style={{ cursor: 'pointer', color: '#1890ff' }}
+            style={{ cursor: 'pointer', color: '#2a9d8f' }}
             onClick={() => 顯示當量分佈詳情(record.key, '全碼')}
           >
             {value.toFixed(4)}
@@ -586,7 +586,7 @@ const SpeedEquivalentPage: React.FC = () => {
         width: 80,
         render: (value: number, record) => (
           <span
-            style={{ cursor: 'pointer', color: '#1890ff' }}
+            style={{ cursor: 'pointer', color: '#2a9d8f' }}
             onClick={() => 顯示當量分佈詳情(record.key, '一級簡碼')}
           >
             {value.toFixed(4)}
@@ -601,7 +601,7 @@ const SpeedEquivalentPage: React.FC = () => {
         width: 80,
         render: (value: number, record) => (
           <span
-            style={{ cursor: 'pointer', color: '#1890ff' }}
+            style={{ cursor: 'pointer', color: '#2a9d8f' }}
             onClick={() => 顯示當量分佈詳情(record.key, '二級簡碼')}
           >
             {value.toFixed(4)}
@@ -616,7 +616,7 @@ const SpeedEquivalentPage: React.FC = () => {
         width: 80,
         render: (value: number, record) => (
           <span
-            style={{ cursor: 'pointer', color: '#1890ff' }}
+            style={{ cursor: 'pointer', color: '#2a9d8f' }}
             onClick={() => 顯示當量分佈詳情(record.key, '簡碼')}
           >
             {value.toFixed(4)}
@@ -680,7 +680,7 @@ const SpeedEquivalentPage: React.FC = () => {
       width: 120,
       align: 'right',
       render: (v: number) => (
-        <span style={{ color: v < 0 ? '#52c41a' : v > 0 ? '#ff4d4f' : undefined }}>
+        <span style={{ color: v < 0 ? '#2a9d8f' : v > 0 ? '#c0543f' : undefined }}>
           {v.toFixed(6)}
         </span>
       ),

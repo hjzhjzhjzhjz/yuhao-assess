@@ -940,7 +940,7 @@ const ComparisonPage: React.FC = () => {
           {/* 本地方案區塊（有本地方案時顯示） */}
           {本地方案列表.length > 0 && (
             <div>
-              <div style={{ fontWeight: 600, marginBottom: 8, color: '#1677ff' }}>本地方案</div>
+              <div style={{ fontWeight: 600, marginBottom: 8, color: '#2a9d8f' }}>本地方案</div>
               <Space>
                 <Checkbox
                   checked={臨時已選本地方案標識符列表.length === 本地方案列表.length}
@@ -984,7 +984,7 @@ const ComparisonPage: React.FC = () => {
                           <div style={{ fontWeight: 500 }}>
                             {方案.元數據.方案名}
                             {標識符 === 當前本地方案標識符 && (
-                              <span style={{ color: '#1677ff', marginLeft: 6, fontSize: 12 }}>
+                              <span style={{ color: '#2a9d8f', marginLeft: 6, fontSize: 12 }}>
                                 （當前）
                               </span>
                             )}

@@ -16,6 +16,16 @@ export const AntdConfigProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       locale={zhTW}
       theme={{
         token: {
+          // 墨青主題主色（青瓷綠），統一 antd 組件
+          colorPrimary: '#2a9d8f',
+          colorLink: '#2a9d8f',
+          colorSuccess: '#2a9d8f',
+          colorInfo: '#2a9d8f',
+          colorBgLayout: '#f5f2ea',
+          colorBgContainer: '#fffdf8',
+          colorText: '#1c2b2d',
+          colorBorder: '#ded8c8',
+          colorBorderSecondary: '#ebe6d9',
           // 全局字體大小（影響所有文字和組件）
           fontSize: 主题配置.全局字体大小,
           // 全局行高（文字垂直間距）
