@@ -24,7 +24,7 @@ import { 鍵位熱力分析原子狀態 } from '@/atoms/keyboardHeatmap'
 import { 碼表原子狀態, 原始碼表原子狀態, 編碼預覽數據原子狀態 } from '@/atoms/codeTable'
 import { 加載方案, 查找方案鍵名 } from '@/services/schemeService'
 import { 等界面繪製 } from '@/utils/wait-for-paint'
-import { 清空所有Atom, 應用方案數據, type 方案應用Setters } from '@/services/atomResetService'
+import { 應用方案數據, type 方案應用Setters } from '@/services/atomResetService'
 import { useDataPreload } from '@/hooks/useDataPreload'
 import type { 方案配置介面 } from '@/types/scheme'
 

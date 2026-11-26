@@ -50,7 +50,7 @@ try {
 
   buildSuccess = true
   console.log('\n✅ 構建成功！代碼可以在 Cloudflare Pages 環境中構建。')
-} catch (error) {
+} catch {
   console.error('\n❌ 構建失敗！請檢查錯誤信息。')
   buildSuccess = false
 } finally {

@@ -634,7 +634,7 @@ const ShortCodeEfficiencyPage: React.FC = () => {
       } else {
         message.error('您的瀏覽器不支持剪貼板功能')
       }
-    } catch (err) {
+    } catch {
       message.error('複製失敗，請重試')
     }
   }

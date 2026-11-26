@@ -69,17 +69,9 @@ const routes = [
 ]
 
 // 定義所有分析頁面路徑，用於編譯時檢查
-const 分析頁面路徑 = [
-  '/dynamic',
-  '/static',
-  '/candidates',
-  '/speed',
-  '/continuous',
-  '/efficiency',
-  '/heatmap',
-] as const
-
-export type 分析頁面路徑型别 = (typeof 分析頁面路徑)[number]
+// TypeScript 7 下只保留型别别名，不再生成没有執行期用途的常量陣列
+export type 分析頁面路徑型别 =
+  '/dynamic' | '/static' | '/candidates' | '/speed' | '/continuous' | '/efficiency' | '/heatmap'
 
 function App() {
   const element = useRoutes(routes)

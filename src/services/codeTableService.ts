@@ -450,7 +450,7 @@ export class 碼表處理服務 {
         const codeLast = fullCodeTable.get(charLast)?.[0] || ''
         return code1.slice(0, 1) + code2.slice(0, 1) + code3.slice(0, 1) + codeLast.slice(0, 1)
       }
-    } catch (error) {
+    } catch {
       return ''
     }
   }

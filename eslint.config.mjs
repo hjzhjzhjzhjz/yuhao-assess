@@ -1,12 +1,21 @@
 import js from '@eslint/js'
+import { defineConfig, globalIgnores } from 'eslint/config'
 import tsPlugin from '@typescript-eslint/eslint-plugin'
 import tsParser from '@typescript-eslint/parser'
 import reactPlugin from 'eslint-plugin-react'
 import reactHooksPlugin from 'eslint-plugin-react-hooks'
 
-export default [
+export default defineConfig([
   js.configs.recommended,
   {
+    name: 'app/linter-options',
+    // ESLint 10 新增：過期的 eslint-disable / eslint-enable 註釋也要報告
+    linterOptions: {
+      reportUnusedInlineConfigs: 'warn',
+    },
+  },
+  {
+    name: 'app/tsx',
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       parser: tsParser,
@@ -47,21 +56,22 @@ export default [
       'react/react-in-jsx-scope': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-      // react-hooks 7.x 新增的 React Compiler 规则：现有页面在 effect 裏同步觸發重算，
+      // react-hooks 7.x 新增的 React Compiler 規則：現有頁面在 effect 裏同步觸發重算，
       // 重構超出依賴升級範圍，先降為 warn 保留提示
       'react-hooks/set-state-in-effect': 'warn',
       'react-hooks/preserve-manual-memoization': 'warn',
     },
     settings: {
       react: {
-        // ESLint 10 移除了 context.getFilename()，插件的 detect 模式会调用它；
-        // 这里直接声明项目锁定的 React 大版本，避开已失效的探测逻辑
+        // ESLint 10 移除了 context.getFilename()，插件的 detect 模式會調用它；
+        // 這裏直接聲明項目鎖定的 React 大版本，避開已失效的探測邏輯
         version: '19.3',
       },
     },
   },
   // Node.js 環境配置（用於CLI工具）
   {
+    name: 'app/node',
     files: ['src/utils/normalize-traditional-chars.ts', 'scripts/**/*.js', 'src/cli/**/*.ts'],
     languageOptions: {
       parser: tsParser,
@@ -89,6 +99,7 @@ export default [
   },
   // E2E 測試腳本：Node + 瀏覽器 globals（flat config 不會自動帶入）
   {
+    name: 'app/e2e',
     files: ['tests/**/*.mjs'],
     languageOptions: {
       ecmaVersion: 'latest',
@@ -102,7 +113,6 @@ export default [
       },
     },
   },
-  {
-    ignores: ['dist/**', 'node_modules/**', '*.config.ts', '*.config.js', 'vite.config.ts'],
-  },
-]
+  // ESLint 10：用 globalIgnores 取代只有 ignores 的配置項
+  globalIgnores(['dist/**', 'node_modules/**', '*.config.ts', '*.config.js', 'vite.config.ts']),
+])
