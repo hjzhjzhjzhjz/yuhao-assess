@@ -90,10 +90,7 @@ const 渲染方案名 = (_: unknown, record: 對比方案數據介面) => {
   const 名稱 = 標記.length === 0 ? record.顯示名稱 : `${record.顯示名稱} ${標記.join('')}`
   return record.是否當前方案 ? (
     <span>
-      {名稱}{' '}
-      <Tag color="#2a9d8f" style={{ marginInlineEnd: 0 }}>
-        當前
-      </Tag>
+      {名稱} <Tag color="#2a9d8f" style={{ marginInlineEnd: 0 }}>當前</Tag>
     </span>
   ) : (
     名稱
@@ -135,9 +132,8 @@ const ComparisonPage: React.FC = () => {
   // 本地方案
   const 本地方案列表 = useAtomValue(本地方案列表原子狀態)
   const 當前本地方案標識符 = useAtomValue(當前本地方案標識符原子狀態)
-  const [選中本地方案標識符列表, 設置選中本地方案標識符列表] = useAtom(
-    選中對比本地方案標識符列表原子狀態
-  )
+  const [選中本地方案標識符列表, 設置選中本地方案標識符列表] =
+    useAtom(選中對比本地方案標識符列表原子狀態)
   const [臨時已選本地方案標識符列表, 設置臨時已選本地方案標識符列表] = useState<string[]>([])
 
   // 本地方案列表變化時，自動將新增方案加入選中列表
@@ -741,9 +737,9 @@ const ComparisonPage: React.FC = () => {
         const n = typeof v === 'number' ? v : typeof v === 'string' ? parseFloat(v) : NaN
         return Number.isFinite(n) ? n : null
       }
-      const 有效 = 對比方案列表
-        .map(r => 解析((原渲染 as any)(undefined, r, 0)))
-        .filter((v): v is number => v !== null)
+      const 有效 = 對比方案列表.map(r => 解析((原渲染 as any)(undefined, r, 0))).filter(
+        (v): v is number => v !== null,
+      )
       if (!有效.length) return col
       const 最優 = 越低越好 ? Math.min(...有效) : Math.max(...有效)
       return {
@@ -765,24 +761,24 @@ const ComparisonPage: React.FC = () => {
   const 當前列定義 = useMemo(() => {
     // 用 IIFE 取得原始列，再統一套上最優值高亮（switch 内的 return 保持原樣，含裁剪錨點分支）
     const 原始列: ColumnsType<對比方案數據介面> = (() => {
-      switch (當前分析類型) {
-        case '靜態重碼':
-          return 獲取靜態重碼字數列(當前全碼簡碼)
-        case '靜態選重個數':
-          return 獲取靜態選重個數列(當前全碼簡碼)
-        case '頻率降序動態選重':
-          return 獲取動態重碼率列(當前全碼簡碼)
-        case '原始碼表動態選重':
-          return 獲取動態重碼率原始排序列(當前全碼簡碼)
-        case '候選個數':
-          return 最大候選數列
-        case '速度當量':
-          return 獲取速度當量列(當前字頻來源)
-        case '簡碼效率':
-          return 獲取簡碼效率列(當前字頻來源)
-        default:
-          return 獲取靜態重碼字數列(當前全碼簡碼)
-      }
+    switch (當前分析類型) {
+      case '靜態重碼':
+        return 獲取靜態重碼字數列(當前全碼簡碼)
+      case '靜態選重個數':
+        return 獲取靜態選重個數列(當前全碼簡碼)
+      case '頻率降序動態選重':
+        return 獲取動態重碼率列(當前全碼簡碼)
+      case '原始碼表動態選重':
+        return 獲取動態重碼率原始排序列(當前全碼簡碼)
+      case '候選個數':
+        return 最大候選數列
+      case '速度當量':
+        return 獲取速度當量列(當前字頻來源)
+      case '簡碼效率':
+        return 獲取簡碼效率列(當前字頻來源)
+      default:
+        return 獲取靜態重碼字數列(當前全碼簡碼)
+    }
     })()
     return 高亮最優列(原始列)
   }, [當前分析類型, 當前字頻來源, 當前全碼簡碼, 對比方案列表, 越低越好])
@@ -1090,9 +1086,7 @@ const ComparisonPage: React.FC = () => {
                   >
                     <div>
                       <div style={{ fontWeight: 500 }}>{scheme.name}</div>
-                      <div style={{ fontSize: 12, color: 'rgba(28, 43, 45, 0.55)' }}>
-                        {scheme.description}
-                      </div>
+                      <div style={{ fontSize: 12, color: 'rgba(28, 43, 45, 0.55)' }}>{scheme.description}</div>
                     </div>
                   </Checkbox>
                 ))}
