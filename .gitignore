@@ -70,10 +70,7 @@ tmp/
 temp/
 local/
 
-# Data files (loaded from yuhao-assess-data repo)
-public/data/
-public/schemes/
-public/texts/
+# Data files are vendored into the repo (no CDN dependency at build time)
 
 # 打包產物
 宇浩测评.exe

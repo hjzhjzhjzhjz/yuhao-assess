@@ -33,10 +33,6 @@ jobs:
       - name: 安裝依賴
         run: pnpm install --frozen-lockfile
 
-      - name: 下載數據與方案文件
-        # public/data、public/schemes、public/texts 被 .gitignore 排除，CI 需重新抓取
-        run: pnpm run fetch
-
       - name: 建置（ Pages 子路徑 ）
         env:
           VITE_BASE: /yuhao-assess/

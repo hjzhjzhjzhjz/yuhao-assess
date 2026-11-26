@@ -11,7 +11,7 @@
     "fetchlocal": "node scripts/fetch-local.js",
     "recompute": "tsx scripts/recompute-schemes.mts",
     "dev": "vite",
-    "build": "node scripts/fetch-data.mjs && node scripts/typecheck.mjs && vite build",
+    "build": "node scripts/typecheck.mjs && vite build",
     "buildcf": "node scripts/build-cf.js",
     "typecheck": "node scripts/typecheck.mjs",
     "preview": "vite preview",
