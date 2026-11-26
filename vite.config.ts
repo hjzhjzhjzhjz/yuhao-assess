@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 
 export default defineConfig({
+  // 本地/單文件 exe 用 '/'，GitHub Pages 部署時由 CI 設爲 '/yuhao-assess/'
+  base: process.env.VITE_BASE || '/',
   plugins: [react()],
   resolve: {
     alias: {

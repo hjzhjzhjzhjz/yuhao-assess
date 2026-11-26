@@ -5,12 +5,14 @@
  * 運行時直接從本地 /data/ 加載（開發和生産環境統一）
  */
 
+import { 公開路徑 } from './publicPath'
+
 /**
  * 加載 JSON 數據文件
  * @param filename 文件名（如 'charAbsoluteFrequencySC.json'）
  */
 export async function 加載JSON數據文件<T = any>(filename: string): Promise<T> {
-  const url = `/data/${filename}`
+  const url = 公開路徑(`/data/${filename}`)
 
   try {
     const response = await fetch(url)

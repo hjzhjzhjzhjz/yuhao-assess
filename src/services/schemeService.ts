@@ -6,6 +6,7 @@
 import { 生成本地標識符 } from '../atoms/localSchemes'
 import { 默認選重鍵表 } from '../types/scheme'
 import type { 方案配置介面, 方案列表項介面 } from '../types/scheme'
+import { 公開路徑 } from '../utils/publicPath'
 
 /**
  * 給可選字段補默認值
@@ -27,7 +28,7 @@ function 補全方案默認值(配置: 方案配置介面): 方案配置介面 {
  */
 export async function 加載方案(方案鍵名: string): Promise<方案配置介面> {
   try {
-    const response = await fetch(`/schemes/${方案鍵名}.json`)
+    const response = await fetch(公開路徑(`/schemes/${方案鍵名}.json`))
 
     if (!response.ok) {
       throw new Error(`加載方案失敗: ${response.status} ${response.statusText}`)
@@ -85,7 +86,7 @@ export interface 内置方案配置 {
 export async function 列出可用方案(): Promise<string[]> {
   try {
     console.log('🔵 [schemeService] 開始讀取 builtin-schemes.json')
-    const response = await fetch('/settings/builtin-schemes.json')
+    const response = await fetch(公開路徑('/settings/builtin-schemes.json'))
     if (!response.ok) {
       throw new Error('無法加載内置方案列表')
     }
@@ -108,7 +109,7 @@ export async function 列出可用方案(): Promise<string[]> {
 export async function 獲取内置方案列表(): Promise<内置方案配置[]> {
   try {
     console.log('🔵 [schemeService] 獲取内置方案列表 - 開始讀取')
-    const response = await fetch('/settings/builtin-schemes.json')
+    const response = await fetch(公開路徑('/settings/builtin-schemes.json'))
     if (!response.ok) {
       throw new Error('無法加載内置方案列表')
     }

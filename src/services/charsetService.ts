@@ -3,6 +3,7 @@ import { getDefaultStore } from 'jotai'
 import { 字符集數據原子狀態, CJK區塊數據原子狀態 } from '../atoms/charset'
 import type { 字符集數據型别, CJK區塊數據型别 } from '../atoms/charset'
 import { 加載JSON數據文件 } from '../utils/data-loader'
+import { 公開路徑 } from '../utils/publicPath'
 
 // 加載字符集數據（使用 atom 全局緩存）
 async function loadCharsetData(): Promise<void> {
@@ -21,7 +22,7 @@ export async function loadCJKBlockData(): Promise<void> {
   if (existing) return
 
   // cjkBlocks.json 在 settings 文件夹，不在 data 文件夹
-  const response = await fetch('/settings/cjkBlocks.json')
+  const response = await fetch(公開路徑('/settings/cjkBlocks.json'))
   const CJK區塊數據 = (await response.json()) as CJK區塊數據型别
   store.set(CJK區塊數據原子狀態, CJK區塊數據)
 }

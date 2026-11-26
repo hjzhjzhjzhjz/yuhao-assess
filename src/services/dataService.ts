@@ -6,6 +6,7 @@
 
 import type { 頻率數據型别 } from '../types'
 import { 字頻表服務類别 } from './charFrequencyService'
+import { 公開路徑 } from '../utils/publicPath'
 
 // =============================================================================
 // 字頻數據加載
@@ -203,7 +204,7 @@ export async function 加載所有字頻數據() {
  */
 export async function 加載當量表(): Promise<Record<string, number>> {
   try {
-    const response = await fetch('/settings/equivTable.json')
+    const response = await fetch(公開路徑('/settings/equivTable.json'))
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }

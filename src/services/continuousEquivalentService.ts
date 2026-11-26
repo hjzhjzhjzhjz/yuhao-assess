@@ -11,9 +11,10 @@ import { 默認選重鍵表 } from '../types/scheme'
 import type { 選重鍵表型别 } from '../types/scheme'
 import { 取按收益排序的簡碼字符 } from './shortCodeEfficiencyService'
 import { 替換選重鍵 } from './speedEquivalentService'
+import { 公開路徑 } from '../utils/publicPath'
 
 /** 連續文本語料路徑（由 pnpm run fetch / fetchlocal 同步到 public/texts/） */
-const 語料路徑 = '/texts/literature.txt'
+const 語料路徑 = 公開路徑('/texts/literature.txt')
 
 /** 文本中保留的標點及其對應按鍵 */
 const 標點按鍵映射: Record<string, string> = {

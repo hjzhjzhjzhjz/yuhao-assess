@@ -1,0 +1,63 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一時間只保留一次部署，排隊中的 newer run 會取消舊的
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: 安裝依賴
+        run: pnpm install --frozen-lockfile
+
+      - name: 下載數據與方案文件
+        # public/data、public/schemes、public/texts 被 .gitignore 排除，CI 需重新抓取
+        run: pnpm run fetch
+
+      - name: 建置（ Pages 子路徑 ）
+        env:
+          VITE_BASE: /yuhao-assess/
+        run: pnpm exec vite build
+
+      - name: SPA 路由回退
+        # GitHub Pages 對未知路徑返回 404.html；內容用 index.html 讓 React Router 接管
+        run: cp dist/index.html dist/404.html
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

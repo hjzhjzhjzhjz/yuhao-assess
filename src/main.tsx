@@ -9,7 +9,7 @@ import './styles/global.css'
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider>
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <AntdConfigProvider>
           <App />
         </AntdConfigProvider>

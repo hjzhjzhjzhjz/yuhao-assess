@@ -6,6 +6,7 @@
 import { getDefaultStore } from 'jotai'
 import { 當量表原子狀態, 當量表加載中原子狀態, 當量表錯誤原子狀態 } from '../atoms/equivTable'
 import type { 當量表介面 } from '../types'
+import { 公開路徑 } from '../utils/publicPath'
 
 /**
  * 當量表服務類
@@ -38,7 +39,7 @@ export class 當量表服務類 {
     store.set(當量表錯誤原子狀態, null)
 
     try {
-      const 響應 = await fetch('/settings/equivTable.json')
+      const 響應 = await fetch(公開路徑('/settings/equivTable.json'))
       if (!響應.ok) {
         throw new Error(`HTTP error! status: ${響應.status}`)
       }
