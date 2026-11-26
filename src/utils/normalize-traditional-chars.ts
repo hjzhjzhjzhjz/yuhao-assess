@@ -1,5 +1,6 @@
-import { readFileSync, writeFileSync, existsSync } from 'fs'
-import fg from 'fast-glob'
+import { readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { glob } from 'node:fs/promises'
+import { resolve } from 'node:path'
 
 /**
  * 字形映射表
@@ -179,8 +180,8 @@ function processFile(filePath: string, charMapping: Map<string, string>): Proces
 
   for (const [tw, cn] of charMapping) {
     if (content.includes(tw)) {
-      // 使用全局正則進行替換並計數
-      const regex = new RegExp(escapeRegExp(tw), 'g')
+      // 使用全局正則進行替換並計數（Node 24 / V8 13.6 起有 RegExp.escape）
+      const regex = new RegExp(RegExp.escape(tw), 'g')
       const matches = content.match(regex)
       const count = matches ? matches.length : 0
 
@@ -202,41 +203,42 @@ function processFile(filePath: string, charMapping: Map<string, string>): Proces
 }
 
 /**
- * 轉義正則表達式特殊字符
+ * 判斷是否要跳過這個檔案
+ *
+ * node_modules、dist 只是安全網；要緊的是 src/utils——本表自己就住在那裏，
+ * 讓它處理自己會把 tw 那一列也改寫成 cn，整張表就廢了。
  */
-function escapeRegExp(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+function 應排除(檔案: string): boolean {
+  const 規範 = resolve(檔案).replaceAll('\\', '/')
+  return /(^|\/)(node_modules|dist)\//.test(規範) || /(^|\/)src\/utils\//.test(規範)
 }
 
 /**
  * 主函數
  */
-function main(): void {
+async function main(): Promise<void> {
   const patterns = process.argv.slice(2)
 
   if (patterns.length === 0) {
-    console.log('用法: pnpm exec tsx src/utils/normalize-traditional-chars.ts <文件1> <文件2> ...')
+    console.log('用法: node src/utils/normalize-traditional-chars.ts <文件1> <文件2> ...')
     console.log('')
     console.log('功能: 將臺灣繁體字形統一轉換爲大陸通規字形')
     console.log('')
     console.log('示例:')
-    console.log('  pnpm exec tsx src/utils/normalize-traditional-chars.ts src/App.tsx')
-    console.log('  pnpm exec tsx src/utils/normalize-traditional-chars.ts docs/*.md')
-    console.log('  pnpm exec tsx src/utils/normalize-traditional-chars.ts src/**/*.ts')
+    console.log('  node src/utils/normalize-traditional-chars.ts src/App.tsx')
+    console.log('  node src/utils/normalize-traditional-chars.ts docs/*.md')
+    console.log('  node src/utils/normalize-traditional-chars.ts "src/**/*.ts"')
     console.log('')
     console.log(`支持的映射: ${CHAR_MAPPINGS.length} 組字形轉換`)
     process.exit(0)
   }
 
-  // 使用 fast-glob 展開文件模式，排除 src/utils 目録
-  //
-  // ⚠️ 兩條 ignore 都要寫：lint-staged 遞進來的是**絕對路徑**，
-  // 而 'src/utils/**' 這種相對模式對絕對路徑一概不匹配——這張字形表
-  // 就是這麼被自己改寫掉的（它自己也在 src/utils 底下）。
-  const allFiles = fg.sync(patterns, {
-    absolute: false,
-    ignore: ['**/node_modules/**', '**/dist/**', 'src/utils/**', '**/src/utils/**'],
-  })
+  // 用 Node 24 內建的 fs.glob 展開模式，不再依賴 fast-glob
+  const 匹配到的: string[] = []
+  for await (const 檔案 of glob(patterns)) {
+    if (!應排除(檔案)) 匹配到的.push(檔案)
+  }
+  const allFiles = 匹配到的
 
   if (allFiles.length === 0) {
     console.log('⚠ 未找到匹配的文件')
@@ -282,4 +284,9 @@ function main(): void {
 }
 
 // 執行主函數
-main()
+//
+// Node 24.2 起有 import.meta.main（等同 Python 的 __name__ == '__main__'）：
+// 被其他模組 import 時不會順手把整個目録的字形改掉。
+if (import.meta.main) {
+  await main()
+}

@@ -46,10 +46,8 @@
 
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const APP_DIR = path.resolve(__dirname, '..')
+const APP_DIR = path.resolve(import.meta.dirname, '..')
 const PUBLIC_DIR = path.join(APP_DIR, 'public')
 const DATA_REPO = path.resolve(APP_DIR, '../yuhao-assess-data')
 const TABLES_DIR = path.join(DATA_REPO, 'tables')

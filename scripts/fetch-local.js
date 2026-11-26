@@ -6,10 +6,9 @@
 
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+// Node 24 的 import.meta.dirname，免去 fileURLToPath + path.dirname 兩步
+const __dirname = import.meta.dirname
 
 // 本地數據源路徑（假設在同級目録）
 const LOCAL_DATA_SOURCE = path.resolve(__dirname, '../../yuhao-assess-data')

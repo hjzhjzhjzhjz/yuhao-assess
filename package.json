@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "宇浩測評網 - 輸入法性能測評工具",
   "type": "module",
+  "engines": {
+    "node": ">=24.2.0"
+  },
   "scripts": {
     "fetch": "node scripts/fetch-data.mjs",
     "fetchlocal": "node scripts/fetch-local.js",
@@ -14,19 +17,19 @@
     "preview": "vite preview",
     "lint": "eslint . --fix",
     "format": "prettier --write \"**/*.{ts,tsx,json,md,css}\"",
-    "tc": "tsx src/utils/normalize-traditional-chars.ts \"src/**/*.{ts,tsx}\" \"docs/**/*.md\"",
+    "tc": "node src/utils/normalize-traditional-chars.ts \"src/**/*.ts\" \"src/**/*.tsx\" \"docs/**/*.md\"",
     "cli": "tsx src/cli/index.ts",
     "test:e2e": "node tests/e2e/local-schemes.mjs",
     "prepare": "husky"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "tsx src/utils/normalize-traditional-chars.ts",
+      "node src/utils/normalize-traditional-chars.ts",
       "eslint --fix",
       "prettier --write"
     ],
     "*.md": [
-      "tsx src/utils/normalize-traditional-chars.ts",
+      "node src/utils/normalize-traditional-chars.ts",
       "markdownlint-cli2 --fix",
       "prettier --write"
     ],
@@ -57,7 +60,6 @@
     "eslint": "^10.15.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
-    "fast-glob": "^3.3.3",
     "husky": "^9.1.7",
     "jsonc-parser": "^3.3.1",
     "lint-staged": "^17.6.2",

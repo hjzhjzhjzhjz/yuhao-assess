@@ -10,14 +10,11 @@
  * 用途：在本地測試代碼能否在没有 public/data/ 的情况下構建成功
  */
 
-import { execSync } from 'child_process'
-import { existsSync, renameSync } from 'fs'
-import { join, dirname } from 'path'
-import { fileURLToPath } from 'url'
+import { execSync } from 'node:child_process'
+import { existsSync, renameSync, rmSync } from 'node:fs'
+import { join } from 'node:path'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const rootDir = join(__dirname, '..')
+const rootDir = join(import.meta.dirname, '..')
 const publicDataDir = join(rootDir, 'public/data')
 const backupDataDir = join(rootDir, 'public/data.backup')
 
@@ -59,8 +56,9 @@ try {
     console.log('\n🔄 恢復 public/data/ 目録...')
 
     // 如果构建过程中创建了 public/data，先删除它
+    // （用 fs.rmSync 而非 rm -rf：Windows 上沒有 rm，原本這一步會直接失敗）
     if (existsSync(publicDataDir)) {
-      execSync(`rm -rf "${publicDataDir}"`, { cwd: rootDir })
+      rmSync(publicDataDir, { recursive: true, force: true })
     }
 
     renameSync(backupDataDir, publicDataDir)

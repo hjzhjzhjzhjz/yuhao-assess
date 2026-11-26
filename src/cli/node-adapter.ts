@@ -8,8 +8,7 @@
  */
 
 import { promises as fs } from 'node:fs'
-import { fileURLToPath } from 'node:url'
-import { dirname, join } from 'node:path'
+import { join } from 'node:path'
 import { getDefaultStore } from 'jotai'
 import { 字符集數據原子狀態, CJK區塊數據原子狀態 } from '../atoms/charset'
 import type { 字符集數據型别, CJK區塊數據型别 } from '../atoms/charset'
@@ -17,11 +16,9 @@ import type { 頻率數據型别, 頻數數據型别, 當量表介面 } from '..
 
 // ─── 路徑定位 ────────────────────────────────────────────────────────────────
 
-// 使用 import.meta.url 定位到項目根目録下的 public/ 目録
+// 用 import.meta.dirname 定位到項目根目録下的 public/ 目録
 // 本文件位於 src/cli/node-adapter.ts，向上兩級到項目根
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const PROJECT_ROOT = join(__dirname, '..', '..')
+const PROJECT_ROOT = join(import.meta.dirname, '..', '..')
 
 export function getPublicDataDir(): string {
   return join(PROJECT_ROOT, 'public', 'data')

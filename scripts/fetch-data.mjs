@@ -4,10 +4,9 @@
  */
 
 import { resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { 找可用Bun } from './bun-utils.mjs'
 
-const 根目錄 = resolve(fileURLToPath(new URL('..', import.meta.url)))
+const 根目錄 = resolve(import.meta.dirname, '..')
 const bun = 找可用Bun('1.4.3')
 
 if (bun) {

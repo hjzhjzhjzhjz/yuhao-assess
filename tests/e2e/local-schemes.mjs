@@ -11,6 +11,7 @@
  */
 
 import { spawn } from 'node:child_process'
+import path from 'node:path'
 import { chromium } from 'playwright'
 
 const 端口 = 4319
@@ -36,14 +37,17 @@ async function 等服務(毫秒 = 30000) {
   return false
 }
 
-const 服務 = spawn('npx', ['vite', 'preview', '--port', String(端口), '--strictPort'], {
-  stdio: 'ignore',
-  detached: true,
-  shell: true, // Windows 下 npx 是 npx.cmd，須經 shell 解析
-})
+// 直接用 node 跑 vite 入口，不經 npx/shell：
+// Node 24 起 shell: true 帶參數會報 DEP0190，而且 shell 轉義在不同平台上各不相同
+const vite入口 = path.join(import.meta.dirname, '..', '..', 'node_modules', 'vite', 'bin', 'vite.js')
+const 服務 = spawn(
+  process.execPath,
+  [vite入口, 'preview', '--port', String(端口), '--strictPort'],
+  { stdio: 'ignore' }
+)
 process.on('exit', () => {
   try {
-    process.kill(-服務.pid)
+    服務.kill()
   } catch {
     /* 已經沒了 */
   }

@@ -98,6 +98,10 @@ export default defineConfig([
         Response: 'readonly',
         URL: 'readonly',
         performance: 'readonly',
+        // Node 24 起 fetch / navigator / AbortSignal 都是穩定全局
+        fetch: 'readonly',
+        navigator: 'readonly',
+        AbortSignal: 'readonly',
       },
     },
     plugins: {

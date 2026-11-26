@@ -5,10 +5,9 @@
  */
 
 import { resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { 執行或回退 } from './bun-utils.mjs'
 
-const 根目錄 = resolve(fileURLToPath(new URL('..', import.meta.url)))
+const 根目錄 = resolve(import.meta.dirname, '..')
 process.exit(
   執行或回退(
     '1.4.3',
