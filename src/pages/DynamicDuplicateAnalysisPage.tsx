@@ -1,5 +1,5 @@
 import { ReloadOutlined } from '@ant-design/icons'
-import { Alert, Button, Input, Modal, message, Space, Spin, Table, Tooltip, Typography } from 'antd'
+import { Alert, Button, Input, Modal, message, Space, Spin, Table, Tooltip } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
@@ -14,8 +14,6 @@ import {
   計算原始碼表的動態選重率,
 } from '../services/duplicateAnalysisService'
 import type { 處理後的碼表結果介面 } from '../types'
-
-const { Link } = Typography
 
 /**
  * 動態選重率分析頁面
@@ -320,7 +318,6 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
       指標: string
       全碼: string
       簡碼: string
-      説明: React.ReactNode
       提示?: string
       可點擊?: boolean
       點擊處理?: (碼表類型: '全碼' | '簡碼') => void
@@ -336,15 +333,6 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
         簡碼: 分析結果.知乎簡體動態選重率
           ? (分析結果.知乎簡體動態選重率.簡碼 * 10000).toFixed(2) + '‱'
           : '-',
-        説明: (
-          <>
-            基於
-            <Link href="https://github.com/forfudan/chinese-characters-frequency" target="_blank">
-              知乎字頻表
-            </Link>
-            的加權選重率。
-          </>
-        ),
         提示: '計算動態選衝率時，會使用字頻數據對漢字進行降序重排，以方便不同方案進行比較。因此上，計算結果可能會稍低於真實選重率。',
         可點擊: true,
         點擊處理: (碼表類型: '全碼' | '簡碼') => 顯示重碼字符詳情('zhihu', 碼表類型, true),
@@ -358,18 +346,6 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
         簡碼: 分析結果.北語簡體動態選重率
           ? (分析結果.北語簡體動態選重率.簡碼 * 10000).toFixed(2) + '‱'
           : '-',
-        説明: (
-          <>
-            基於北京語言大學邢紅兵
-            <Link
-              href="https://faculty.blcu.edu.cn/xinghb/zh_CN/article/167473/content/1437.htm"
-              target="_blank"
-            >
-              簡體字頻表
-            </Link>
-            的加權選重率
-          </>
-        ),
         提示: '計算動態選衝率時，會使用字頻數據對漢字進行降序重排，以方便不同方案進行比較。因此上，計算結果可能會稍低於真實選重率。',
         可點擊: true,
         點擊處理: (碼表類型: '全碼' | '簡碼') => 顯示重碼字符詳情('sc', 碼表類型, true),
@@ -383,18 +359,6 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
         簡碼: 分析結果.臺標繁體動態選重率
           ? (分析結果.臺標繁體動態選重率.簡碼 * 10000).toFixed(2) + '‱'
           : '-',
-        説明: (
-          <>
-            基於
-            <Link
-              href="https://language.moe.gov.tw/001/Upload/files/SITE_CONTENT/M0001/PIN/biau1.htm"
-              target="_blank"
-            >
-              臺灣繁體字頻表
-            </Link>
-            的加權選重率
-          </>
-        ),
         提示: '計算動態選衝率時，會使用字頻數據對漢字進行降序重排，以方便不同方案進行比較。因此上，計算結果可能會稍低於真實選重率。',
         可點擊: true,
         點擊處理: (碼表類型: '全碼' | '簡碼') => 顯示重碼字符詳情('tc', 碼表類型, true),
@@ -408,7 +372,6 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
         簡碼: 分析結果.古籍繁體動態選重率
           ? (分析結果.古籍繁體動態選重率.簡碼 * 10000).toFixed(2) + '‱'
           : '-',
-        説明: '基於史書（史記、漢書、後漢書、三國志等）字頻的加權選重率',
         提示: '計算動態選衝率時，會使用字頻數據對漢字進行降序重排，以方便不同方案進行比較。因此上，計算結果可能會稍低於真實選重率。',
         可點擊: true,
         點擊處理: (碼表類型: '全碼' | '簡碼') => 顯示重碼字符詳情('guji', 碼表類型, true),
@@ -422,7 +385,6 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
         簡碼: 分析結果.繁簡聯合動態選重率
           ? (分析結果.繁簡聯合動態選重率.簡碼 * 10000).toFixed(2) + '‱'
           : '-',
-        説明: '基於繁簡聯合字頻表（北語字頻+臺標字頻）的加權選重率',
         提示: '計算動態選衝率時，會使用字頻數據對漢字進行降序重排，以方便不同方案進行比較。因此上，計算結果可能會稍低於真實選重率。',
         可點擊: true,
         點擊處理: (碼表類型: '全碼' | '簡碼') => 顯示重碼字符詳情('unified', 碼表類型, true),
@@ -436,7 +398,6 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
         簡碼: 分析結果.知乎簡體動態選重率原序
           ? (分析結果.知乎簡體動態選重率原序.簡碼 * 10000).toFixed(2) + '‱'
           : '-',
-        説明: '基於知乎字頻，保持碼表原始排序的加權選重率',
         提示: '不對重碼字符按字頻重新排序，保持碼表原始順序進行選重率計算。反映碼表實際使用時的選重率。',
         可點擊: true,
         點擊處理: (碼表類型: '全碼' | '簡碼') => 顯示重碼字符詳情('zhihu', 碼表類型, false),
@@ -450,7 +411,6 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
         簡碼: 分析結果.北語簡體動態選重率原序
           ? (分析結果.北語簡體動態選重率原序.簡碼 * 10000).toFixed(2) + '‱'
           : '-',
-        説明: '基於北語字頻，保持碼表原始排序的加權選重率',
         提示: '不對重碼字符按字頻重新排序，保持碼表原始順序進行選重率計算。反映碼表實際使用時的選重率。',
         可點擊: true,
         點擊處理: (碼表類型: '全碼' | '簡碼') => 顯示重碼字符詳情('sc', 碼表類型, false),
@@ -464,7 +424,6 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
         簡碼: 分析結果.臺標繁體動態選重率原序
           ? (分析結果.臺標繁體動態選重率原序.簡碼 * 10000).toFixed(2) + '‱'
           : '-',
-        説明: '基於臺標字頻，保持碼表原始排序的加權選重率',
         提示: '不對重碼字符按字頻重新排序，保持碼表原始順序進行選重率計算。反映碼表實際使用時的選重率。',
         可點擊: true,
         點擊處理: (碼表類型: '全碼' | '簡碼') => 顯示重碼字符詳情('tc', 碼表類型, false),
@@ -478,7 +437,6 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
         簡碼: 分析結果.古籍繁體動態選重率原序
           ? (分析結果.古籍繁體動態選重率原序.簡碼 * 10000).toFixed(2) + '‱'
           : '-',
-        説明: '基於古籍字頻，保持碼表原始排序的加權選重率',
         提示: '不對重碼字符按字頻重新排序，保持碼表原始順序進行選重率計算。反映碼表實際使用時的選重率。',
         可點擊: true,
         點擊處理: (碼表類型: '全碼' | '簡碼') => 顯示重碼字符詳情('guji', 碼表類型, false),
@@ -492,7 +450,6 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
         簡碼: 分析結果.繁簡聯合動態選重率原序
           ? (分析結果.繁簡聯合動態選重率原序.簡碼 * 10000).toFixed(2) + '‱'
           : '-',
-        説明: '基於繁簡聯合字頻表（北語字頻+臺標字頻），保持碼表原始排序的加權選重率',
         提示: '不對重碼字符按字頻重新排序，保持碼表原始順序進行選重率計算。反映碼表實際使用時的選重率。',
         可點擊: true,
         點擊處理: (碼表類型: '全碼' | '簡碼') => 顯示重碼字符詳情('unified', 碼表類型, false),
@@ -550,11 +507,6 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
           ) : (
             text
           ),
-      },
-      {
-        title: '説明',
-        dataIndex: '説明',
-        key: '説明',
       },
     ]
 

@@ -1,5 +1,5 @@
 import { ReloadOutlined } from '@ant-design/icons'
-import { Alert, Button, Input, Modal, message, Space, Spin, Table, Typography } from 'antd'
+import { Alert, Button, Input, Modal, message, Space, Spin, Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useAtom } from 'jotai'
 import React, { useEffect, useRef, useState } from 'react'
@@ -22,8 +22,6 @@ import {
 } from '../services/speedEquivalentService'
 import type { 處理後的碼表結果介面 } from '../types'
 import { 默認選重鍵表 } from '../types/scheme'
-
-const { Link } = Typography
 
 /**
  * 速度當量分析頁面
@@ -469,7 +467,6 @@ const SpeedEquivalentPage: React.FC = () => {
       一級簡碼當量: number
       二級簡碼當量: number
       簡碼當量: number
-      説明: React.ReactNode
     }
 
     const 表格數據: 表格數據項型别[] = [
@@ -480,14 +477,6 @@ const SpeedEquivalentPage: React.FC = () => {
         一級簡碼當量: 分析結果.知乎簡體字頻一級簡碼速度當量,
         二級簡碼當量: 分析結果.知乎簡體字頻二級簡碼速度當量,
         簡碼當量: 分析結果.知乎簡體字頻全部簡碼速度當量,
-        説明: (
-          <>
-            基於
-            <Link href="https://github.com/forfudan/chinese-characters-frequency" target="_blank">
-              知乎字頻表
-            </Link>
-          </>
-        ),
       },
       {
         key: '北語簡體字頻',
@@ -496,17 +485,6 @@ const SpeedEquivalentPage: React.FC = () => {
         一級簡碼當量: 分析結果.北語簡體字頻一級簡碼速度當量,
         二級簡碼當量: 分析結果.北語簡體字頻二級簡碼速度當量,
         簡碼當量: 分析結果.北語簡體字頻全部簡碼速度當量,
-        説明: (
-          <>
-            基於
-            <Link
-              href="https://faculty.blcu.edu.cn/xinghb/zh_CN/article/167473/content/1437.htm"
-              target="_blank"
-            >
-              簡體字頻表
-            </Link>
-          </>
-        ),
       },
       {
         key: '臺標繁體字頻',
@@ -515,17 +493,6 @@ const SpeedEquivalentPage: React.FC = () => {
         一級簡碼當量: 分析結果.臺標繁體字頻一級簡碼速度當量,
         二級簡碼當量: 分析結果.臺標繁體字頻二級簡碼速度當量,
         簡碼當量: 分析結果.臺標繁體字頻全部簡碼速度當量,
-        説明: (
-          <>
-            基於
-            <Link
-              href="https://language.moe.gov.tw/001/Upload/files/SITE_CONTENT/M0001/PIN/biau1.htm"
-              target="_blank"
-            >
-              臺標繁體字頻表
-            </Link>
-          </>
-        ),
       },
       {
         key: '古籍繁體字頻',
@@ -534,7 +501,6 @@ const SpeedEquivalentPage: React.FC = () => {
         一級簡碼當量: 分析結果.古籍繁體字頻一級簡碼速度當量,
         二級簡碼當量: 分析結果.古籍繁體字頻二級簡碼速度當量,
         簡碼當量: 分析結果.古籍繁體字頻全部簡碼速度當量,
-        説明: '基於古籍字頻',
       },
       {
         key: '繁簡聯合字頻',
@@ -543,7 +509,6 @@ const SpeedEquivalentPage: React.FC = () => {
         一級簡碼當量: 分析結果.繁簡聯合字頻一級簡碼速度當量,
         二級簡碼當量: 分析結果.繁簡聯合字頻二級簡碼速度當量,
         簡碼當量: 分析結果.繁簡聯合字頻全部簡碼速度當量,
-        説明: '基於繁簡聯合字頻表',
       },
     ]
 
@@ -622,11 +587,6 @@ const SpeedEquivalentPage: React.FC = () => {
             {value.toFixed(4)}
           </span>
         ),
-      },
-      {
-        title: '説明',
-        dataIndex: '説明',
-        key: '説明',
       },
     ]
 
@@ -780,12 +740,6 @@ const SpeedEquivalentPage: React.FC = () => {
                     ))}
                   </div>
                 ),
-              },
-              {
-                title: '説明',
-                dataIndex: 'description',
-                key: 'description',
-                width: 200,
               },
               {
                 title: '頻率',
