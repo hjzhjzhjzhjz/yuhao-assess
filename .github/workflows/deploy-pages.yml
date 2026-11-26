@@ -33,6 +33,10 @@ jobs:
         shell: bash
         run: python3 scripts/strip-comparison-note.py
 
+      - name: 裁剪「其他页面说明」内容（仅部署产物，不改仓库源码）
+        shell: bash
+        run: python3 scripts/strip-other-notes.py
+
       - uses: pnpm/action-setup@v6
         with:
           version: 12
