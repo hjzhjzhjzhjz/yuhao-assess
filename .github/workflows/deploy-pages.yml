@@ -21,6 +21,10 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: 裁剪「连续文本当量」功能（仅部署产物，不改仓库源码）
+        shell: bash
+        run: python3 scripts/strip-continuous.py
+
       - uses: pnpm/action-setup@v6
         with:
           version: 12
