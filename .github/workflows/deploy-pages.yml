@@ -29,6 +29,10 @@ jobs:
         shell: bash
         run: python3 scripts/strip-candidates.py
 
+      - name: 裁剪「方案对比页说明」区块（仅部署产物，不改仓库源码）
+        shell: bash
+        run: python3 scripts/strip-comparison-note.py
+
       - uses: pnpm/action-setup@v6
         with:
           version: 12
