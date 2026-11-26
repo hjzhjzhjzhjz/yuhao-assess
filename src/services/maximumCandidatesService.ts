@@ -1,4 +1,9 @@
-import { 累積漢字集名稱型别, 過濾自定義字符集, type 漢字集名稱型别 } from './charsetService'
+import {
+  累積漢字集名稱型别,
+  過濾自定義字符集,
+  批量過濾字符集,
+  type 漢字集名稱型别,
+} from './charsetService'
 import { 碼表處理服務實例 } from './codeTableService'
 import type { 碼表型别 } from '../types/index'
 
@@ -10,16 +15,20 @@ export interface 最大候選個數結果 {
 
 /**
  * 計算指定字符集中每個編碼的最大候選項個數
+ * @param 預過濾字符集 由 批量過濾字符集 預先算好的成員集合；省略時行爲與舊版一致
  */
 export async function getMaximumCandidates(
   codeTable: 碼表型别,
-  charsetType: 漢字集名稱型别
+  charsetType: 漢字集名稱型别,
+  預過濾字符集?: Set<string>
 ): Promise<最大候選個數結果> {
-  // 從碼表鍵中提取所有單個字符
+  // 從碼表鍵中提取所有單個字符（批量模式已在外層算好，無需重複遍歷）
   const allUniqueChars = new Set<string>()
-  for (const key of codeTable.keys()) {
-    for (const char of key) {
-      allUniqueChars.add(char)
+  if (!預過濾字符集) {
+    for (const key of codeTable.keys()) {
+      for (const char of key) {
+        allUniqueChars.add(char)
+      }
     }
   }
 
@@ -32,7 +41,7 @@ export async function getMaximumCandidates(
   const fullCodeTable = 已處理碼表.全碼表
 
   // 生成指定字符集
-  const charset = await 過濾自定義字符集(charsetType, allUniqueChars)
+  const charset = 預過濾字符集 ?? (await 過濾自定義字符集(charsetType, allUniqueChars))
 
   // 統計每個編碼對應的字符
   const codeToChars = new Map<string, string[]>()
@@ -94,9 +103,18 @@ export async function getAllMaximumCandidates(codeTable: 碼表型别) {
 
   const results: Partial<Record<累積漢字集名稱型别, 最大候選個數結果>> = {}
 
+  // 14 個字符集的成員集合一次算好，避免每個字符集都重複遍歷全表
+  const allUniqueChars = new Set<string>()
+  for (const key of codeTable.keys()) {
+    for (const char of key) {
+      allUniqueChars.add(char)
+    }
+  }
+  const 字符集映射 = await 批量過濾字符集(allUniqueChars)
+
   for (const charsetType of charsetTypes) {
     try {
-      const result = await getMaximumCandidates(codeTable, charsetType)
+      const result = await getMaximumCandidates(codeTable, charsetType, 字符集映射.get(charsetType))
       results[charsetType] = result
     } catch (error) {
       console.error(`計算 ${charsetType} 最大候選項失敗:`, error)

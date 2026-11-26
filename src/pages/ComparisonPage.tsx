@@ -3,7 +3,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import { Button, Space, Typography, Table, Modal, Checkbox, message, Alert, Spin } from 'antd'
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
-import { 當前方案原子狀態 } from '@/atoms/scheme'
+import { 當前方案原子狀態, 方案列表原子狀態 } from '@/atoms/scheme'
 import { 選中對比方案鍵名列表原子狀態 } from '@/atoms/comparison'
 import { 動態選重分析原子狀態 } from '@/atoms/dynamicDuplicate'
 import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
@@ -22,8 +22,8 @@ import type { 最大候選個數分析結果 } from '@/atoms/maximumCandidates'
 import type { 速度當量分析結果介面 } from '@/atoms/speedEquivalent'
 import type { 簡碼效率分析結果介面 } from '@/atoms/shortCodeEfficiency'
 import type { 字頻來源型别, 全碼簡碼型别 } from '@/types'
+import type { 方案配置介面 } from '@/types/scheme'
 import { 累積漢字集名稱型别 } from '@/services/charsetService'
-import { 等界面繪製 } from '@/utils/wait-for-paint'
 
 const { Paragraph } = Typography
 
@@ -49,6 +49,7 @@ interface 對比方案數據介面 {
   選重編碼化?: boolean // 是否啓用選重編碼化（影響重碼計算的可比性）
   出簡不出全?: boolean // 是否「出簡不出全」（影響重碼計算的可比性）
   碼表哈希?: string // 用於去重判斷
+  標識符?: string // 方案唯一標識，用於跨「當前/本地/内置」去重
   動態選重分析?: 動態選重分析結果介面 | null
   靜態重碼分析?: 靜態重碼分析結果介面 | null
   候選個數分析?: 最大候選個數分析結果 | null
@@ -92,6 +93,9 @@ type 分析型别 =
 
 const ComparisonPage: React.FC = () => {
   const [當前方案] = useAtom(當前方案原子狀態)
+  // 頂欄已經把所有内置方案（含測評結果）加載到這個原子裏，
+  // 對比頁直接複用，避免重複 fetch 同一批 JSON 造成「載入失敗」。
+  const 方案列表 = useAtomValue(方案列表原子狀態)
   const 動態選重分析結果 = useAtomValue(動態選重分析原子狀態)
   const 靜態重碼分析結果 = useAtomValue(靜態重碼分析原子狀態)
   const 候選個數分析結果 = useAtomValue(候選個數分析原子狀態)
@@ -150,25 +154,43 @@ const ComparisonPage: React.FC = () => {
   useEffect(() => {
     if (内置方案列表.length === 0) return
 
+    // 清理持久化列表裏已經不存在的内置方案鍵：
+    // 這些殘留鍵在舊版本升級後仍被視爲「選中」，每次確認都會 fetch 到 404，
+    // 表現在界面上就是莫名其妙的「X 個載入失敗」。
+    const 有效鍵名列表 = 選中對比方案鍵名列表.filter(key => 内置方案列表.some(b => b.key === key))
+    if (有效鍵名列表.length !== 選中對比方案鍵名列表.length) {
+      設置選中對比方案鍵名列表(有效鍵名列表)
+      return
+    }
+
     let 已取消 = false
 
     const 執行加載 = async () => {
       const 要提示 = 完成後提示.current
-      const 方案列表: 對比方案數據介面[] = []
-      let 當前方案哈希: string | undefined = undefined
+      const 結果列表: 對比方案數據介面[] = []
+      const 已見哈希 = new Set<string>()
+      const 已見標識符 = new Set<string>()
+
+      const 加入 = (項: 對比方案數據介面): boolean => {
+        if (項.碼表哈希 && 已見哈希.has(項.碼表哈希)) return false
+        if (項.標識符 && 已見標識符.has(項.標識符)) return false
+        if (項.碼表哈希) 已見哈希.add(項.碼表哈希)
+        if (項.標識符) 已見標識符.add(項.標識符)
+        結果列表.push(項)
+        return true
+      }
 
       // 添加當前方案（如果存在且有分析數據）
       if (當前方案 && (動態選重分析結果 || 靜態重碼分析結果)) {
-        當前方案哈希 = 當前方案.碼表元數據?.哈希值
-        const 方案名 = 當前方案.元數據.方案名
-        方案列表.push({
-          唯一鍵: `${方案名}-current`,
-          方案名,
-          顯示名稱: `${方案名}（當前方案）`,
+        加入({
+          唯一鍵: `${當前方案.元數據.方案名}-current`,
+          方案名: 當前方案.元數據.方案名,
+          顯示名稱: `${當前方案.元數據.方案名}（當前方案）`,
           是否當前方案: true,
+          標識符: 當前方案.元數據.標識符,
           選重編碼化: !!當前方案.方案參數.選重編碼化,
           出簡不出全: !!當前方案.方案參數.出簡不出全,
-          碼表哈希: 當前方案哈希,
+          碼表哈希: 當前方案.碼表元數據?.哈希值,
           動態選重分析: 動態選重分析結果,
           靜態重碼分析: 靜態重碼分析結果,
           候選個數分析: 候選個數分析結果,
@@ -182,17 +204,16 @@ const ComparisonPage: React.FC = () => {
         const 標識符 = 本地方案.元數據.標識符
         if (!選中本地方案標識符列表.includes(標識符)) continue
         if (標識符 === 當前本地方案標識符) continue
-        const 方案哈希 = 本地方案.碼表元數據?.哈希值
-        if (當前方案哈希 && 方案哈希 && 當前方案哈希 === 方案哈希) continue
         const 方案名 = 本地方案.元數據.方案名
-        方案列表.push({
+        加入({
           唯一鍵: `local-${標識符}`,
           方案名,
           顯示名稱: `${方案名}（本地）`,
           是否當前方案: false,
+          標識符,
           選重編碼化: !!本地方案.方案參數.選重編碼化,
           出簡不出全: !!本地方案.方案參數.出簡不出全,
-          碼表哈希: 方案哈希,
+          碼表哈希: 本地方案.碼表元數據?.哈希值,
           動態選重分析: 本地方案.測評結果?.動態選重分析 ?? null,
           靜態重碼分析: 本地方案.測評結果?.靜態重碼分析 ?? null,
           候選個數分析: 本地方案.測評結果?.候選個數分析 ?? null,
@@ -201,56 +222,63 @@ const ComparisonPage: React.FC = () => {
         })
       }
 
-      const 鍵名列表 = 選中對比方案鍵名列表
+      // 内置方案優先用頂欄已加載好的配置，避免重複解析同一批 JSON；
+      // 只有頂欄尚未加載完（或個别方案加載失敗）時才回退到按需 fetch。
+      const 方案映射 = new Map<string, 方案配置介面>(
+        方案列表.map(項 => [項.鍵名, 項.配置] as [string, 方案配置介面])
+      )
       let 成功數 = 0
-      let 失敗數 = 0
+      const 失敗名單: string[] = []
 
       try {
-        // 逐個下載内置方案。每開始一個都先把進度畫出來，再去解析 JSON
-        for (const [i, key] of 鍵名列表.entries()) {
-          const 預覽名 = 内置方案列表.find(b => b.key === key)?.name ?? key
-          設置載入進度({ 當前: i + 1, 總數: 鍵名列表.length, 名稱: 預覽名 })
-          await 等界面繪製()
+        for (const [i, key] of 有效鍵名列表.entries()) {
+          const 方案信息 = 内置方案列表.find(b => b.key === key)
+          const 預覽名 = 方案信息?.name ?? key
+          設置載入進度({ 當前: i + 1, 總數: 有效鍵名列表.length, 名稱: 預覽名 })
           if (已取消) return
 
-          try {
-            const 方案 = await 加載方案(key)
-            if (已取消) return
-            成功數++
-            const 方案信息 = 内置方案列表.find(b => b.key === key)
-            const 測評結果 = 方案.測評結果
-            const 方案哈希 = 方案.碼表元數據?.哈希值
-            if (當前方案哈希 && 方案哈希 && 當前方案哈希 === 方案哈希) continue
-            const 方案名 = 方案信息?.name || 方案.元數據.方案名
-            方案列表.push({
-              唯一鍵: `${方案名}-builtin-${key}`,
-              方案名,
-              顯示名稱: 方案名,
-              是否當前方案: false,
-              選重編碼化: !!方案.方案參數?.選重編碼化,
-              出簡不出全: !!方案.方案參數?.出簡不出全,
-              碼表哈希: 方案哈希,
-              動態選重分析: 測評結果?.動態選重分析 || null,
-              靜態重碼分析: 測評結果?.靜態重碼分析 || null,
-              候選個數分析: 測評結果?.候選個數分析 || null,
-              速度當量分析: 測評結果?.速度當量分析 || null,
-              簡碼效率分析: 測評結果?.簡碼效率分析 || null,
-            })
-          } catch (error) {
-            if (已取消) return
-            失敗數++
-            console.error(`❌ 加載方案 ${key} 失敗:`, error)
+          let 方案 = 方案映射.get(key)
+          if (!方案) {
+            try {
+              方案 = await 加載方案(key)
+            } catch {
+              if (已取消) return
+              失敗名單.push(預覽名)
+              continue
+            }
           }
+          if (已取消) return
+          成功數++
+
+          const 測評結果 = 方案.測評結果
+          const 方案名 = 方案信息?.name || 方案.元數據.方案名
+          加入({
+            唯一鍵: `${方案名}-builtin-${key}`,
+            方案名,
+            顯示名稱: 方案名,
+            是否當前方案: false,
+            標識符: 方案.元數據.標識符,
+            選重編碼化: !!方案.方案參數?.選重編碼化,
+            出簡不出全: !!方案.方案參數?.出簡不出全,
+            碼表哈希: 方案.碼表元數據?.哈希值,
+            動態選重分析: 測評結果?.動態選重分析 || null,
+            靜態重碼分析: 測評結果?.靜態重碼分析 || null,
+            候選個數分析: 測評結果?.候選個數分析 || null,
+            速度當量分析: 測評結果?.速度當量分析 || null,
+            簡碼效率分析: 測評結果?.簡碼效率分析 || null,
+          })
         }
 
         if (已取消) return
-        設置對比方案列表(方案列表)
+        設置對比方案列表(結果列表)
         if (要提示) {
           完成後提示.current = false
-          if (鍵名列表.length === 0) {
+          if (有效鍵名列表.length === 0) {
             message.success('已更新對比方案列表')
-          } else if (失敗數 > 0) {
-            message.warning(`已載入 ${成功數} 個對比方案，${失敗數} 個載入失敗`)
+          } else if (失敗名單.length > 0) {
+            message.warning(
+              `已載入 ${成功數} 個對比方案；${失敗名單.join('、')} 未能讀取，可點「刷新」重試`
+            )
           } else {
             message.success(`已載入 ${成功數} 個對比方案`)
           }
@@ -274,9 +302,11 @@ const ComparisonPage: React.FC = () => {
     簡碼效率分析結果,
     選中對比方案鍵名列表,
     内置方案列表,
+    方案列表,
     本地方案列表,
     選中本地方案標識符列表,
     當前本地方案標識符,
+    設置選中對比方案鍵名列表,
   ])
 
   // 打開選擇彈窗時初始化臨時列表
@@ -453,8 +483,8 @@ const ComparisonPage: React.FC = () => {
         sorter: 包裝排序((a: 對比方案數據介面, b: 對比方案數據介面) => {
           const aData = a.候選個數分析?.[dataKey]
           const bData = b.候選個數分析?.[dataKey]
-          const aCoverage = a.靜態重碼分析?.[dataKey].字集覆蓋率
-          const bCoverage = b.靜態重碼分析?.[dataKey].字集覆蓋率
+          const aCoverage = a.靜態重碼分析?.[dataKey]?.字集覆蓋率
+          const bCoverage = b.靜態重碼分析?.[dataKey]?.字集覆蓋率
           if (!aData || (aCoverage !== undefined && aCoverage < 靜態重碼分析字集覆蓋率閾值))
             return 1
           if (!bData || (bCoverage !== undefined && bCoverage < 靜態重碼分析字集覆蓋率閾值))
@@ -464,7 +494,7 @@ const ComparisonPage: React.FC = () => {
         render: (_: any, record: 對比方案數據介面) => {
           const data = record.候選個數分析?.[dataKey]
           if (!data) return '-'
-          const 覆蓋率 = record.靜態重碼分析?.[dataKey].字集覆蓋率
+          const 覆蓋率 = record.靜態重碼分析?.[dataKey]?.字集覆蓋率
           return 覆蓋率 !== undefined && 覆蓋率 < 靜態重碼分析字集覆蓋率閾值
             ? '缺字'
             : (data.最大候選個數 ?? '-')

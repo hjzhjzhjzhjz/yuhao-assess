@@ -49,158 +49,80 @@ export async function isInTonggui(char: string): Promise<boolean> {
 }
 
 // CJK Unicode範圍檢查函數 - 使用 atom 獲取數據
-export function isInCJKBasic(char: string): boolean {
-  const store = getDefaultStore()
-  const cjkBlockData = store.get(CJK區塊數據原子狀態)
-  if (!cjkBlockData) return false
+//
+// 效能：原實作每判斷一個字符都要 getDefaultStore() + 兩次 parseInt(..., 16)，
+// 累積字符集（到CJK擴X）還會鏈式呼叫最多 11 個檢查器；10 萬字 × 14 個
+// 字符集會産生數百萬次重複解析。這裏按 atom 數據引用緩存解析後的數值邊界，
+// 判定結果與逐次 parseInt 完全一致（無效邊界 → NaN → 比較恆 false）。
+type 區塊邊界 = { start: number; end: number }
+let 區塊邊界快取來源: CJK區塊數據型别 | null = null
+let 區塊邊界快取: Record<string, 區塊邊界> | null = null
 
+function 取區塊邊界(): Record<string, 區塊邊界> | null {
+  const 數據 = getDefaultStore().get(CJK區塊數據原子狀態)
+  if (!數據) return null
+  if (區塊邊界快取來源 === 數據 && 區塊邊界快取) return 區塊邊界快取
+  const 邊界表: Record<string, 區塊邊界> = {}
+  for (const [名稱, 區塊] of Object.entries(數據.blocks)) {
+    if (區塊) 邊界表[名稱] = { start: parseInt(區塊.start, 16), end: parseInt(區塊.end, 16) }
+  }
+  區塊邊界快取來源 = 數據
+  區塊邊界快取 = 邊界表
+  return 邊界表
+}
+
+function 字符在區塊(char: string, 區塊名: string): boolean {
+  const 邊界表 = 取區塊邊界()
+  if (!邊界表) return false
   const codePoint = char.codePointAt(0)
   if (!codePoint) return false
-  const block = cjkBlockData.blocks.cjk_basic
-  if (!block) return false
-  const start = parseInt(block.start, 16)
-  const end = parseInt(block.end, 16)
-  return codePoint >= start && codePoint <= end
+  const 邊界 = 邊界表[區塊名]
+  if (!邊界) return false
+  return codePoint >= 邊界.start && codePoint <= 邊界.end
+}
+
+export function isInCJKBasic(char: string): boolean {
+  return 字符在區塊(char, 'cjk_basic')
 }
 
 export function isInCJKA(char: string): boolean {
-  const store = getDefaultStore()
-  const cjkBlockData = store.get(CJK區塊數據原子狀態)
-  if (!cjkBlockData) return false
-
-  const codePoint = char.codePointAt(0)
-  if (!codePoint) return false
-  const block = cjkBlockData.blocks.cjk_a
-  if (!block) return false
-  const start = parseInt(block.start, 16)
-  const end = parseInt(block.end, 16)
-  return codePoint >= start && codePoint <= end
+  return 字符在區塊(char, 'cjk_a')
 }
 
 export function isInCJKB(char: string): boolean {
-  const store = getDefaultStore()
-  const cjkBlockData = store.get(CJK區塊數據原子狀態)
-  if (!cjkBlockData) return false
-
-  const codePoint = char.codePointAt(0)
-  if (!codePoint) return false
-  const block = cjkBlockData.blocks.cjk_b
-  if (!block) return false
-  const start = parseInt(block.start, 16)
-  const end = parseInt(block.end, 16)
-  return codePoint >= start && codePoint <= end
+  return 字符在區塊(char, 'cjk_b')
 }
 
 export function isInCJKC(char: string): boolean {
-  const store = getDefaultStore()
-  const cjkBlockData = store.get(CJK區塊數據原子狀態)
-  if (!cjkBlockData) return false
-
-  const codePoint = char.codePointAt(0)
-  if (!codePoint) return false
-  const block = cjkBlockData.blocks.cjk_c
-  if (!block) return false
-  const start = parseInt(block.start, 16)
-  const end = parseInt(block.end, 16)
-  return codePoint >= start && codePoint <= end
+  return 字符在區塊(char, 'cjk_c')
 }
 
 export function isInCJKD(char: string): boolean {
-  const store = getDefaultStore()
-  const cjkBlockData = store.get(CJK區塊數據原子狀態)
-  if (!cjkBlockData) return false
-
-  const codePoint = char.codePointAt(0)
-  if (!codePoint) return false
-  const block = cjkBlockData.blocks.cjk_d
-  if (!block) return false
-  const start = parseInt(block.start, 16)
-  const end = parseInt(block.end, 16)
-  return codePoint >= start && codePoint <= end
+  return 字符在區塊(char, 'cjk_d')
 }
 
 export function isInCJKE(char: string): boolean {
-  const store = getDefaultStore()
-  const cjkBlockData = store.get(CJK區塊數據原子狀態)
-  if (!cjkBlockData) return false
-
-  const codePoint = char.codePointAt(0)
-  if (!codePoint) return false
-  const block = cjkBlockData.blocks.cjk_e
-  if (!block) return false
-  const start = parseInt(block.start, 16)
-  const end = parseInt(block.end, 16)
-  return codePoint >= start && codePoint <= end
+  return 字符在區塊(char, 'cjk_e')
 }
 
 export function isInCJKF(char: string): boolean {
-  const store = getDefaultStore()
-  const cjkBlockData = store.get(CJK區塊數據原子狀態)
-  if (!cjkBlockData) return false
-
-  const codePoint = char.codePointAt(0)
-  if (!codePoint) return false
-  const block = cjkBlockData.blocks.cjk_f
-  if (!block) return false
-  const start = parseInt(block.start, 16)
-  const end = parseInt(block.end, 16)
-  return codePoint >= start && codePoint <= end
+  return 字符在區塊(char, 'cjk_f')
 }
 
 export function isInCJKG(char: string): boolean {
-  const store = getDefaultStore()
-  const cjkBlockData = store.get(CJK區塊數據原子狀態)
-  if (!cjkBlockData) return false
-
-  const codePoint = char.codePointAt(0)
-  if (!codePoint) return false
-  const block = cjkBlockData.blocks.cjk_g
-  if (!block) return false
-  const start = parseInt(block.start, 16)
-  const end = parseInt(block.end, 16)
-  return codePoint >= start && codePoint <= end
+  return 字符在區塊(char, 'cjk_g')
 }
 
 export function isInCJKH(char: string): boolean {
-  const store = getDefaultStore()
-  const cjkBlockData = store.get(CJK區塊數據原子狀態)
-  if (!cjkBlockData) return false
-
-  const codePoint = char.codePointAt(0)
-  if (!codePoint) return false
-  const block = cjkBlockData.blocks.cjk_h
-  if (!block) return false
-  const start = parseInt(block.start, 16)
-  const end = parseInt(block.end, 16)
-  return codePoint >= start && codePoint <= end
+  return 字符在區塊(char, 'cjk_h')
 }
 
 export function isInCJKI(char: string): boolean {
-  const store = getDefaultStore()
-  const cjkBlockData = store.get(CJK區塊數據原子狀態)
-  if (!cjkBlockData) return false
-
-  const codePoint = char.codePointAt(0)
-  if (!codePoint) return false
-  const block = cjkBlockData.blocks.cjk_i
-  if (!block) return false
-  const start = parseInt(block.start, 16)
-  const end = parseInt(block.end, 16)
-  return codePoint >= start && codePoint <= end
+  return 字符在區塊(char, 'cjk_i')
 }
 
 export function isInCJKJ(char: string): boolean {
-  const store = getDefaultStore()
-  const cjkBlockData = store.get(CJK區塊數據原子狀態)
-  if (!cjkBlockData) return false
-
-  const codePoint = char.codePointAt(0)
-  if (!codePoint) return false
-  const block = cjkBlockData.blocks.cjk_j
-  if (!block) return false
-  const start = parseInt(block.start, 16)
-  const end = parseInt(block.end, 16)
-  return codePoint >= start && codePoint <= end
+  return 字符在區塊(char, 'cjk_j')
 }
 
 // 累積的CJK範圍檢查函數 - "到X區"
@@ -389,29 +311,40 @@ export const charsetInfo: Record<漢字集名稱型别, { name: string; descript
 }
 
 // 獲取字符集大小的函數
+// 三種「表列」字符集的理論大小只需遍歷一次 charsets.json。
+// 原實作每次呼叫都遍歷整張表，靜態重碼分析 14 個字符集 × 2 張碼表
+// 會重複數十次遍歷；按 atom 數據引用緩存計數，數值不變。
+let 字符集大小快取來源: 字符集數據型别 | null = null
+let 字符集大小快取: Record<'GB2312' | '通用規範' | '常用國字', number> | null = null
+
 export async function getCharsetSize(charsetType: 漢字集名稱型别): Promise<number> {
   await loadCharsetData()
-  const store = getDefaultStore()
-  const charsetData = store.get(字符集數據原子狀態)
+  const charsetData = getDefaultStore().get(字符集數據原子狀態)
   if (!charsetData) return 0
 
-  let count = 0
-  for (const record of Object.values(charsetData)) {
-    switch (charsetType) {
-      case 'GB2312':
-        if (record.is_gb2312) count++
-        break
-      case '通用規範':
-        if (record.is_tonggui) count++
-        break
-      case '常用國字':
-        if (record.is_guozi) count++
-        break
-      default:
-        break
+  if (字符集大小快取來源 !== charsetData || !字符集大小快取) {
+    let gb2312 = 0
+    let 通規 = 0
+    let 國字 = 0
+    for (const record of Object.values(charsetData)) {
+      if (record.is_gb2312) gb2312++
+      if (record.is_tonggui) 通規++
+      if (record.is_guozi) 國字++
     }
+    字符集大小快取 = { GB2312: gb2312, 通用規範: 通規, 常用國字: 國字 }
+    字符集大小快取來源 = charsetData
   }
-  return count
+
+  switch (charsetType) {
+    case 'GB2312':
+      return 字符集大小快取.GB2312
+    case '通用規範':
+      return 字符集大小快取.通用規範
+    case '常用國字':
+      return 字符集大小快取.常用國字
+    default:
+      return 0
+  }
 }
 
 // 獲取理論字符集大小
@@ -630,4 +563,95 @@ export async function 過濾自定義字符集(
   }
 
   return charset
+}
+
+/**
+ * 一次遍歷算出全部「累積字符集」的成員集合。
+ *
+ * 靜態重碼與候選個數分析各要跑 14 個字符集，舊版每次呼叫
+ * 過濾自定義字符集 都重新遍歷全部字符、鏈式呼叫最多 11 個檢查器，
+ * 10 萬字 × 數十次呼叫是主要瓶頸。這裏對每個字符只做一次
+ * 11 個數值區間比較，得出「最小命中區塊序號」，累積字符集
+ * 「到X」即等價於該序號 ≤ X（與 isInCJKToX 的 OR 鏈完全等價）。
+ * 前 3 個表列字符集仍按 charsets.json 的標誌位判定，數值不變。
+ *
+ * @param 字符集合 待分類的字符集合（通常是碼表的全部字符）
+ * @returns 名稱 → 屬於該字符集的字符集合
+ */
+const CJK細胞區塊順序 = [
+  'cjk_basic',
+  'cjk_a',
+  'cjk_b',
+  'cjk_c',
+  'cjk_d',
+  'cjk_e',
+  'cjk_f',
+  'cjk_g',
+  'cjk_h',
+  'cjk_i',
+  'cjk_j',
+] as const
+
+const CJK累積名稱順序: readonly 累積漢字集名稱型别[] = [
+  'CJK基本',
+  '到CJK擴A',
+  '到CJK擴B',
+  '到CJK擴C',
+  '到CJK擴D',
+  '到CJK擴E',
+  '到CJK擴F',
+  '到CJK擴G',
+  '到CJK擴H',
+  '到CJK擴I',
+  '到CJK擴J',
+]
+
+export async function 批量過濾字符集(
+  字符集合: Set<string>
+): Promise<Map<累積漢字集名稱型别, Set<string>>> {
+  const 結果 = new Map<累積漢字集名稱型别, Set<string>>()
+  for (const 名稱 of ['GB2312', '通用規範', '常用國字', ...CJK累積名稱順序] as const) {
+    結果.set(名稱, new Set<string>())
+  }
+
+  await loadCharsetData()
+  await loadCJKBlockData()
+  const 字符集數據 = getDefaultStore().get(字符集數據原子狀態)
+  const 邊界表 = 取區塊邊界()
+  if (!字符集數據 || !邊界表) return 結果
+
+  const 區間 = CJK細胞區塊順序.map(名稱 => {
+    const 邊界 = 邊界表[名稱]
+    return 邊界 && Number.isFinite(邊界.start) && Number.isFinite(邊界.end) ? 邊界 : null
+  })
+
+  for (const char of 字符集合) {
+    const record = 字符集數據[char]
+    if (record) {
+      if (record.is_gb2312) 結果.get('GB2312')!.add(char)
+      if (record.is_tonggui) 結果.get('通用規範')!.add(char)
+      if (record.is_guozi) 結果.get('常用國字')!.add(char)
+    }
+
+    const codePoint = char.codePointAt(0)
+    if (!codePoint) continue
+
+    let 最小命中 = -1
+    for (let i = 0; i < 區間.length; i++) {
+      const 邊界 = 區間[i]
+      if (邊界 && codePoint >= 邊界.start && codePoint <= 邊界.end) {
+        最小命中 = i
+        break
+      }
+    }
+    if (最小命中 < 0) continue
+
+    for (let i = 最小命中; i < CJK累積名稱順序.length; i++) {
+      const 名稱 = CJK累積名稱順序[i]
+      if (!名稱) continue
+      結果.get(名稱)!.add(char)
+    }
+  }
+
+  return 結果
 }

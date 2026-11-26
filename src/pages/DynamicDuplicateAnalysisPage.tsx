@@ -6,9 +6,14 @@ import type { ColumnsType } from 'antd/es/table'
 import { 碼表原子狀態 } from '../atoms/codeTable'
 import { 動態選重分析原子狀態 } from '../atoms/dynamicDuplicate'
 import type { 動態選重分析結果介面 } from '../atoms/dynamicDuplicate'
-import { 計算動態選重率, 計算原始碼表的動態選重率 } from '../services/duplicateAnalysisService'
+import {
+  計算動態選重率,
+  計算原始碼表的動態選重率,
+  計算出簡重排選重率,
+  構建出簡重排組映射,
+} from '../services/duplicateAnalysisService'
 import { 字頻表服務類别 } from '../services/charFrequencyService'
-import type { 碼表型别, 處理後的碼表結果介面 } from '../types'
+import type { 處理後的碼表結果介面 } from '../types'
 
 const { Paragraph, Link } = Typography
 
@@ -77,7 +82,6 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
       const 全碼表 = 處理後碼表.全碼表
       const 簡碼表 = 處理後碼表.簡碼表
       const 全碼加選重鍵表 = 處理後碼表.全碼加選重鍵表
-      const 簡碼加選重鍵表 = 處理後碼表.簡碼加選重鍵表
 
       // 加載字頻數據
       const [知乎字頻, 北語字頻, 臺標字頻, 古籍字頻] = await Promise.all([
@@ -93,53 +97,53 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
       // ========== 動態選重率（按字頻重排） ==========
       const 知乎簡體動態選重率 = {
         全碼: 計算動態選重率(全碼表, 知乎字頻, true),
-        簡碼: 計算動態選重率(簡碼表, 知乎字頻, true),
+        簡碼: 計算出簡重排選重率(全碼加選重鍵表, 簡碼表, 知乎字頻, true),
       }
 
       const 北語簡體動態選重率 = {
         全碼: 計算動態選重率(全碼表, 北語字頻, true),
-        簡碼: 計算動態選重率(簡碼表, 北語字頻, true),
+        簡碼: 計算出簡重排選重率(全碼加選重鍵表, 簡碼表, 北語字頻, true),
       }
 
       const 臺標繁體動態選重率 = {
         全碼: 計算動態選重率(全碼表, 臺標字頻, true),
-        簡碼: 計算動態選重率(簡碼表, 臺標字頻, true),
+        簡碼: 計算出簡重排選重率(全碼加選重鍵表, 簡碼表, 臺標字頻, true),
       }
 
       const 古籍繁體動態選重率 = {
         全碼: 計算動態選重率(全碼表, 古籍字頻, true),
-        簡碼: 計算動態選重率(簡碼表, 古籍字頻, true),
+        簡碼: 計算出簡重排選重率(全碼加選重鍵表, 簡碼表, 古籍字頻, true),
       }
 
       const 繁簡聯合動態選重率 = {
         全碼: 計算動態選重率(全碼表, 繁簡聯合字頻, true),
-        簡碼: 計算動態選重率(簡碼表, 繁簡聯合字頻, true),
+        簡碼: 計算出簡重排選重率(全碼加選重鍵表, 簡碼表, 繁簡聯合字頻, true),
       }
 
       // ========== 動態選重率（保持原序） ==========
       const 知乎簡體動態選重率原序 = {
         全碼: 計算原始碼表的動態選重率(全碼加選重鍵表, 知乎字頻),
-        簡碼: 計算原始碼表的動態選重率(簡碼加選重鍵表, 知乎字頻),
+        簡碼: 計算出簡重排選重率(全碼加選重鍵表, 簡碼表, 知乎字頻, false),
       }
 
       const 北語簡體動態選重率原序 = {
         全碼: 計算原始碼表的動態選重率(全碼加選重鍵表, 北語字頻),
-        簡碼: 計算原始碼表的動態選重率(簡碼加選重鍵表, 北語字頻),
+        簡碼: 計算出簡重排選重率(全碼加選重鍵表, 簡碼表, 北語字頻, false),
       }
 
       const 臺標繁體動態選重率原序 = {
         全碼: 計算原始碼表的動態選重率(全碼加選重鍵表, 臺標字頻),
-        簡碼: 計算原始碼表的動態選重率(簡碼加選重鍵表, 臺標字頻),
+        簡碼: 計算出簡重排選重率(全碼加選重鍵表, 簡碼表, 臺標字頻, false),
       }
 
       const 古籍繁體動態選重率原序 = {
         全碼: 計算原始碼表的動態選重率(全碼加選重鍵表, 古籍字頻),
-        簡碼: 計算原始碼表的動態選重率(簡碼加選重鍵表, 古籍字頻),
+        簡碼: 計算出簡重排選重率(全碼加選重鍵表, 簡碼表, 古籍字頻, false),
       }
 
       const 繁簡聯合動態選重率原序 = {
         全碼: 計算原始碼表的動態選重率(全碼加選重鍵表, 繁簡聯合字頻),
-        簡碼: 計算原始碼表的動態選重率(簡碼加選重鍵表, 繁簡聯合字頻),
+        簡碼: 計算出簡重排選重率(全碼加選重鍵表, 簡碼表, 繁簡聯合字頻, false),
       }
 
       const 新結果: 動態選重分析結果介面 = {
@@ -192,8 +196,6 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
     設置顯示詳情(true)
 
     try {
-      const 使用碼表: 碼表型别 = 碼表類型 === '全碼' ? 處理後碼表.全碼表 : 處理後碼表.簡碼表
-
       // 加載對應字頻
       let 字頻數據: Record<string, number>
       if (字頻類型 === 'zhihu') {
@@ -216,21 +218,6 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
       }
 
       // 計算重碼詳情
-      const 編碼映射 = new Map<string, Array<{ 字符: string; 字頻: number }>>()
-
-      for (const [字符, 編碼數組] of 使用碼表.entries()) {
-        const 編碼 = 編碼數組[0]
-        if (編碼) {
-          const 字頻 = 字頻數據[字符] || 0
-
-          if (!編碼映射.has(編碼)) {
-            編碼映射.set(編碼, [])
-          }
-          編碼映射.get(編碼)!.push({ 字符, 字頻 })
-        }
-      }
-
-      // 生成詳情列表（只包含重碼）
       const 詳情列表: Array<{
         序號: number
         字符: string
@@ -238,30 +225,70 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
         字頻: number
         重碼字符列表: string
       }> = []
-      let 序號 = 1
 
-      for (const [編碼, 字符列表] of 編碼映射.entries()) {
-        if (字符列表.length > 1) {
-          // 按字頻排序
-          if (是否按字頻排序) {
-            字符列表.sort((a, b) => b.字頻 - a.字頻)
-          }
-
-          // 爲每個需要選重的字符（除首選外）添加一行
-          for (let i = 1; i < 字符列表.length; i++) {
-            const 當前字符 = 字符列表[i]
-            if (!當前字符) continue // 類型守衛
-
+      if (碼表類型 === '簡碼') {
+        // 出簡不出全：以全碼組爲基礎，剔除擁有更短簡碼的字後重排位次，
+        // 與「出簡」列共用同一套邏輯，使詳情與彙總同源。
+        const 組映射 = 構建出簡重排組映射(
+          處理後碼表.全碼加選重鍵表,
+          處理後碼表.簡碼表,
+          字頻數據,
+          是否按字頻排序
+        )
+        let 序號 = 1
+        for (const [基礎編碼, 組] of 組映射.entries()) {
+          const 字符列表文字 = 組.map(c => `${c.字}(${(c.字頻 * 10000).toFixed(2)}‱)`).join('、')
+          for (const x of 組) {
+            if (!x.需選重) continue
             詳情列表.push({
               序號,
-              字符: 當前字符.字符,
-              編碼,
-              字頻: 當前字符.字頻,
-              重碼字符列表: 字符列表
-                .map(c => `${c.字符}(${(c.字頻 * 10000).toFixed(2)}‱)`)
-                .join('、'),
+              字符: x.字,
+              編碼: 基礎編碼,
+              字頻: x.字頻,
+              重碼字符列表: 字符列表文字,
             })
             序號++
+          }
+        }
+      } else {
+        // 全碼：按全碼表的原始編碼分組
+        const 編碼映射 = new Map<string, Array<{ 字符: string; 字頻: number }>>()
+        for (const [字符, 編碼數組] of 處理後碼表.全碼表.entries()) {
+          const 編碼 = 編碼數組[0]
+          if (編碼) {
+            const 字頻 = 字頻數據[字符] || 0
+            if (!編碼映射.has(編碼)) {
+              編碼映射.set(編碼, [])
+            }
+            編碼映射.get(編碼)!.push({ 字符, 字頻 })
+          }
+        }
+
+        let 序號 = 1
+        for (const [編碼, 字符列表] of 編碼映射.entries()) {
+          if (字符列表.length > 1) {
+            // 按字頻排序
+            if (是否按字頻排序) {
+              字符列表.sort((a, b) => b.字頻 - a.字頻)
+            }
+
+            // 爲每個需要選重的字符（除首選外）添加一行
+            const 字符列表文字 = 字符列表
+              .map(c => `${c.字符}(${(c.字頻 * 10000).toFixed(2)}‱)`)
+              .join('、')
+            for (let i = 1; i < 字符列表.length; i++) {
+              const 當前字符 = 字符列表[i]
+              if (!當前字符) continue // 類型守衛
+
+              詳情列表.push({
+                序號,
+                字符: 當前字符.字符,
+                編碼,
+                字頻: 當前字符.字頻,
+                重碼字符列表: 字符列表文字,
+              })
+              序號++
+            }
           }
         }
       }
@@ -505,7 +532,7 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
       },
       {
         title: (
-          <Tooltip title="計算簡碼時，會提取碼表相同漢字中編碼長度最小之編碼，並視之爲簡碼。故而出現多重簡碼、兼容編碼、無理碼等特殊情况時，該列數據會出現失真現象。欲獲取更加準確之統計，請對碼表進行處理。">
+          <Tooltip title="「出簡」列採用「出簡不出全」重排：擁有更短簡碼的字退出其全碼候選組，剩餘字重新編排選重位次後再計算動態選重率。故簡碼確實降低的重碼（如杏、束）會如實反映；與「全碼」列共用同一分母，可直接比較。">
             <span style={{ cursor: 'help', borderBottom: '1px dotted #999' }}>出簡</span>
           </Tooltip>
         ),

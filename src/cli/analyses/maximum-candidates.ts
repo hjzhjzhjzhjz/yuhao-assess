@@ -3,7 +3,7 @@
  * 計算 14 個字符集下全碼編碼的最大候選個數
  */
 
-import { 過濾自定義字符集, type 累積漢字集名稱型别 } from '../../services/charsetService'
+import { 批量過濾字符集, type 累積漢字集名稱型别 } from '../../services/charsetService'
 import type { 碼表型别 } from '../../types'
 import type { 最大候選個數分析結果 } from '../../atoms/maximumCandidates'
 
@@ -28,29 +28,42 @@ export async function analyzeMaximumCandidates(
   fullCodeTable: 碼表型别
 ): Promise<最大候選個數分析結果> {
   const allChars = new Set(fullCodeTable.keys())
+  const 字符集映射 = await 批量過濾字符集(allChars)
   const result: Partial<最大候選個數分析結果> = {}
 
+  // 全碼表按編碼分組只做一次（原版 14 個字符集各重建一次）
+  const codeToChars = new Map<string, string[]>()
+  for (const [char, codes] of fullCodeTable.entries()) {
+    const code = codes[0]
+    if (!code) continue
+    let 組 = codeToChars.get(code)
+    if (!組) {
+      組 = []
+      codeToChars.set(code, 組)
+    }
+    組.push(char)
+  }
+
   for (const charsetName of CHARSET_LIST) {
-    const charset = await 過濾自定義字符集(charsetName, allChars)
+    const charset = 字符集映射.get(charsetName) ?? new Set<string>()
 
-    const codeToChars = new Map<string, string[]>()
-    for (const char of charset) {
-      const codes = fullCodeTable.get(char)
-      if (!codes || codes.length === 0) continue
-      const code = codes[0]
-      if (!code) continue
-      if (!codeToChars.has(code)) codeToChars.set(code, [])
-      codeToChars.get(code)!.push(char)
-    }
-
+    // 組内屬於該字符集的字符數等價於原版只放入該字符集字符後的組長度；
+    // 計數爲 0 的組在原版中根本不存在，必須跳過，否則空字符集會列出全部編碼
     let maxCandidates = 0
-    for (const chars of codeToChars.values()) {
-      if (chars.length > maxCandidates) maxCandidates = chars.length
-    }
-
     const codeList: string[] = []
-    for (const [code, chars] of codeToChars.entries()) {
-      if (chars.length === maxCandidates) codeList.push(code)
+    for (const [code, chars] of codeToChars) {
+      let 個數 = 0
+      for (const char of chars) {
+        if (charset.has(char)) 個數++
+      }
+      if (個數 === 0) continue
+      if (個數 > maxCandidates) {
+        maxCandidates = 個數
+        codeList.length = 0
+        codeList.push(code)
+      } else if (個數 === maxCandidates) {
+        codeList.push(code)
+      }
     }
 
     ;(result as Record<string, { 最大候選個數: number; 編碼列表: string[] }>)[charsetName] = {

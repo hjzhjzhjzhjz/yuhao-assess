@@ -3,7 +3,11 @@
  * 複用 duplicateAnalysisService 中的計算函數
  */
 
-import { 計算動態選重率, 計算原始碼表的動態選重率 } from '../../services/duplicateAnalysisService'
+import {
+  計算動態選重率,
+  計算原始碼表的動態選重率,
+  計算出簡重排選重率,
+} from '../../services/duplicateAnalysisService'
 import type { 碼表型别, 頻率數據型别 } from '../../types'
 import type { 動態選重分析結果介面, 動態選重結果介面 } from '../../atoms/dynamicDuplicate'
 
@@ -39,12 +43,14 @@ export async function analyzeDynamicDuplicate(
     // 按字頻重排模式：複用 duplicateAnalysisService
     const sorted: 動態選重結果介面 = {
       全碼: 計算動態選重率(fullCodeTable, freq, true),
-      簡碼: 計算動態選重率(shortCodeTable, freq, true),
+      // 出簡：以全碼組爲基礎，剔除擁有更短簡碼的字後重排（出簡不出全）
+      簡碼: 計算出簡重排選重率(fullCodeWithSelectionTable, shortCodeTable, freq, true),
     }
     // 保持原序模式：複用 duplicateAnalysisService
     const original: 動態選重結果介面 = {
       全碼: 計算原始碼表的動態選重率(fullCodeWithSelectionTable, freq),
-      簡碼: 計算原始碼表的動態選重率(shortCodeWithSelectionTable, freq),
+      // 出簡：出簡不出全重排（原序）
+      簡碼: 計算出簡重排選重率(fullCodeWithSelectionTable, shortCodeTable, freq, false),
     }
 
     ;(result as Record<string, 動態選重結果介面>)[keys.sorted] = sorted
