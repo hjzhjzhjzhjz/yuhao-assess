@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
-import { Button, Space, Typography, Table, Modal, Checkbox, message, Alert, Spin } from 'antd'
+import { Button, Space, Typography, Table, Modal, Checkbox, message, Alert, Spin, Tag } from 'antd'
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons'
+import styled from 'styled-components'
 import type { ColumnsType } from 'antd/es/table'
 import { 當前方案原子狀態, 方案列表原子狀態 } from '@/atoms/scheme'
 import { 選中對比方案鍵名列表原子狀態 } from '@/atoms/comparison'
@@ -26,6 +27,15 @@ import type { 方案配置介面 } from '@/types/scheme'
 import { 累積漢字集名稱型别 } from '@/services/charsetService'
 
 const { Paragraph } = Typography
+
+// 對比頁容器：窄屏收緊內邊距
+const ComparisonContainer = styled.div`
+  padding: 24px;
+
+  @media (max-width: 576px) {
+    padding: 12px;
+  }
+`
 
 // 覆蓋率閾值
 const 靜態重碼分析字集覆蓋率閾值 = 0.99 // 低於此覆蓋率的字集將被標記爲「缺字」
@@ -77,8 +87,14 @@ const 渲染方案名 = (_: unknown, record: 對比方案數據介面) => {
   const 標記: string[] = []
   if (record.出簡不出全) 標記.push('†')
   if (record.選重編碼化) 標記.push('‡')
-  if (標記.length === 0) return record.顯示名稱
-  return `${record.顯示名稱} ${標記.join('')}`
+  const 名稱 = 標記.length === 0 ? record.顯示名稱 : `${record.顯示名稱} ${標記.join('')}`
+  return record.是否當前方案 ? (
+    <span>
+      {名稱} <Tag color="#2a9d8f" style={{ marginInlineEnd: 0 }}>當前</Tag>
+    </span>
+  ) : (
+    名稱
+  )
 }
 
 // 分析型别
@@ -707,8 +723,44 @@ const ComparisonPage: React.FC = () => {
     ]
   }
 
+  // 是否為「越低越好」的指標（速度當量、簡碼效率則越高越好）
+  const 越低越好 = !['速度當量', '簡碼效率'].includes(當前分析類型)
+
+  // 給所有數值列包一層「最優值高亮」：該列最優方案的數字用青瓷綠加粗。
+  // 只處理 render 返回值，不碰 sorter/數據；方案名列與 '-'/'缺字' 不參與。
+  const 高亮最優列 = (columns: ColumnsType<對比方案數據介面>) => {
+    if (!對比方案列表.length) return columns
+    return columns.map(col => {
+      if (!col.render || col.key === '顯示名稱' || !col.key) return col
+      const 原渲染 = col.render
+      const 解析 = (v: unknown): number | null => {
+        const n = typeof v === 'number' ? v : typeof v === 'string' ? parseFloat(v) : NaN
+        return Number.isFinite(n) ? n : null
+      }
+      const 有效 = 對比方案列表.map(r => 解析((原渲染 as any)(undefined, r, 0))).filter(
+        (v): v is number => v !== null,
+      )
+      if (!有效.length) return col
+      const 最優 = 越低越好 ? Math.min(...有效) : Math.max(...有效)
+      return {
+        ...col,
+        render: (value: any, record: 對比方案數據介面, index: number) => {
+          const 內容 = (原渲染 as any)(value, record, index)
+          const n = 解析(內容)
+          return n !== null && n === 最優 ? (
+            <b style={{ color: '#2a9d8f', fontWeight: 700 }}>{內容}</b>
+          ) : (
+            內容
+          )
+        },
+      }
+    })
+  }
+
   // 根據當前選擇動態生成列定義
   const 當前列定義 = useMemo(() => {
+    // 用 IIFE 取得原始列，再統一套上最優值高亮（switch 內的 return 保持原樣，含裁剪錨點分支）
+    const 原始列: ColumnsType<對比方案數據介面> = (() => {
     switch (當前分析類型) {
       case '靜態重碼':
         return 獲取靜態重碼字數列(當前全碼簡碼)
@@ -727,10 +779,12 @@ const ComparisonPage: React.FC = () => {
       default:
         return 獲取靜態重碼字數列(當前全碼簡碼)
     }
-  }, [當前分析類型, 當前字頻來源, 當前全碼簡碼])
+    })()
+    return 高亮最優列(原始列)
+  }, [當前分析類型, 當前字頻來源, 當前全碼簡碼, 對比方案列表, 越低越好])
 
   return (
-    <div style={{ padding: 24 }}>
+    <ComparisonContainer>
       <Space orientation="vertical" size="large" style={{ width: '100%' }}>
         <div>
           <Paragraph>
@@ -877,7 +931,8 @@ const ComparisonPage: React.FC = () => {
             dataSource={對比方案列表}
             rowKey="唯一鍵"
             pagination={false}
-            scroll={{ x: 'max-content' }}
+            scroll={{ x: 'max-content', y: 560 }}
+            locale={{ emptyText: '尚未選擇對比方案，請點「選擇對比方案」開始' }}
           />
           {載入進度 && (
             <div
@@ -885,7 +940,7 @@ const ComparisonPage: React.FC = () => {
                 position: 'absolute',
                 inset: 0,
                 zIndex: 2,
-                background: 'rgba(255, 255, 255, 0.72)',
+                background: 'rgba(245, 242, 234, 0.86)',
               }}
             >
               <div
@@ -898,7 +953,7 @@ const ComparisonPage: React.FC = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: 16,
-                  color: 'rgba(0, 0, 0, 0.65)',
+                  color: 'rgba(28, 43, 45, 0.82)',
                 }}
               >
                 <Spin size="large" />
@@ -923,7 +978,7 @@ const ComparisonPage: React.FC = () => {
               </p>
             </div>
           }
-          type="info"
+          type="success"
           showIcon
         />
       </Space>
@@ -958,7 +1013,7 @@ const ComparisonPage: React.FC = () => {
                 >
                   全選
                 </Checkbox>
-                <span style={{ color: '#999' }}>
+                <span style={{ color: 'rgba(28, 43, 45, 0.55)' }}>
                   已選 {臨時已選本地方案標識符列表.length} / {本地方案列表.length}
                 </span>
               </Space>
@@ -989,7 +1044,7 @@ const ComparisonPage: React.FC = () => {
                               </span>
                             )}
                           </div>
-                          <div style={{ fontSize: 12, color: '#999' }}>
+                          <div style={{ fontSize: 12, color: 'rgba(28, 43, 45, 0.55)' }}>
                             更新於 {new Date(方案.元數據.更新時間).toLocaleString('zh-CN')}
                           </div>
                         </div>
@@ -1017,7 +1072,7 @@ const ComparisonPage: React.FC = () => {
               >
                 全選
               </Checkbox>
-              <span style={{ color: '#999' }}>
+              <span style={{ color: 'rgba(28, 43, 45, 0.55)' }}>
                 已選 {臨時已選方案鍵名列表.length} / {内置方案列表.length}
               </span>
             </Space>
@@ -1031,7 +1086,7 @@ const ComparisonPage: React.FC = () => {
                   >
                     <div>
                       <div style={{ fontWeight: 500 }}>{scheme.name}</div>
-                      <div style={{ fontSize: 12, color: '#999' }}>{scheme.description}</div>
+                      <div style={{ fontSize: 12, color: 'rgba(28, 43, 45, 0.55)' }}>{scheme.description}</div>
                     </div>
                   </Checkbox>
                 ))}
@@ -1040,7 +1095,7 @@ const ComparisonPage: React.FC = () => {
           </div>
         </Space>
       </Modal>
-    </div>
+    </ComparisonContainer>
   )
 }
 

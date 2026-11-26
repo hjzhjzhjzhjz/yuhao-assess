@@ -47,7 +47,7 @@ const KeyboardWrapper = styled.div`
 `
 
 const KeyboardLayout = styled.div<{ scale: number }>`
-  background-color: var(--color-bg-primary, #ffffff);
+  background-color: var(--color-bg-primary, #fffdf8);
   border-radius: 8px;
   padding: 24px;
   transform-origin: center top;
@@ -57,7 +57,7 @@ const KeyboardLayout = styled.div<{ scale: number }>`
   max-width: 900px;
   max-height: none;
   min-width: 280px;
-  border: 1px solid var(--color-border-secondary, #e8e8e8);
+  border: 1px solid var(--color-border-secondary, #ded8c8);
   transition: transform 0.3s ease;
   margin: auto;
   display: grid;
@@ -106,7 +106,7 @@ const KeyButton = styled.button<{
   &:hover {
     border-color: ${props => (props.$hidden ? 'transparent' : '#2a9d8f')};
     transform: ${props => (props.$hidden ? 'none' : 'translateY(-2px)')};
-    box-shadow: ${props => (props.$hidden ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.1)')};
+    box-shadow: ${props => (props.$hidden ? 'none' : '0 4px 6px -1px rgba(28, 43, 45, 0.16)')};
     z-index: 10;
   }
 
@@ -135,13 +135,13 @@ const KeyButton = styled.button<{
       const intensity = Math.min(Math.sqrt(frequencyPercent / 10), 1.5)
 
       if (props.$mode === 'short') {
-        // 簡碼模式：暖橙色漸變
+        // 簡碼模式：暖琥珀色漸變（與全碼青色區分）
         return `linear-gradient(135deg, 
-          rgba(249, 115, 22, ${intensity * 0.9 + 0.1}), 
-          rgba(234, 88, 12, ${intensity * 0.8 + 0.1})
+          rgba(217, 140, 63, ${intensity * 0.9 + 0.1}), 
+          rgba(185, 104, 42, ${intensity * 0.8 + 0.1})
         )`
       }
-      // 全碼模式：藍色漸變
+      // 全碼模式：青瓷綠漸變
       return `linear-gradient(135deg, 
         rgba(42, 157, 143, ${intensity * 0.9 + 0.1}), 
         rgba(26, 110, 100, ${intensity * 0.8 + 0.1})
@@ -151,12 +151,13 @@ const KeyButton = styled.button<{
   }
 `
 
-const KeyLabel = styled.div`
+const KeyLabel = styled.div<{ $intensity: number }>`
   position: relative;
   z-index: 2;
-  font-size: calc(0.2rem + 1.2vw);
-  font-weight: normal;
-  color: #1c2b2d;
+  font-size: max(11px, calc(0.2rem + 1.2vw));
+  font-weight: 600;
+  color: ${props => (props.$intensity > 0.5 ? '#ffffff' : '#1c2b2d')};
+  text-shadow: ${props => (props.$intensity > 0.5 ? '0 1px 2px rgba(0, 0, 0, 0.28)' : 'none')};
   text-transform: uppercase;
   font-family: monospace;
   min-height: 1.2em;
@@ -166,9 +167,10 @@ const KeyLabel = styled.div`
 const KeyFreq = styled.div<{ $intensity: number }>`
   position: relative;
   z-index: 2;
-  font-size: calc(0.2rem + 1vw);
+  font-size: max(10px, calc(0.2rem + 1vw));
   font-weight: 500;
-  color: ${props => (props.$intensity > 0.03 ? '#ffffff' : '#6b7280')};
+  color: ${props => (props.$intensity > 0.06 ? '#ffffff' : '#6b6459')};
+  text-shadow: ${props => (props.$intensity > 0.06 ? '0 1px 2px rgba(0, 0, 0, 0.28)' : 'none')};
   font-family: monospace;
   line-height: 1;
   margin-top: 2px;
@@ -182,7 +184,7 @@ const StatsContainer = styled.div`
 const StatsTitle = styled.h4`
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: #2f4a47;
   margin: 0 0 20px 0;
   padding-bottom: 8px;
   border-bottom: 2px solid #2a9d8f;
@@ -199,7 +201,7 @@ const StatsSection = styled.div`
 const SectionTitle = styled.h5`
   font-size: 14px;
   font-weight: 600;
-  color: #555;
+  color: #4a615e;
   margin: 0 0 12px 0;
 `
 
@@ -207,6 +209,32 @@ const StatsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 12px;
+
+  @media (max-width: 576px) {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+`
+
+// 熱力圖顏色圖例：從低到高的漸變色條
+const Legend = styled.div<{ $mode?: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 14px 0 4px;
+  font-size: 12px;
+  color: #6b6459;
+`
+const LegendBar = styled.span<{ $mode?: string }>`
+  display: inline-block;
+  width: 160px;
+  height: 12px;
+  border-radius: 6px;
+  border: 1px solid #ded8c8;
+  background: ${props =>
+    props.$mode === 'short'
+      ? 'linear-gradient(90deg, rgba(217,140,63,0.15), rgba(185,104,42,0.95))'
+      : 'linear-gradient(90deg, rgba(42,157,143,0.15), rgba(26,110,100,0.95))'};
 `
 
 const StatItem = styled.div`
@@ -227,7 +255,7 @@ const StatItem = styled.div`
 
 const StatLabel = styled.span`
   font-size: 13px;
-  color: #666;
+  color: #6b6459;
   font-weight: 500;
 `
 
@@ -636,7 +664,9 @@ export default function KeyboardHeatmapPage() {
         $mode={activeTab}
         title={`${keyInfo.label || keyInfo.key.toUpperCase()}\n${(data.frequency * 100).toFixed(2)}%`}
       >
-        <KeyLabel>{keyInfo.label || keyInfo.key.toUpperCase()}</KeyLabel>
+        <KeyLabel $intensity={frequencyPercent / 100}>
+          {keyInfo.label || keyInfo.key.toUpperCase()}
+        </KeyLabel>
         {data.count > 0 && (
           <KeyFreq $intensity={frequencyPercent / 100}>
             {(data.frequency * 100).toFixed(1)}%
@@ -749,6 +779,15 @@ export default function KeyboardHeatmapPage() {
                 <KeyboardRow>{spaceRowKeys.map(renderKey)}</KeyboardRow>
               </KeyboardLayout>
             </KeyboardWrapper>
+
+            <Legend $mode={activeTab}>
+              <span>低</span>
+              <LegendBar $mode={activeTab} />
+              <span>高</span>
+              <span style={{ marginInlineStart: 8 }}>
+                （{activeTab === 'short' ? '簡碼' : '全碼'}按鍵使用頻率）
+              </span>
+            </Legend>
 
             <StatsContainer>
               <StatsTitle>統計分析</StatsTitle>
