@@ -49,9 +49,9 @@ export async function 加載方案(方案鍵名: string): Promise<方案配置�
     return 補全方案默認值(配置)
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`加載方案「${方案鍵名}」失敗: ${error.message}`)
+      throw new Error(`加載方案「${方案鍵名}」失敗: ${error.message}`, { cause: error })
     }
-    throw new Error(`加載方案「${方案鍵名}」失敗`)
+    throw new Error(`加載方案「${方案鍵名}」失敗`, { cause: error })
   }
 }
 
@@ -205,7 +205,7 @@ export function 從JSON導入(json文本: string): 方案配置介面 {
     return 補全方案默認值(配置)
   } catch (error) {
     if (error instanceof SyntaxError) {
-      throw new Error('JSON 格式錯誤: ' + error.message)
+      throw new Error('JSON 格式錯誤: ' + error.message, { cause: error })
     }
     throw error
   }

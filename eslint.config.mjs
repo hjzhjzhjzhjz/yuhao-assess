@@ -54,7 +54,9 @@ export default [
     },
     settings: {
       react: {
-        version: 'detect',
+        // ESLint 10 移除了 context.getFilename()，插件的 detect 模式会调用它；
+        // 这里直接声明项目锁定的 React 大版本，避开已失效的探测逻辑
+        version: '19.3',
       },
     },
   },

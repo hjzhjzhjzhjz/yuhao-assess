@@ -32,7 +32,7 @@ if (hasDataDir) {
   console.log('ℹ️  public/data/ 目録不存在（符合 Cloudflare Pages 環境）')
 }
 
-let buildSuccess = false
+let buildSuccess
 try {
   console.log('\n🔨 運行 TypeScript 編譯...')
   execSync('pnpm tsc', {

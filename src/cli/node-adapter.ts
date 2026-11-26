@@ -53,7 +53,9 @@ export async function readJsonFile<T>(filePath: string): Promise<T> {
   } catch (err: unknown) {
     if (isNodeError(err) && err.code === 'ENOENT') {
       const fileName = filePath.split('/').pop() ?? filePath
-      throw new Error('[錯誤] 數據文件缺失：' + fileName + '\n請運行 pnpm run fetch 下載數據文件')
+      throw new Error('[錯誤] 數據文件缺失：' + fileName + '\n請運行 pnpm run fetch 下載數據文件', {
+        cause: err,
+      })
     }
     throw err
   }

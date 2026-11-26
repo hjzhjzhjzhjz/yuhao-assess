@@ -528,7 +528,7 @@ const ShortCodeEfficiencyPage: React.FC = () => {
       繁簡: '繁簡聯合字頻',
     }
 
-    let 顯示字符: string[] = []
+    let 顯示字符: string[]
     const 前N = 獲取前一個N值(當前N)
 
     if (字符.length === 0) {
@@ -587,7 +587,7 @@ const ShortCodeEfficiencyPage: React.FC = () => {
   const 獲取加權節約碼長 = (字符: string, 字頻類型: string): string => {
     if (!字頻表緩存) return '-0.0000'
 
-    let 歸一化字頻 = 0
+    let 歸一化字頻: number
 
     switch (字頻類型) {
       case '知乎':

@@ -211,6 +211,6 @@ export async function 加載當量表(): Promise<Record<string, number>> {
     return equivTableData.data || {}
   } catch (error) {
     console.error('加載當量表失敗:', error)
-    throw new Error('加載當量表失敗')
+    throw new Error('加載當量表失敗', { cause: error })
   }
 }

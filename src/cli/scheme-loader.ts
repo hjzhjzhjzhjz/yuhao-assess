@@ -132,7 +132,7 @@ export async function loadScheme(filePath: string): Promise<方案配置介面> 
     parsed = parseJsonc(text)
   } catch (err: unknown) {
     const detail = err instanceof Error ? err.message : String(err)
-    throw new Error('方案配置文件解析失敗（' + filePath + '）：' + detail)
+    throw new Error('方案配置文件解析失敗（' + filePath + '）：' + detail, { cause: err })
   }
 
   // 驗證頂層結構

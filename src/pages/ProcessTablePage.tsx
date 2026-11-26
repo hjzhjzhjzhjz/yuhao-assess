@@ -1,4 +1,3 @@
-/* eslint-env browser */
 import React, { useState } from 'react'
 import { useAtom, useSetAtom } from 'jotai'
 import { Upload, Button, Alert, Table, Space, Typography, Select, Input } from 'antd'
@@ -45,7 +44,7 @@ const ProcessTablePage: React.FC = () => {
 
   // 服務實例（不再需要 useRef，直接使用單例）
   // 生成碼表哈希值（SHA-256）
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const 生成碼表哈希值 = async (原始碼表: 原始碼表型别): Promise<string> => {
     // 將原始碼表轉換爲字符串（排序以確保一致性）
     const 排序數據 = Array.from(原始碼表.entries())

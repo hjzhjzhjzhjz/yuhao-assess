@@ -549,7 +549,7 @@ export default function KeyboardHeatmapPage() {
   const getKeyData = (key: string): KeyData => {
     const keyLower = key.toLowerCase()
     let count = keyDistribution.get(keyLower) || 0
-    let frequency = 0
+    let frequency: number
 
     const totalWeightedKeyUsage = Array.from(keyDistribution.values()).reduce(
       (sum, val) => sum + val,
