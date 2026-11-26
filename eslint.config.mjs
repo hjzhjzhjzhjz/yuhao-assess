@@ -75,6 +75,7 @@ export default defineConfig([
     files: [
       'src/utils/normalize-traditional-chars.ts',
       'scripts/**/*.js',
+      'scripts/**/*.mjs',
       'src/cli/**/*.ts',
       '打包/**/*.ts',
     ],
@@ -96,6 +97,7 @@ export default defineConfig([
         Blob: 'readonly',
         Response: 'readonly',
         URL: 'readonly',
+        performance: 'readonly',
       },
     },
     plugins: {

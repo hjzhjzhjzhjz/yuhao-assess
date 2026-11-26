@@ -39,6 +39,9 @@ def main() -> None:
         bun,
         "build",
         "--compile",
+        # Bun 1.4.3+：預先編譯字節碼並用 ESM 模組圖，啟動時免去解析/編譯
+        "--bytecode",
+        "--format=esm",
         "--target=bun",
         "--asset=dist",
         "--asset-naming=[dir]/[name].[ext]",
