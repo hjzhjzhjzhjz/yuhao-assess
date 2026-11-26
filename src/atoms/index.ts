@@ -21,15 +21,6 @@ export {
 export type { 加載狀態型别, 數據加載狀態介面, 數據預加載狀態介面 } from './dataPreload'
 // 數據預加載原子狀態
 export { 所有數據已加載, 數據預加載狀態原子, 是否正在預加載, 核心數據已加載 } from './dataPreload'
-export type {
-  動態選重分析結果介面,
-  動態選重結果介面,
-  靜態重碼結果介面,
-} from './dynamicDuplicate'
-// 動態選重原子狀態
-export { 動態選重分析原子狀態 } from './dynamicDuplicate'
-// 當量表原子狀態
-export { 當量表加載中原子狀態, 當量表原子狀態, 當量表錯誤原子狀態 } from './equivTable'
 export type { 鍵位熱力分析結果介面 } from './keyboardHeatmap'
 // 鍵位熱力分析原子狀態
 export { 鍵位熱力分析原子狀態 } from './keyboardHeatmap'
@@ -43,6 +34,3 @@ export {
 } from './localSchemes'
 // 應用設置原子狀態
 export { 分析參數原子狀態, 設置原子狀態 } from './settings'
-export type { 當量例字信息介面, 當量詳情數據介面, 速度當量分析結果介面 } from './speedEquivalent'
-// 速度當量分析原子狀態
-export { 當量詳情原子狀態, 速度當量分析原子狀態 } from './speedEquivalent'

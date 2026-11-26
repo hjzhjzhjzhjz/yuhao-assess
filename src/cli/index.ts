@@ -155,7 +155,7 @@ async function main(): Promise<void> {
     timestamp() + ' 碼表解析完成，共 ' + processedCodeTable.全碼表.size + ' 個字符\n'
   )
 
-  // 9. 執行六項分析
+  // 9. 執行各項分析
   let analysisResult
   try {
     analysisResult = await runAllAnalyses({

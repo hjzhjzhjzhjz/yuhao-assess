@@ -3,13 +3,11 @@ import { useRoutes } from 'react-router-dom'
 import MainLayout from './components/layout/MainLayout'
 import { ThemeProvider } from './components/ThemeProvider'
 import ComparisonPage from './pages/ComparisonPage'
-import DynamicDuplicateAnalysisPage from './pages/DynamicDuplicateAnalysisPage'
 import HomePage from './pages/HomePage'
 import KeyboardHeatmapPage from './pages/KeyboardHeatmapPage'
 import ProcessTablePage from './pages/ProcessTablePage'
 import SettingsPage from './pages/SettingsPage'
 import ShortCodeEfficiencyPage from './pages/ShortCodeEfficiencyPage'
-import SpeedEquivalentPage from './pages/SpeedEquivalentPage'
 import StaticDuplicateAnalysisPage from './pages/StaticDuplicateAnalysisPage'
 import { 數據預加載服務類别 } from './services/dataPreloadService'
 
@@ -29,14 +27,6 @@ const routes = [
       {
         path: '/static',
         element: <StaticDuplicateAnalysisPage />,
-      },
-      {
-        path: '/dynamic',
-        element: <DynamicDuplicateAnalysisPage />,
-      },
-      {
-        path: '/speed',
-        element: <SpeedEquivalentPage />,
       },
       {
         path: '/efficiency',
@@ -60,7 +50,7 @@ const routes = [
 
 // 定義所有分析頁面路徑，用於編譯時檢查
 // TypeScript 7 下只保留型别别名，不再生成没有執行期用途的常量陣列
-export type 分析頁面路徑型别 = '/dynamic' | '/static' | '/speed' | '/efficiency' | '/heatmap'
+export type 分析頁面路徑型别 = '/static' | '/efficiency' | '/heatmap'
 
 function App() {
   const element = useRoutes(routes)

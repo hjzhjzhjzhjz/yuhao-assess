@@ -16,12 +16,10 @@
 
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
-import { 動態選重分析原子狀態 } from '@/atoms/dynamicDuplicate'
 import { 鍵位熱力分析原子狀態 } from '@/atoms/keyboardHeatmap'
 import { 本地方案列表原子狀態, 當前本地方案標識符原子狀態 } from '@/atoms/localSchemes'
 import { 當前方案原子狀態 } from '@/atoms/scheme'
 import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
-import { 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
 import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
 import { 收集測評結果 } from '@/services/exportService'
 
@@ -37,9 +35,7 @@ export function useLocalSchemeSyncMetrics() {
     當前方案Ref.current = 當前方案
   })
 
-  const 動態選重 = useAtomValue(動態選重分析原子狀態)
   const 靜態重碼 = useAtomValue(靜態重碼分析原子狀態)
-  const 速度當量 = useAtomValue(速度當量分析原子狀態)
   const 簡碼效率 = useAtomValue(簡碼效率分析原子狀態)
   const 鍵位熱力 = useAtomValue(鍵位熱力分析原子狀態)
 
@@ -76,8 +72,6 @@ export function useLocalSchemeSyncMetrics() {
               ...方案.測評結果,
               ...收集測評結果({
                 靜態重碼分析結果: 靜態重碼,
-                動態選重分析結果: 動態選重,
-                速度當量分析結果: 速度當量,
                 簡碼效率分析結果: 簡碼效率,
                 鍵位熱力分析結果: 鍵位熱力,
               }),
@@ -92,5 +86,5 @@ export function useLocalSchemeSyncMetrics() {
         clearTimeout(timerRef.current)
       }
     }
-  }, [設置本地方案列表, 當前本地方案標識符, 動態選重, 靜態重碼, 速度當量, 簡碼效率, 鍵位熱力])
+  }, [設置本地方案列表, 當前本地方案標識符, 靜態重碼, 簡碼效率, 鍵位熱力])
 }

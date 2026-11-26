@@ -13,7 +13,6 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { 原始碼表原子狀態, 碼表原子狀態, 編碼預覽數據原子狀態 } from '@/atoms/codeTable'
-import { 動態選重分析原子狀態 } from '@/atoms/dynamicDuplicate'
 import { 鍵位熱力分析原子狀態 } from '@/atoms/keyboardHeatmap'
 import {
   本地方案列表原子狀態,
@@ -23,7 +22,6 @@ import {
 } from '@/atoms/localSchemes'
 import { 方案列表原子狀態, 當前方案原子狀態, 頂欄方案載入名原子狀態 } from '@/atoms/scheme'
 import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
-import { 當量詳情原子狀態, 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
 import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
 import { 應用方案數據, type 方案應用Setters, 清空所有Atom } from '@/services/atomResetService'
 import { 導出方案配置JSON, 收集測評結果 } from '@/services/exportService'
@@ -83,8 +81,6 @@ export function AppHeader() {
   const 設置頂欄方案載入名 = useSetAtom(頂欄方案載入名原子狀態)
   const 方案載入中 = 方案切換中 || 頂欄方案載入名 !== null
   const 設置靜態重碼分析結果 = useSetAtom(靜態重碼分析原子狀態)
-  const 設置動態選重分析結果 = useSetAtom(動態選重分析原子狀態)
-  const 設置速度當量分析結果 = useSetAtom(速度當量分析原子狀態)
   const 設置簡碼效率分析結果 = useSetAtom(簡碼效率分析原子狀態)
   const 設置鍵位熱力分析結果 = useSetAtom(鍵位熱力分析原子狀態)
   const 設置碼表數據 = useSetAtom(碼表原子狀態)
@@ -93,9 +89,6 @@ export function AppHeader() {
 
   // 讀取分析結果用於導出和克隆快照
   const 靜態重碼分析結果 = useAtomValue(靜態重碼分析原子狀態)
-  const 動態選重分析結果 = useAtomValue(動態選重分析原子狀態)
-  const 速度當量分析結果 = useAtomValue(速度當量分析原子狀態)
-  const 設置當量詳情 = useSetAtom(當量詳情原子狀態)
   const 簡碼效率分析結果 = useAtomValue(簡碼效率分析原子狀態)
   const 鍵位熱力分析結果 = useAtomValue(鍵位熱力分析原子狀態)
   const 編碼預覽數據 = useAtomValue(編碼預覽數據原子狀態)
@@ -103,8 +96,6 @@ export function AppHeader() {
   /** 導出與克隆都要這一份，收在一處免得兩邊各列各的 */
   const 當前分析結果 = {
     靜態重碼分析結果,
-    動態選重分析結果,
-    速度當量分析結果,
     簡碼效率分析結果,
     鍵位熱力分析結果,
   }
@@ -123,9 +114,6 @@ export function AppHeader() {
     設置原始碼表,
     設置編碼預覽數據,
     設置靜態重碼分析結果,
-    設置動態選重分析結果,
-    設置速度當量分析結果,
-    設置當量詳情,
     設置簡碼效率分析結果,
     設置鍵位熱力分析結果,
   }
@@ -314,8 +302,6 @@ export function AppHeader() {
   // 全局重算
   const 處理全局重算 = async () => {
     設置靜態重碼分析結果(null)
-    設置動態選重分析結果(null)
-    設置速度當量分析結果(null)
     設置簡碼效率分析結果(null)
     設置鍵位熱力分析結果(null)
     message.loading('正在清除舊數據並觸發重新計算...', 1)

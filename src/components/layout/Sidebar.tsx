@@ -4,10 +4,8 @@
 
 import {
   BarChartOutlined,
-  DashboardOutlined,
   FireOutlined,
   HomeOutlined,
-  LineChartOutlined,
   RocketOutlined,
   SettingOutlined,
   SwapOutlined,
@@ -174,16 +172,6 @@ export function Sidebar({ collapsed = false, onCollapse }: SidebarProps) {
       key: '/static',
       icon: <BarChartOutlined />, // 柱狀圖圖標（可換成：LineChartOutlined, PieChartOutlined, FundOutlined）
       label: '靜態重碼',
-    },
-    {
-      key: '/dynamic',
-      icon: <LineChartOutlined />, // 折線圖圖標（可換成：AreaChartOutlined, DotChartOutlined, RadarChartOutlined）
-      label: '動態選重',
-    },
-    {
-      key: '/speed',
-      icon: <DashboardOutlined />, // 儀表盤圖標（可換成：ThunderboltOutlined, FastForwardOutlined, ClockCircleOutlined）
-      label: '速度當量',
     },
     {
       key: '/efficiency',

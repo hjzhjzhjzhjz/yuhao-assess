@@ -9,7 +9,6 @@
 
 import type { 鍵位熱力分析結果介面 } from '../atoms/keyboardHeatmap'
 import type { 簡碼效率分析結果介面 } from '../atoms/shortCodeEfficiency'
-import type { 速度當量分析結果介面 } from '../atoms/speedEquivalent'
 
 /**
  * 方案元數據
@@ -79,14 +78,8 @@ export interface 方案碼表元數據介面 {
  * 直接使用各個 Atom 的類型定義，確保與應用中的數據結構保持同步
  */
 export interface 方案測評結果介面 {
-  // 動態選重分析（按字頻重排和保持原序）
-  動態選重分析?: import('@/atoms/dynamicDuplicate').動態選重分析結果介面
-
   // 靜態重碼分析（各字符集的靜態重碼數據）
   靜態重碼分析?: import('@/atoms/staticDuplicate').靜態重碼分析結果介面
-
-  // 速度當量分析
-  速度當量分析?: 速度當量分析結果介面
 
   // 簡碼效率分析
   簡碼效率分析?: 簡碼效率分析結果介面

@@ -43,7 +43,6 @@ export {
   getFrequencyCharsUnion,
   加載北語簡體字頻,
   加載所有字頻數據,
-  加載當量表,
   加載知乎簡體字頻,
   加載臺標繁體字頻,
   計算繁簡聯合字頻,
@@ -51,20 +50,10 @@ export {
 // 重碼分析服務
 export {
   type 某字符集的重碼數據介面,
-  計算動態選重率,
-  計算原始碼表的動態選重率,
   計算某字符集的重碼數據,
   計算靜態重碼數,
 } from './duplicateAnalysisService'
-// 導出當量表服務
-export { 當量表服務實例, 當量表服務類 } from './equivTableService'
 // 導出簡碼效率服務
 export { 計算指定字頻下之簡碼效率 } from './shortCodeEfficiencyService'
-// 速度分析服務
-export {
-  從碼表計算加權速度當量,
-  從編碼對頻率計算加權速度當量,
-  計算編碼對頻率,
-} from './speedEquivalentService'
 // 導出UI服務
-export { formatEquiv, formatNumber, formatRate, getCharacterTooltip } from './uiService'
+export { formatNumber, formatRate, getCharacterTooltip } from './uiService'

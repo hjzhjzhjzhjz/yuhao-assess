@@ -17,7 +17,7 @@ export function 觸發所有分析計算(
   returnPath: string = '/'
 ): Promise<void> {
   return new Promise(resolve => {
-    const pages: 分析頁面路徑型别[] = ['/dynamic', '/static', '/speed', '/efficiency', '/heatmap']
+    const pages: 分析頁面路徑型别[] = ['/static', '/efficiency', '/heatmap']
     let currentIndex = 0
 
     const navigateNext = () => {

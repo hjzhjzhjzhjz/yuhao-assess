@@ -1,7 +1,7 @@
 /**
  * 數據服務
  *
- * 負責加載各種數據文件，包括字頻數據、當量表等
+ * 負責加載各種數據文件，包括字頻數據等
  */
 
 import type { 頻率數據型别 } from '../types'
@@ -192,26 +192,5 @@ export async function 加載所有字頻數據() {
     臺標繁體字頻,
     古籍繁體字頻,
     繁簡聯合字頻,
-  }
-}
-
-// =============================================================================
-// 當量表加載
-// =============================================================================
-
-/**
- * 加載當量表數據
- */
-export async function 加載當量表(): Promise<Record<string, number>> {
-  try {
-    const response = await fetch(公開路徑('/settings/equivTable.json'))
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    const equivTableData = await response.json()
-    return equivTableData.data || {}
-  } catch (error) {
-    console.error('加載當量表失敗:', error)
-    throw new Error('加載當量表失敗', { cause: error })
   }
 }

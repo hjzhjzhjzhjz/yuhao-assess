@@ -1,16 +1,14 @@
 /**
  * 分析協調器
- * 按順序調用六項分析，彙總結果，並通過回調報告進度
+ * 按順序調用各項分析，彙總結果，並通過回調報告進度
  */
 
 import type { 處理後的碼表結果介面, 頻率數據型别 } from '../types'
 import type { 方案測評結果介面, 選重鍵表型别 } from '../types/scheme'
-import { analyzeDynamicDuplicate } from './analyses/dynamic-duplicate'
 import { analyzeKeyboardHeatmap } from './analyses/keyboard-heatmap'
 import { analyzeShortCodeEfficiency } from './analyses/short-code-efficiency'
-import { analyzeSpeedEquivalent } from './analyses/speed-equivalent'
 import { analyzeStaticDuplicate } from './analyses/static-duplicate'
-import { loadCharFrequency, loadEquivTable } from './node-adapter'
+import { loadCharFrequency } from './node-adapter'
 
 export interface AnalyzerOptions {
   processedCodeTable: 處理後的碼表結果介面
@@ -29,13 +27,12 @@ export async function runAllAnalyses(options: AnalyzerOptions): Promise<方案�
   const { 全碼表, 簡碼表, 全碼加選重鍵表, 簡碼加選重鍵表 } = processedCodeTable
 
   // 預加載所有字頻數據
-  const [知乎, 北語, 臺標, 古籍, 繁簡, equivTable] = await Promise.all([
+  const [知乎, 北語, 臺標, 古籍, 繁簡] = await Promise.all([
     loadCharFrequency('知乎簡體字頻'),
     loadCharFrequency('北語簡體字頻'),
     loadCharFrequency('臺標繁體字頻'),
     loadCharFrequency('古籍繁體字頻'),
     loadCharFrequency('繁簡聯合字頻'),
-    loadEquivTable(),
   ])
 
   const charFrequencies: Record<string, 頻率數據型别> = {
@@ -54,36 +51,6 @@ export async function runAllAnalyses(options: AnalyzerOptions): Promise<方案�
     onStepStart(step)
     const t0 = Date.now()
     result.靜態重碼分析 = await analyzeStaticDuplicate(全碼表, 簡碼表)
-    onStepDone(step, Date.now() - t0)
-  }
-
-  // 2. 動態選重分析
-  {
-    const step = '動態選重分析'
-    onStepStart(step)
-    const t0 = Date.now()
-    result.動態選重分析 = await analyzeDynamicDuplicate(
-      全碼表,
-      簡碼表,
-      全碼加選重鍵表,
-      簡碼加選重鍵表,
-      charFrequencies
-    )
-    onStepDone(step, Date.now() - t0)
-  }
-
-  // 4. 速度當量分析
-  {
-    const step = '速度當量分析'
-    onStepStart(step)
-    const t0 = Date.now()
-    result.速度當量分析 = await analyzeSpeedEquivalent(
-      全碼加選重鍵表,
-      簡碼加選重鍵表,
-      charFrequencies,
-      equivTable,
-      選重鍵表
-    )
     onStepDone(step, Date.now() - t0)
   }
 

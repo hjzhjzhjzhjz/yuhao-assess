@@ -26,15 +26,6 @@ export const formatNumber = (num?: number): string => {
 }
 
 /**
- * 格式化當量，保留小数位
- * @param equiv 當量
- * @returns 格式化的當量字符串
- */
-export const formatEquiv = (equiv?: number): string => {
-  return equiv !== undefined && equiv !== null ? equiv.toFixed(4) : '-'
-}
-
-/**
  * 獲取字符陣列的工具提示文本
  * @param chars 字符陣列
  * @returns 格式化的工具提示文本
