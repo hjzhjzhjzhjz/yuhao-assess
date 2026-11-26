@@ -23,6 +23,15 @@ export interface 處理後的碼表結果介面 {
 // 方案配置相關類型
 export * from './scheme'
 
+// 當量表數據
+export interface 當量表介面 {
+  name: string
+  description: string
+  source: string
+  version: string
+  data: Record<string, number>
+}
+
 // 絶對頻數數據（原始數據，未歸一化）
 export type 頻數數據型别 = Record<string, number>
 

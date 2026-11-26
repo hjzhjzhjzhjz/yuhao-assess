@@ -12,7 +12,7 @@ import { join } from 'node:path'
 import { getDefaultStore } from 'jotai'
 import type { CJK區塊數據型别, 字符集數據型别 } from '../atoms/charset'
 import { CJK區塊數據原子狀態, 字符集數據原子狀態 } from '../atoms/charset'
-import type { 頻數數據型别, 頻率數據型别 } from '../types'
+import type { 當量表介面, 頻數數據型别, 頻率數據型别 } from '../types'
 
 // ─── 路徑定位 ────────────────────────────────────────────────────────────────
 
@@ -136,6 +136,26 @@ export async function loadCJKBlockData(): Promise<CJK區塊數據型别> {
   const filePath = join(getPublicSettingsDir(), 'cjkBlocks.json')
   return readJsonFile<CJK區塊數據型别>(filePath)
 }
+
+// ─── 當量表加載 ───────────────────────────────────────────────────────────────
+
+/**
+ * 加載速度當量表（equivTable.json）
+ * 返回按鍵 -> 當量值的映射
+ */
+export async function loadEquivTable(): Promise<Record<string, number>> {
+  const filePath = join(getPublicSettingsDir(), 'equivTable.json')
+  const raw = await readJsonFile<當量表原始格式>(filePath)
+
+  // equivTable.json 可能是 當量表介面 格式（含 data 字段）或直接是 Record<string, number>
+  if (raw && typeof raw === 'object' && 'data' in raw && typeof raw.data === 'object') {
+    return raw.data as Record<string, number>
+  }
+  return raw as unknown as Record<string, number>
+}
+
+// equivTable.json 的原始格式（可能含 data 字段）
+type 當量表原始格式 = 當量表介面 | Record<string, number>
 
 // ─── 適配層初始化 ─────────────────────────────────────────────────────────────
 

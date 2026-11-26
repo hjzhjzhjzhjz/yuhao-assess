@@ -4,8 +4,10 @@
  */
 
 import type { 編碼預覽項 } from '@/atoms/codeTable'
+import type { 動態選重分析結果介面 } from '@/atoms/dynamicDuplicate'
 import type { 鍵位熱力分析結果介面 } from '@/atoms/keyboardHeatmap'
 import type { 簡碼效率分析結果介面 } from '@/atoms/shortCodeEfficiency'
+import type { 當量詳情數據介面, 速度當量分析結果介面 } from '@/atoms/speedEquivalent'
 import type { 靜態重碼分析結果介面 } from '@/atoms/staticDuplicate'
 import type { 碼表型别, 處理後的碼表結果介面 } from '@/types'
 import type { 方案配置介面 } from '@/types/scheme'
@@ -16,6 +18,9 @@ export interface AtomSetters {
   設置原始碼表: (value: string) => void
   設置編碼預覽數據: (value: 編碼預覽項[]) => void
   設置靜態重碼分析結果: (value: 靜態重碼分析結果介面 | null) => void
+  設置動態選重分析結果: (value: 動態選重分析結果介面 | null) => void
+  設置速度當量分析結果: (value: 速度當量分析結果介面 | null) => void
+  設置當量詳情: (value: 當量詳情數據介面 | null) => void
   設置簡碼效率分析結果: (value: 簡碼效率分析結果介面 | null) => void
   設置鍵位熱力分析結果: (value: 鍵位熱力分析結果介面 | null) => void
 }
@@ -28,6 +33,9 @@ export function 清空所有Atom(setters: AtomSetters) {
   setters.設置原始碼表('')
   setters.設置編碼預覽數據([])
   setters.設置靜態重碼分析結果(null)
+  setters.設置動態選重分析結果(null)
+  setters.設置速度當量分析結果(null)
+  setters.設置當量詳情(null)
   setters.設置簡碼效率分析結果(null)
   setters.設置鍵位熱力分析結果(null)
 }
@@ -66,6 +74,8 @@ export function 應用方案數據(
     if (值) 已載入結果.push(名稱)
   }
   寫入結果('靜態重碼分析', 測評結果?.靜態重碼分析, setters.設置靜態重碼分析結果)
+  寫入結果('動態選重分析', 測評結果?.動態選重分析, setters.設置動態選重分析結果)
+  寫入結果('速度當量分析', 測評結果?.速度當量分析, setters.設置速度當量分析結果)
   寫入結果('簡碼效率分析', 測評結果?.簡碼效率分析, setters.設置簡碼效率分析結果)
   寫入結果('鍵位熱力分析', 測評結果?.鍵位熱力, setters.設置鍵位熱力分析結果)
 

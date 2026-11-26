@@ -98,7 +98,7 @@ export const dataLoaders = {
   charsets: () => 帶緩存地加載JSON數據文件('charsets.json', 'charsets'),
 
   // 注意：以下配置文件在 /settings/ 文件夾中，不使用 CDN
-  // cjkBlocks, codeTableConfig 等配置文件
+  // cjkBlocks, codeTableConfig, equivTable 等配置文件
   // 由各自的服務直接從 /settings/ 加載，不經過此工具
 }
 

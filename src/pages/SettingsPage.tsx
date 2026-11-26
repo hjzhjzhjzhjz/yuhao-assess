@@ -15,9 +15,11 @@ import { useAtom, useSetAtom, useStore } from 'jotai'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { 碼表原子狀態 } from '@/atoms/codeTable'
+import { 動態選重分析原子狀態 } from '@/atoms/dynamicDuplicate'
 import { 鍵位熱力分析原子狀態 } from '@/atoms/keyboardHeatmap'
 import { 當前方案原子狀態 } from '@/atoms/scheme'
 import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
+import { 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
 import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
 import { 主题配置原子, 重置主题配置原子 } from '@/atoms/theme'
 import { 碼表處理服務實例 } from '@/services/codeTableService'
@@ -39,7 +41,9 @@ const SettingsPage: React.FC = () => {
   const [當前方案] = useAtom(當前方案原子狀態)
 
   // Atom setters
+  const 設置動態選重分析結果 = useSetAtom(動態選重分析原子狀態)
   const 設置靜態重碼分析結果 = useSetAtom(靜態重碼分析原子狀態)
+  const 設置速度當量分析結果 = useSetAtom(速度當量分析原子狀態)
   const 設置簡碼效率分析結果 = useSetAtom(簡碼效率分析原子狀態)
   const 設置鍵位熱力分析結果 = useSetAtom(鍵位熱力分析原子狀態)
   const 設置碼表數據 = useSetAtom(碼表原子狀態)
@@ -90,6 +94,8 @@ const SettingsPage: React.FC = () => {
       // 步骤2：清除所有分析结果（和AppHeader重算按钮一样）
       console.log('[步驟 2] 清除所有分析结果...')
       設置靜態重碼分析結果(null)
+      設置動態選重分析結果(null)
+      設置速度當量分析結果(null)
       設置簡碼效率分析結果(null)
       設置鍵位熱力分析結果(null)
       console.log('  ✓ 分析结果已清空')
@@ -109,11 +115,15 @@ const SettingsPage: React.FC = () => {
       // 步骤5：从atom中读取最新的分析结果
       console.log('[步驟 5] 从 atom 中读取最新分析结果...')
       const 靜態重碼分析結果 = store.get(靜態重碼分析原子狀態)
+      const 動態選重分析結果 = store.get(動態選重分析原子狀態)
+      const 速度當量分析結果 = store.get(速度當量分析原子狀態)
       const 簡碼效率分析結果 = store.get(簡碼效率分析原子狀態)
       const 鍵位熱力分析結果 = store.get(鍵位熱力分析原子狀態)
 
       console.log('  检查 atom 状态:')
       console.log('  - 靜態重碼:', 靜態重碼分析結果 ? '✓ 有数据' : '✗ 无数据')
+      console.log('  - 動態選重:', 動態選重分析結果 ? '✓ 有数据' : '✗ 无数据')
+      console.log('  - 速度當量:', 速度當量分析結果 ? '✓ 有数据' : '✗ 无数据')
       console.log('  - 簡碼效率:', 簡碼效率分析結果 ? '✓ 有数据' : '✗ 无数据')
       console.log('  - 鍵位熱力:', 鍵位熱力分析結果 ? '✓ 有数据' : '✗ 无数据')
 
@@ -123,6 +133,8 @@ const SettingsPage: React.FC = () => {
         當前方案,
         {
           靜態重碼分析結果,
+          動態選重分析結果,
+          速度當量分析結果,
           簡碼效率分析結果,
           鍵位熱力分析結果,
         },

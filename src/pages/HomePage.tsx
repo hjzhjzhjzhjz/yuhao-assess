@@ -14,9 +14,11 @@ import {
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useState } from 'react'
 import { 原始碼表原子狀態, 碼表原子狀態, 編碼預覽數據原子狀態 } from '@/atoms/codeTable'
+import { 動態選重分析原子狀態 } from '@/atoms/dynamicDuplicate'
 import { 鍵位熱力分析原子狀態 } from '@/atoms/keyboardHeatmap'
 import { 方案列表原子狀態, 當前方案原子狀態, 頂欄方案載入名原子狀態 } from '@/atoms/scheme'
 import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
+import { 當量詳情原子狀態, 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
 import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
 import { useDataPreload } from '@/hooks/useDataPreload'
 import { 應用方案數據, type 方案應用Setters } from '@/services/atomResetService'
@@ -31,9 +33,12 @@ const { TextArea } = Input
 function HomePage() {
   const [當前方案, 設置當前方案] = useAtom(當前方案原子狀態)
   const 方案列表 = useAtomValue(方案列表原子狀態)
+  const 設置動態選重分析結果 = useSetAtom(動態選重分析原子狀態)
   const 設置靜態重碼分析結果 = useSetAtom(靜態重碼分析原子狀態)
+  const 設置速度當量分析結果 = useSetAtom(速度當量分析原子狀態)
   const 設置簡碼效率分析結果 = useSetAtom(簡碼效率分析原子狀態)
   const 設置鍵位熱力分析結果 = useSetAtom(鍵位熱力分析原子狀態)
+  const 設置當量詳情 = useSetAtom(當量詳情原子狀態)
   const 設置碼表數據 = useSetAtom(碼表原子狀態)
   const 碼表數據 = useAtomValue(碼表原子狀態)
   const 設置原始碼表 = useSetAtom(原始碼表原子狀態)
@@ -50,6 +55,9 @@ function HomePage() {
     設置原始碼表,
     設置編碼預覽數據,
     設置靜態重碼分析結果,
+    設置動態選重分析結果,
+    設置速度當量分析結果,
+    設置當量詳情,
     設置簡碼效率分析結果,
     設置鍵位熱力分析結果,
   }
