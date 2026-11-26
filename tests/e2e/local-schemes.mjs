@@ -39,6 +39,7 @@ async function 等服務(毫秒 = 30000) {
 const 服務 = spawn('npx', ['vite', 'preview', '--port', String(端口), '--strictPort'], {
   stdio: 'ignore',
   detached: true,
+  shell: true, // Windows 下 npx 是 npx.cmd，須經 shell 解析
 })
 process.on('exit', () => {
   try {
@@ -53,7 +54,12 @@ if (!(await 等服務())) {
   process.exit(1)
 }
 
-const 瀏覽器 = await chromium.launch({ channel: 'chrome' })
+// 優先用本機 Chrome；沒有則退回 Edge（CI / 開發機不一定裝 Chrome）
+const 瀏覽器 = await chromium.launch({
+  channel: 'chrome',
+}).catch(() => chromium.launch({
+  executablePath: 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
+}))
 const 頁 = await 瀏覽器.newPage({ viewport: { width: 1500, height: 950 } })
 const 頁面報錯 = []
 頁.on('pageerror', e => 頁面報錯.push(String(e)))

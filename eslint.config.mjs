@@ -47,6 +47,10 @@ export default [
       'react/react-in-jsx-scope': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      // react-hooks 7.x 新增的 React Compiler 规则：现有页面在 effect 裏同步觸發重算，
+      // 重構超出依賴升級範圍，先降為 warn 保留提示
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/preserve-manual-memoization': 'warn',
     },
     settings: {
       react: {
@@ -79,6 +83,21 @@ export default [
       ...tsPlugin.configs.recommended.rules,
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    },
+  },
+  // E2E 測試腳本：Node + 瀏覽器 globals（flat config 不會自動帶入）
+  {
+    files: ['tests/**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        fetch: 'readonly',
+        setTimeout: 'readonly',
+        localStorage: 'readonly',
+      },
     },
   },
   {
