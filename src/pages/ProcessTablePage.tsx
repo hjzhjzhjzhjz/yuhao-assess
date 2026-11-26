@@ -1,24 +1,24 @@
-import React, { useState } from 'react'
-import { useAtom, useSetAtom } from 'jotai'
-import { Upload, Button, Alert, Table, Space, Typography, Select, Input } from 'antd'
 import {
   DownloadOutlined,
   InboxOutlined,
-  ThunderboltOutlined,
   ReloadOutlined,
+  ThunderboltOutlined,
 } from '@ant-design/icons'
+import { Alert, Button, Input, Select, Space, Table, Typography, Upload } from 'antd'
 import type { RcFile } from 'antd/es/upload'
-import { 當前方案原子狀態 } from '@/atoms/scheme'
+import { useAtom, useSetAtom } from 'jotai'
+import React, { useState } from 'react'
 import {
   原始碼表原子狀態,
-  碼表原子狀態,
   碼表元數據原子狀態,
   碼表加載中原子狀態,
+  碼表原子狀態,
   編碼預覽數據原子狀態,
 } from '@/atoms'
+import type { 編碼預覽項 } from '@/atoms/codeTable'
+import { 當前方案原子狀態 } from '@/atoms/scheme'
 import { 碼表處理服務實例 } from '@/services/codeTableService'
 import type { 原始碼表型别 } from '@/types'
-import type { 編碼預覽項 } from '@/atoms/codeTable'
 
 const { Title, Paragraph, Text, Link } = Typography
 const { Option } = Select

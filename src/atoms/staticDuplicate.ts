@@ -2,8 +2,8 @@
  * 靜態重碼分析狀態管理
  */
 
-import { 累積漢字集名稱型别 } from '@/services/charsetService'
 import { atomWithStorage } from 'jotai/utils'
+import { 累積漢字集名稱型别 } from '@/services/charsetService'
 
 /**
  * 某字符集的靜態重碼數據介面

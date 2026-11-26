@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import { useAtom } from 'jotai'
-import { Button, Space, Typography, Alert, Spin, Table, message } from 'antd'
 import { ReloadOutlined } from '@ant-design/icons'
+import { Alert, Button, message, Space, Spin, Table, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
+import { useAtom } from 'jotai'
+import React, { useEffect, useState } from 'react'
 import { 碼表原子狀態 } from '../atoms/codeTable'
-import { 靜態重碼分析原子狀態, 驗證靜態重碼數據 } from '../atoms/staticDuplicate'
 import type { 靜態重碼分析結果介面 } from '../atoms/staticDuplicate'
+import { 靜態重碼分析原子狀態, 驗證靜態重碼數據 } from '../atoms/staticDuplicate'
+import { 累積漢字集名稱型别 } from '../services/charsetService'
 import { 計算某字符集的重碼數據 } from '../services/duplicateAnalysisService'
 import type { 處理後的碼表結果介面 } from '../types'
-import { 累積漢字集名稱型别 } from '../services/charsetService'
 
 const { Paragraph } = Typography
 

@@ -52,7 +52,7 @@
         "noUnusedLabels": "error",
         "noUnusedPrivateClassMembers": "error",
         "noUnusedVariables": {
-          "level": "warn",
+          "level": "error",
           "options": {
             "ignoreRestSiblings": false,
             "ignoreUsingDeclarations": false
@@ -83,7 +83,7 @@
         "noDuplicateElseIf": "error",
         "noDuplicateObjectKeys": "error",
         "noDuplicateParameters": "error",
-        "noEmptyBlockStatements": "warn",
+        "noEmptyBlockStatements": "error",
         "noFallthroughSwitchClause": "error",
         "noFunctionAssign": "error",
         "noGlobalAssign": "error",
@@ -167,7 +167,7 @@
             "noChildrenProp": "error",
             "noRenderReturnValue": "error",
             "noUnusedVariables": {
-              "level": "warn",
+              "level": "error",
               "options": {
                 "ignoreRestSiblings": false,
                 "ignoreUsingDeclarations": false
@@ -240,7 +240,7 @@
           },
           "correctness": {
             "noUnusedVariables": {
-              "level": "warn",
+              "level": "error",
               "options": {
                 "ignoreRestSiblings": false,
                 "ignoreUsingDeclarations": false
@@ -278,7 +278,7 @@
     "enabled": true,
     "actions": {
       "source": {
-        "organizeImports": "off"
+        "organizeImports": "on"
       }
     }
   },

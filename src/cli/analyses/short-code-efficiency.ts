@@ -3,9 +3,9 @@
  * 計算 5 種字頻下 28 個 N 值的字頻加權平均碼長
  */
 
+import type { 簡碼效率分析結果介面 } from '../../atoms/shortCodeEfficiency'
 import { 計算指定字頻下之簡碼效率 } from '../../services/shortCodeEfficiencyService'
 import type { 碼表型别, 頻率數據型别 } from '../../types'
-import type { 簡碼效率分析結果介面 } from '../../atoms/shortCodeEfficiency'
 
 // 與 web 版一致的 N 值列表（28 個值）
 const N_VALUES = [

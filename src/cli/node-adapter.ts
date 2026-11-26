@@ -10,9 +10,9 @@
 import { promises as fs } from 'node:fs'
 import { join } from 'node:path'
 import { getDefaultStore } from 'jotai'
-import { 字符集數據原子狀態, CJK區塊數據原子狀態 } from '../atoms/charset'
-import type { 字符集數據型别, CJK區塊數據型别 } from '../atoms/charset'
-import type { 頻率數據型别, 頻數數據型别, 當量表介面 } from '../types'
+import type { CJK區塊數據型别, 字符集數據型别 } from '../atoms/charset'
+import { CJK區塊數據原子狀態, 字符集數據原子狀態 } from '../atoms/charset'
+import type { 當量表介面, 頻數數據型别, 頻率數據型别 } from '../types'
 
 // ─── 路徑定位 ────────────────────────────────────────────────────────────────
 

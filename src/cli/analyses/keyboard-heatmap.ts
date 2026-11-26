@@ -9,10 +9,10 @@
  * 虎碼實測：鍵 `2` 佔了 15.6%，而正確的口徑應該記到 `;` 上。）
  */
 
+import type { 鍵位熱力分析結果介面 } from '../../atoms/keyboardHeatmap'
 import { 計算按鍵計數 } from '../../services/keyboardHeatmapService'
 import type { 碼表型别, 頻率數據型别 } from '../../types'
 import type { 選重鍵表型别 } from '../../types/scheme'
-import type { 鍵位熱力分析結果介面 } from '../../atoms/keyboardHeatmap'
 
 export async function analyzeKeyboardHeatmap(
   fullCodeWithSelectionTable: 碼表型别,

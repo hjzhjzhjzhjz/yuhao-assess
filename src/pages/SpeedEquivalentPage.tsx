@@ -1,27 +1,27 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { useAtom } from 'jotai'
-import { Button, Space, Typography, Alert, Spin, Modal, Table, Input, message } from 'antd'
 import { ReloadOutlined } from '@ant-design/icons'
+import { Alert, Button, Input, Modal, message, Space, Spin, Table, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import { 碼表原子狀態 } from '../atoms/codeTable'
-import { 當前方案原子狀態 } from '../atoms/scheme'
-import { 速度當量分析原子狀態, 當量詳情原子狀態 } from '../atoms/speedEquivalent'
-import type { 速度當量分析結果介面, 當量例字信息介面 } from '../atoms/speedEquivalent'
+import { useAtom } from 'jotai'
+import React, { useEffect, useRef, useState } from 'react'
 import { 字頻表緩存原子狀態 } from '../atoms/charFrequency'
+import { 碼表原子狀態 } from '../atoms/codeTable'
 import { 當量表原子狀態 } from '../atoms/equivTable'
+import { 當前方案原子狀態 } from '../atoms/scheme'
+import type { 當量例字信息介面, 速度當量分析結果介面 } from '../atoms/speedEquivalent'
+import { 當量詳情原子狀態, 速度當量分析原子狀態 } from '../atoms/speedEquivalent'
+import { 字頻表服務類别 } from '../services/charFrequencyService'
+import { 當量表服務實例 } from '../services/equivTableService'
+import type { EquivDistributionItem } from '../services/speedEquivalentService'
 import {
   從碼表計算加權速度當量,
+  替換選重鍵,
   生成一級簡碼加選重鍵表,
   生成二級簡碼加選重鍵表,
   計算編碼對頻率,
   計算速度當量分佈,
-  替換選重鍵,
 } from '../services/speedEquivalentService'
-import type { EquivDistributionItem } from '../services/speedEquivalentService'
-import { 當量表服務實例 } from '../services/equivTableService'
-import { 字頻表服務類别 } from '../services/charFrequencyService'
-import { 默認選重鍵表 } from '../types/scheme'
 import type { 處理後的碼表結果介面 } from '../types'
+import { 默認選重鍵表 } from '../types/scheme'
 
 const { Paragraph, Link } = Typography
 

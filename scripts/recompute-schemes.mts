@@ -72,15 +72,10 @@ const { runAllAnalyses } = await import('../src/cli/analyzer.ts')
 const { 簡碼效率N值列表 } = await import('../src/services/shortCodeEfficiencyService.ts')
 const { 碼表處理服務實例 } = await import('../src/services/codeTableService.ts')
 const { 字頻表服務類别 } = await import('../src/services/charFrequencyService.ts')
-const { 從碼表計算加權速度當量, 生成一級簡碼加選重鍵表, 生成二級簡碼加選重鍵表 } = await import(
-  '../src/services/speedEquivalentService.ts'
-)
-const { 計算按鍵計數 } = await import('../src/services/keyboardHeatmapService.ts')
 const { 清洗連續文本, 蒙特卡洛連續文本當量, 計算各字頻簡碼分檔當量 } = await import(
   '../src/services/continuousEquivalentService.ts'
 )
 const { 壓縮連續文本當量結果 } = await import('../src/atoms/continuousEquivalent.ts')
-const { analyzeStaticDuplicate } = await import('../src/cli/analyses/static-duplicate.ts')
 const { 默認選重鍵表 } = await import('../src/types/scheme.ts')
 
 // ---------------------------------------------------------------------------
@@ -173,14 +168,6 @@ const 字頻來源列表 = [
   '臺標繁體字頻',
   '古籍繁體字頻',
   '繁簡聯合字頻',
-] as const
-
-/** 各字頻來源在結果字段名裏的前綴，與 速度當量分析結果介面 對應 */
-const 碼型列表 = [
-  { 後綴: '全碼速度當量', 取表: (t: 各碼表) => t.全碼 },
-  { 後綴: '一級簡碼速度當量', 取表: (t: 各碼表) => t.一簡 },
-  { 後綴: '二級簡碼速度當量', 取表: (t: 各碼表) => t.二簡 },
-  { 後綴: '全部簡碼速度當量', 取表: (t: 各碼表) => t.全簡 },
 ] as const
 
 /** 各分析塊自己帶的時間戳字段，比對時一律忽略 */
@@ -315,8 +302,13 @@ async function main() {
         maxCodeLength: 配置.方案參數.最大碼長,
         選重鍵表,
         簡碼效率N值列表,
-        onStepStart: () => {},
-        onStepDone: () => {},
+        // 批次重算不需逐步進度，API 要求傳入故保留空回調
+        onStepStart: () => {
+          /* 批次模式忽略 */
+        },
+        onStepDone: () => {
+          /* 批次模式忽略 */
+        },
       })
 
       const 全碼加選重 = 處理結果.全碼加選重鍵表

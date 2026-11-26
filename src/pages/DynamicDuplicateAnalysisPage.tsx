@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react'
-import { useAtom } from 'jotai'
-import { Button, Space, Typography, Alert, Spin, Tooltip, Modal, Table, Input, message } from 'antd'
 import { ReloadOutlined } from '@ant-design/icons'
+import { Alert, Button, Input, Modal, message, Space, Spin, Table, Tooltip, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
+import { useAtom } from 'jotai'
+import React, { useEffect, useState } from 'react'
 import { 碼表原子狀態 } from '../atoms/codeTable'
-import { 動態選重分析原子狀態 } from '../atoms/dynamicDuplicate'
 import type { 動態選重分析結果介面 } from '../atoms/dynamicDuplicate'
+import { 動態選重分析原子狀態 } from '../atoms/dynamicDuplicate'
+import { 字頻表服務類别 } from '../services/charFrequencyService'
 import {
+  構建出簡重排組映射,
+  計算出簡重排選重率,
   計算動態選重率,
   計算原始碼表的動態選重率,
-  計算出簡重排選重率,
-  構建出簡重排組映射,
 } from '../services/duplicateAnalysisService'
-import { 字頻表服務類别 } from '../services/charFrequencyService'
 import type { 處理後的碼表結果介面 } from '../types'
 
 const { Paragraph, Link } = Typography

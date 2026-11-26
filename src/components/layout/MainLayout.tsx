@@ -1,11 +1,11 @@
-import { Outlet } from 'react-router-dom'
 import { Layout, Spin } from 'antd'
 import { useAtomValue } from 'jotai'
+import { Outlet } from 'react-router-dom'
 import styled from 'styled-components'
-import { Sidebar } from './Sidebar'
-import { AppHeader } from './AppHeader'
-import { useLocalSchemeSyncMetrics } from '@/hooks/useLocalSchemeSyncMetrics'
 import { 頂欄方案載入名原子狀態 } from '@/atoms/scheme'
+import { useLocalSchemeSyncMetrics } from '@/hooks/useLocalSchemeSyncMetrics'
+import { AppHeader } from './AppHeader'
+import { Sidebar } from './Sidebar'
 
 const { Header, Content, Footer } = Layout
 

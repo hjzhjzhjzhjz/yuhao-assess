@@ -3,10 +3,10 @@
  * 複用 duplicateAnalysisService 中的 計算某字符集的重碼數據，轉換返回結構
  */
 
+import type { 某字符集的靜態重碼數據介面, 靜態重碼分析結果介面 } from '../../atoms/staticDuplicate'
+import type { 累積漢字集名稱型别 } from '../../services/charsetService'
 import { 計算某字符集的重碼數據 } from '../../services/duplicateAnalysisService'
 import type { 碼表型别 } from '../../types'
-import type { 靜態重碼分析結果介面, 某字符集的靜態重碼數據介面 } from '../../atoms/staticDuplicate'
-import type { 累積漢字集名稱型别 } from '../../services/charsetService'
 
 const CHARSET_LIST: 累積漢字集名稱型别[] = [
   'GB2312',

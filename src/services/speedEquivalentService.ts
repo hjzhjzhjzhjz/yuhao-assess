@@ -4,8 +4,8 @@
  */
 
 import type { 碼表型别 } from '../types'
-import { 默認選重鍵表 } from '../types/scheme'
 import type { 選重鍵表型别 } from '../types/scheme'
+import { 默認選重鍵表 } from '../types/scheme'
 
 /**
  * 把編碼末尾的選重鍵數字替換爲方案實際使用的按鍵

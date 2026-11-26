@@ -3,15 +3,14 @@
  * 按順序調用六項分析，彙總結果，並通過回調報告進度
  */
 
-import { loadCharFrequency, loadEquivTable } from './node-adapter'
-import { analyzeStaticDuplicate } from './analyses/static-duplicate'
-import { analyzeDynamicDuplicate } from './analyses/dynamic-duplicate'
-import { analyzeSpeedEquivalent } from './analyses/speed-equivalent'
-import { analyzeShortCodeEfficiency } from './analyses/short-code-efficiency'
-import { analyzeKeyboardHeatmap } from './analyses/keyboard-heatmap'
+import type { 處理後的碼表結果介面, 頻率數據型别 } from '../types'
 import type { 方案測評結果介面, 選重鍵表型别 } from '../types/scheme'
-import type { 處理後的碼表結果介面 } from '../types'
-import type { 頻率數據型别 } from '../types'
+import { analyzeDynamicDuplicate } from './analyses/dynamic-duplicate'
+import { analyzeKeyboardHeatmap } from './analyses/keyboard-heatmap'
+import { analyzeShortCodeEfficiency } from './analyses/short-code-efficiency'
+import { analyzeSpeedEquivalent } from './analyses/speed-equivalent'
+import { analyzeStaticDuplicate } from './analyses/static-duplicate'
+import { loadCharFrequency, loadEquivTable } from './node-adapter'
 
 export interface AnalyzerOptions {
   processedCodeTable: 處理後的碼表結果介面

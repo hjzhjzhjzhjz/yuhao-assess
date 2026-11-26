@@ -7,13 +7,13 @@
 
 import { promises as fs } from 'node:fs'
 import { extname } from 'node:path'
-import { parseArgs, printHelp } from './arg-parser'
-import { loadScheme, getCodeTableMeta } from './scheme-loader'
-import { initAdapter } from './node-adapter'
 import { 碼表處理服務實例 } from '../services/codeTableService'
-import { runAllAnalyses } from './analyzer'
-import { formatOutput } from './output-formatter'
 import type { 方案配置介面 } from '../types/scheme'
+import { runAllAnalyses } from './analyzer'
+import { parseArgs, printHelp } from './arg-parser'
+import { initAdapter } from './node-adapter'
+import { formatOutput } from './output-formatter'
+import { getCodeTableMeta, loadScheme } from './scheme-loader'
 
 // ─── 進度輸出（輸出到 stderr）────────────────────────────────────────────────
 

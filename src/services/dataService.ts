@@ -5,8 +5,8 @@
  */
 
 import type { 頻率數據型别 } from '../types'
-import { 字頻表服務類别 } from './charFrequencyService'
 import { 公開路徑 } from '../utils/publicPath'
+import { 字頻表服務類别 } from './charFrequencyService'
 
 // =============================================================================
 // 字頻數據加載

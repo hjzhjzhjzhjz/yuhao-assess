@@ -3,15 +3,15 @@
  * 處理重碼率計算、重碼統計和重碼報告生成
  */
 
+import type { 碼表型别, 頻數數據型别, 頻率數據型别 } from '../types/index'
 import {
-  過濾自定義字符集,
-  批量過濾字符集,
+  charsetInfo,
   getTheoreticalCharsetSize,
+  批量過濾字符集,
   type 漢字集名稱型别,
   type 累積漢字集名稱型别,
-  charsetInfo,
+  過濾自定義字符集,
 } from './charsetService'
-import type { 碼表型别, 頻率數據型别, 頻數數據型别 } from '../types/index'
 
 /**
  * 同一張碼表的 14 個字符集成員集合只算一次。

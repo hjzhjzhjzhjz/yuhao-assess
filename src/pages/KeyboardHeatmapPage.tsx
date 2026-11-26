@@ -1,16 +1,16 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react'
-import { Card, Tabs, Checkbox, Button, Space, Alert, Spin, message } from 'antd'
 import { ReloadOutlined } from '@ant-design/icons'
+import { Alert, Button, Card, Checkbox, message, Space, Spin, Tabs } from 'antd'
 import { useAtom } from 'jotai'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { 碼表原子狀態 } from '@/atoms/codeTable'
-import { 當前方案原子狀態 } from '@/atoms/scheme'
 import { 字頻表緩存原子狀態 } from '@/atoms/charFrequency'
-import { 鍵位熱力分析原子狀態 } from '@/atoms/keyboardHeatmap'
+import { 碼表原子狀態 } from '@/atoms/codeTable'
 import type { 鍵位熱力分析結果介面 } from '@/atoms/keyboardHeatmap'
+import { 鍵位熱力分析原子狀態 } from '@/atoms/keyboardHeatmap'
+import { 當前方案原子狀態 } from '@/atoms/scheme'
 import { 計算按鍵計數 } from '@/services/keyboardHeatmapService'
-import { 默認選重鍵表 } from '@/types/scheme'
 import type { 處理後的碼表結果介面 } from '@/types'
+import { 默認選重鍵表 } from '@/types/scheme'
 
 const PageContainer = styled.div`
   padding: 24px;

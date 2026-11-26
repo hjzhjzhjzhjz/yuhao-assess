@@ -7,9 +7,9 @@
  * 這樣導入和導出都非常方便，且不需要額外的轉換邏輯。
  */
 
-import type { 速度當量分析結果介面 } from '../atoms/speedEquivalent'
-import type { 簡碼效率分析結果介面 } from '../atoms/shortCodeEfficiency'
 import type { 鍵位熱力分析結果介面 } from '../atoms/keyboardHeatmap'
+import type { 簡碼效率分析結果介面 } from '../atoms/shortCodeEfficiency'
+import type { 速度當量分析結果介面 } from '../atoms/speedEquivalent'
 
 /**
  * 方案元數據

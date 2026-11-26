@@ -1,28 +1,28 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react'
-import { useAtom, useAtomValue } from 'jotai'
-import { Button, Space, Typography, Table, Modal, Checkbox, message, Spin, Tag } from 'antd'
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons'
-import styled from 'styled-components'
+import { Button, Checkbox, Modal, message, Space, Spin, Table, Tag, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import { 當前方案原子狀態, 方案列表原子狀態 } from '@/atoms/scheme'
+import { useAtom, useAtomValue } from 'jotai'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import styled from 'styled-components'
 import { 選中對比方案鍵名列表原子狀態 } from '@/atoms/comparison'
+import type { 動態選重分析結果介面 } from '@/atoms/dynamicDuplicate'
 import { 動態選重分析原子狀態 } from '@/atoms/dynamicDuplicate'
-import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
-import { 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
-import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
-import { 獲取内置方案列表, 加載方案, type 内置方案配置 } from '@/services/schemeService'
 import {
   本地方案列表原子狀態,
   當前本地方案標識符原子狀態,
   選中對比本地方案標識符列表原子狀態,
 } from '@/atoms/localSchemes'
-import type { 動態選重分析結果介面 } from '@/atoms/dynamicDuplicate'
-import type { 靜態重碼分析結果介面 } from '@/atoms/staticDuplicate'
-import type { 速度當量分析結果介面 } from '@/atoms/speedEquivalent'
+import { 方案列表原子狀態, 當前方案原子狀態 } from '@/atoms/scheme'
 import type { 簡碼效率分析結果介面 } from '@/atoms/shortCodeEfficiency'
-import type { 字頻來源型别, 全碼簡碼型别 } from '@/types'
-import type { 方案配置介面 } from '@/types/scheme'
+import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
+import type { 速度當量分析結果介面 } from '@/atoms/speedEquivalent'
+import { 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
+import type { 靜態重碼分析結果介面 } from '@/atoms/staticDuplicate'
+import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
 import { 累積漢字集名稱型别 } from '@/services/charsetService'
+import { type 内置方案配置, 加載方案, 獲取内置方案列表 } from '@/services/schemeService'
+import type { 全碼簡碼型别, 字頻來源型别 } from '@/types'
+import type { 方案配置介面 } from '@/types/scheme'
 
 const { Paragraph } = Typography
 

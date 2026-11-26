@@ -14,16 +14,16 @@
  * 應在 MainLayout 中調用一次。
  */
 
-import { useEffect, useRef } from 'react'
 import { useAtomValue, useSetAtom } from 'jotai'
-import { 當前方案原子狀態 } from '@/atoms/scheme'
+import { useEffect, useRef } from 'react'
 import { 動態選重分析原子狀態 } from '@/atoms/dynamicDuplicate'
-import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
-import { 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
-import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
 import { 鍵位熱力分析原子狀態 } from '@/atoms/keyboardHeatmap'
-import { 收集測評結果 } from '@/services/exportService'
 import { 本地方案列表原子狀態, 當前本地方案標識符原子狀態 } from '@/atoms/localSchemes'
+import { 當前方案原子狀態 } from '@/atoms/scheme'
+import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
+import { 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
+import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
+import { 收集測評結果 } from '@/services/exportService'
 
 export function useLocalSchemeSyncMetrics() {
   const 當前本地方案標識符 = useAtomValue(當前本地方案標識符原子狀態)

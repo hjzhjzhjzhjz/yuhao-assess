@@ -4,7 +4,7 @@
  */
 
 import { getDefaultStore } from 'jotai'
-import { 當量表原子狀態, 當量表加載中原子狀態, 當量表錯誤原子狀態 } from '../atoms/equivTable'
+import { 當量表加載中原子狀態, 當量表原子狀態, 當量表錯誤原子狀態 } from '../atoms/equivTable'
 import type { 當量表介面 } from '../types'
 import { 公開路徑 } from '../utils/publicPath'
 

@@ -1,30 +1,30 @@
+import { PlusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 import {
-  Typography,
+  Alert,
   Button,
-  Space,
-  Select,
+  Checkbox,
   Input,
   InputNumber,
-  Checkbox,
   message,
+  Select,
+  Space,
   Tag,
-  Alert,
+  Typography,
 } from 'antd'
-import { PlusOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useState } from 'react'
-import { 當前方案原子狀態, 方案列表原子狀態, 頂欄方案載入名原子狀態 } from '@/atoms/scheme'
+import { 原始碼表原子狀態, 碼表原子狀態, 編碼預覽數據原子狀態 } from '@/atoms/codeTable'
 import { 動態選重分析原子狀態 } from '@/atoms/dynamicDuplicate'
-import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
-import { 速度當量分析原子狀態, 當量詳情原子狀態 } from '@/atoms/speedEquivalent'
-import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
 import { 鍵位熱力分析原子狀態 } from '@/atoms/keyboardHeatmap'
-import { 碼表原子狀態, 原始碼表原子狀態, 編碼預覽數據原子狀態 } from '@/atoms/codeTable'
-import { 加載方案, 查找方案鍵名 } from '@/services/schemeService'
-import { 等界面繪製 } from '@/utils/wait-for-paint'
-import { 應用方案數據, type 方案應用Setters } from '@/services/atomResetService'
+import { 方案列表原子狀態, 當前方案原子狀態, 頂欄方案載入名原子狀態 } from '@/atoms/scheme'
+import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
+import { 當量詳情原子狀態, 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
+import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
 import { useDataPreload } from '@/hooks/useDataPreload'
+import { 應用方案數據, type 方案應用Setters } from '@/services/atomResetService'
+import { 加載方案, 查找方案鍵名 } from '@/services/schemeService'
 import type { 方案配置介面 } from '@/types/scheme'
+import { 等界面繪製 } from '@/utils/wait-for-paint'
 
 const { Paragraph, Text } = Typography
 const { Option } = Select
@@ -418,7 +418,6 @@ function HomePage() {
                   min={1}
                   max={10}
                   style={{ width: '100%' }}
-                  onBlur={() => {}}
                   onChange={值 => 更新方案參數('最大碼長', 值 as number)}
                 />
               </div>

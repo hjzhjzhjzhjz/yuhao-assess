@@ -3,13 +3,13 @@
  * 複用 duplicateAnalysisService 中的計算函數
  */
 
+import type { 動態選重分析結果介面, 動態選重結果介面 } from '../../atoms/dynamicDuplicate'
 import {
+  計算出簡重排選重率,
   計算動態選重率,
   計算原始碼表的動態選重率,
-  計算出簡重排選重率,
 } from '../../services/duplicateAnalysisService'
 import type { 碼表型别, 頻率數據型别 } from '../../types'
-import type { 動態選重分析結果介面, 動態選重結果介面 } from '../../atoms/dynamicDuplicate'
 
 const FREQ_TYPES = [
   '知乎簡體字頻',

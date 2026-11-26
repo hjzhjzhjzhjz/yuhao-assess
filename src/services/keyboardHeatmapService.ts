@@ -6,8 +6,8 @@
  */
 
 import type { 碼表型别 } from '../types'
-import { 默認選重鍵表 } from '../types/scheme'
 import type { 選重鍵表型别 } from '../types/scheme'
+import { 默認選重鍵表 } from '../types/scheme'
 import { 替換選重鍵 } from './speedEquivalentService'
 
 /**

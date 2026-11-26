@@ -1,36 +1,36 @@
+import {
+  CopyOutlined,
+  DeleteOutlined,
+  DownloadOutlined,
+  PlusOutlined,
+  ThunderboltOutlined,
+  UploadOutlined,
+} from '@ant-design/icons'
+import { App, Button, Popconfirm, Select, Space, Tooltip, Upload } from 'antd'
+import type { RcFile } from 'antd/es/upload'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button, Space, Upload, App, Select, Popconfirm, Tooltip } from 'antd'
-import {
-  DownloadOutlined,
-  UploadOutlined,
-  PlusOutlined,
-  DeleteOutlined,
-  ThunderboltOutlined,
-  CopyOutlined,
-} from '@ant-design/icons'
-import { useAtom, useSetAtom, useAtomValue } from 'jotai'
 import styled from 'styled-components'
-import { 當前方案原子狀態, 方案列表原子狀態, 頂欄方案載入名原子狀態 } from '@/atoms/scheme'
-import { 等界面繪製 } from '@/utils/wait-for-paint'
+import { 原始碼表原子狀態, 碼表原子狀態, 編碼預覽數據原子狀態 } from '@/atoms/codeTable'
 import { 動態選重分析原子狀態 } from '@/atoms/dynamicDuplicate'
-import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
-import { 速度當量分析原子狀態, 當量詳情原子狀態 } from '@/atoms/speedEquivalent'
-import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
 import { 鍵位熱力分析原子狀態 } from '@/atoms/keyboardHeatmap'
-import { 碼表原子狀態, 原始碼表原子狀態, 編碼預覽數據原子狀態 } from '@/atoms/codeTable'
 import {
   本地方案列表原子狀態,
-  當前本地方案標識符原子狀態,
-  生成本地標識符,
   生成克隆後綴,
+  生成本地標識符,
+  當前本地方案標識符原子狀態,
 } from '@/atoms/localSchemes'
-import { 創建空白方案, 加載方案, 列出可用方案, 查找方案鍵名 } from '@/services/schemeService'
-import { 清空所有Atom, 應用方案數據, type 方案應用Setters } from '@/services/atomResetService'
+import { 方案列表原子狀態, 當前方案原子狀態, 頂欄方案載入名原子狀態 } from '@/atoms/scheme'
+import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
+import { 當量詳情原子狀態, 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
+import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
+import { 應用方案數據, type 方案應用Setters, 清空所有Atom } from '@/services/atomResetService'
 import { 導出方案配置JSON, 收集測評結果 } from '@/services/exportService'
+import { 列出可用方案, 創建空白方案, 加載方案, 查找方案鍵名 } from '@/services/schemeService'
 import { 觸發所有分析計算 } from '@/services/triggerAnalysisService'
 import type { 方案列表項介面, 方案配置介面 } from '@/types/scheme'
-import type { RcFile } from 'antd/es/upload'
+import { 等界面繪製 } from '@/utils/wait-for-paint'
 
 const HeaderContainer = styled.div`
   display: flex;

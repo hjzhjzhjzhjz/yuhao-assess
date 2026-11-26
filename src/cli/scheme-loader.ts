@@ -10,7 +10,7 @@
 
 import { promises as fs } from 'node:fs'
 import { parse as jsoncParse, type ParseError } from 'jsonc-parser'
-import type { 方案配置介面, 方案碼表元數據介面 } from '../types/scheme'
+import type { 方案碼表元數據介面, 方案配置介面 } from '../types/scheme'
 
 /**
  * 解析 JSONC 文本（JSON with Comments）

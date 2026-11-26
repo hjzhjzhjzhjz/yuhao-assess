@@ -4,8 +4,8 @@
  */
 
 import { 生成本地標識符 } from '../atoms/localSchemes'
+import type { 方案列表項介面, 方案配置介面 } from '../types/scheme'
 import { 默認選重鍵表 } from '../types/scheme'
-import type { 方案配置介面, 方案列表項介面 } from '../types/scheme'
 import { 公開路徑 } from '../utils/publicPath'
 
 /**

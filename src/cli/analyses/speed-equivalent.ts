@@ -8,13 +8,13 @@
  * 其餘方案一模一樣——2026-10-06 全表對賬時就只有清韻一個對不上（差 0.005）。
  */
 
+import type { 速度當量分析結果介面 } from '../../atoms/speedEquivalent'
 import {
   從碼表計算加權速度當量,
   生成一級簡碼加選重鍵表,
   生成二級簡碼加選重鍵表,
 } from '../../services/speedEquivalentService'
 import type { 碼表型别, 頻率數據型别 } from '../../types'
-import type { 速度當量分析結果介面 } from '../../atoms/speedEquivalent'
 import type { 選重鍵表型别 } from '../../types/scheme'
 
 const FREQ_TYPES = [

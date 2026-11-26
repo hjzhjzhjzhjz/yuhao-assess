@@ -1,7 +1,7 @@
-import React from 'react'
-import { ConfigProvider, App as AntdApp } from 'antd'
-import { useAtomValue } from 'jotai'
+import { App as AntdApp, ConfigProvider } from 'antd'
 import zhTW from 'antd/locale/zh_TW'
+import { useAtomValue } from 'jotai'
+import React from 'react'
 import { 主题配置原子 } from '@/atoms/theme'
 
 /**
@@ -16,7 +16,7 @@ export const AntdConfigProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       locale={zhTW}
       theme={{
         token: {
-          // 墨青主題主色（青瓷綠），統一 antd 組件
+          // 墨青主題主色（青瓷緑），統一 antd 組件
           colorPrimary: '#2a9d8f',
           colorLink: '#2a9d8f',
           colorSuccess: '#2a9d8f',

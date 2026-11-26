@@ -1,7 +1,7 @@
 // 導入 Jotai atom
 import { getDefaultStore } from 'jotai'
-import { 字符集數據原子狀態, CJK區塊數據原子狀態 } from '../atoms/charset'
-import type { 字符集數據型别, CJK區塊數據型别 } from '../atoms/charset'
+import type { CJK區塊數據型别, 字符集數據型别 } from '../atoms/charset'
+import { CJK區塊數據原子狀態, 字符集數據原子狀態 } from '../atoms/charset'
 import { 加載JSON數據文件 } from '../utils/data-loader'
 import { 公開路徑 } from '../utils/publicPath'
 

@@ -1,10 +1,10 @@
 /* eslint-disable no-undef */
 import { getDefaultStore } from 'jotai'
-import { 數據預加載狀態原子 } from '../atoms/dataPreload'
-import { 字頻表服務類别 } from './charFrequencyService'
-import { 加載JSON數據文件 } from '../utils/data-loader'
-import { 字符集數據原子狀態 } from '../atoms/charset'
 import type { 字符集數據型别 } from '../atoms/charset'
+import { 字符集數據原子狀態 } from '../atoms/charset'
+import { 數據預加載狀態原子 } from '../atoms/dataPreload'
+import { 加載JSON數據文件 } from '../utils/data-loader'
+import { 字頻表服務類别 } from './charFrequencyService'
 
 /**
  * 數據預加載服務

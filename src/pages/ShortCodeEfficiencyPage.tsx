@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useMemo } from 'react'
-import { useAtom } from 'jotai'
-import { Button, Typography, Alert, Spin, Modal, message, Space, Table, Input } from 'antd'
-import { ReloadOutlined, CopyOutlined } from '@ant-design/icons'
+import { CopyOutlined, ReloadOutlined } from '@ant-design/icons'
+import { Alert, Button, Input, Modal, message, Space, Spin, Table, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
+import { useAtom } from 'jotai'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { 碼表原子狀態 } from '../atoms/codeTable'
-import { 簡碼效率分析原子狀態 } from '../atoms/shortCodeEfficiency'
 import { 字頻表緩存原子狀態 } from '../atoms/charFrequency'
+import { 碼表原子狀態 } from '../atoms/codeTable'
 import { 當前方案原子狀態 } from '../atoms/scheme'
-import { 計算指定字頻下之簡碼效率, 簡碼效率N值列表 } from '../services/shortCodeEfficiencyService'
+import { 簡碼效率分析原子狀態 } from '../atoms/shortCodeEfficiency'
+import { 簡碼效率N值列表, 計算指定字頻下之簡碼效率 } from '../services/shortCodeEfficiencyService'
 import type { 處理後的碼表結果介面 } from '../types'
 
 const { Paragraph } = Typography
@@ -442,15 +442,6 @@ const ShortCodeEfficiencyPage: React.FC = () => {
 
     return 過濾後的行
   }, [分析結果])
-
-  /**
-   * 檢查是否有省略的行
-   */
-  const 有省略行 = useMemo(() => {
-    if (!分析結果) return false
-    const 原始行數 = 分析結果.知乎簡體字頻下之簡碼效率.N值結果.length
-    return 原始行數 > 表格數據.length
-  }, [分析結果, 表格數據])
 
   /**
    * 判斷單元格是否應該隱藏

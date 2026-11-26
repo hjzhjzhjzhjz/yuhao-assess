@@ -1,5 +1,5 @@
-import type { 頻數數據型别, 頻率數據型别 } from '@/types'
 import { getDefaultStore } from 'jotai'
+import type { 頻數數據型别, 頻率數據型别 } from '@/types'
 import { 字頻表緩存原子狀態 } from '../atoms/charFrequency'
 import { 加載JSON數據文件 } from '../utils/data-loader'
 

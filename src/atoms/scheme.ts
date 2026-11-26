@@ -4,7 +4,7 @@
 
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import type { 方案配置介面, 方案列表項介面 } from '../types/scheme'
+import type { 方案列表項介面, 方案配置介面 } from '../types/scheme'
 
 /**
  * 帶 debounce 的 localStorage storage

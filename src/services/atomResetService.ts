@@ -3,8 +3,8 @@
  * 提供清空所有原子状态、以及把一份方案 JSON 套進所有原子状态的公共函数
  */
 
-import { 從JSON導入 } from './schemeService'
 import type { 方案配置介面 } from '@/types/scheme'
+import { 從JSON導入 } from './schemeService'
 
 export interface AtomSetters {
   設置碼表數據: (value: any) => void

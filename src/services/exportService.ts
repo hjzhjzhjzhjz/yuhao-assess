@@ -1,9 +1,9 @@
-import type { 方案配置介面 } from '@/types/scheme'
-import type { 靜態重碼分析結果介面 } from '@/atoms/staticDuplicate'
 import type { 動態選重分析結果介面 } from '@/atoms/dynamicDuplicate'
-import type { 速度當量分析結果介面 } from '@/atoms/speedEquivalent'
-import type { 簡碼效率分析結果介面 } from '@/atoms/shortCodeEfficiency'
 import type { 鍵位熱力分析結果介面 } from '@/atoms/keyboardHeatmap'
+import type { 簡碼效率分析結果介面 } from '@/atoms/shortCodeEfficiency'
+import type { 速度當量分析結果介面 } from '@/atoms/speedEquivalent'
+import type { 靜態重碼分析結果介面 } from '@/atoms/staticDuplicate'
+import type { 方案配置介面 } from '@/types/scheme'
 
 /**
  * 分析結果集合

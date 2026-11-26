@@ -1,30 +1,30 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAtom, useSetAtom, useStore } from 'jotai'
+import { ReloadOutlined, ThunderboltOutlined } from '@ant-design/icons'
 import {
+  Alert,
+  Button,
+  Card,
+  ColorPicker,
+  Divider,
+  InputNumber,
+  message,
   Space,
   Typography,
-  InputNumber,
-  ColorPicker,
-  Button,
-  Divider,
-  Card,
-  Alert,
-  message,
 } from 'antd'
-import { ReloadOutlined, ThunderboltOutlined } from '@ant-design/icons'
-import { 主题配置原子, 重置主题配置原子 } from '@/atoms/theme'
-import { 當前方案原子狀態 } from '@/atoms/scheme'
-import { 動態選重分析原子狀態 } from '@/atoms/dynamicDuplicate'
-import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
-import { 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
-import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
-import { 鍵位熱力分析原子狀態 } from '@/atoms/keyboardHeatmap'
+import type { Color } from 'antd/es/color-picker'
+import { useAtom, useSetAtom, useStore } from 'jotai'
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { 碼表原子狀態 } from '@/atoms/codeTable'
+import { 動態選重分析原子狀態 } from '@/atoms/dynamicDuplicate'
+import { 鍵位熱力分析原子狀態 } from '@/atoms/keyboardHeatmap'
+import { 當前方案原子狀態 } from '@/atoms/scheme'
+import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
+import { 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
+import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
+import { 主题配置原子, 重置主题配置原子 } from '@/atoms/theme'
 import { 碼表處理服務實例 } from '@/services/codeTableService'
 import { 導出方案配置JSON } from '@/services/exportService'
 import { 觸發所有分析計算 } from '@/services/triggerAnalysisService'
-import type { Color } from 'antd/es/color-picker'
 
 const { Title, Paragraph, Text } = Typography
 
