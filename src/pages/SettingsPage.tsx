@@ -88,7 +88,7 @@ const SettingsPage: React.FC = () => {
         編碼終止指示符列表: 當前方案.方案參數.編碼終止指示符列表,
       })
 
-      設置碼表數據(處理結果 as any)
+      設置碼表數據(處理結果)
       console.log('  ✓ 码表处理完成并设置到atom')
 
       // 步骤2：清除所有分析结果（和AppHeader重算按钮一样）

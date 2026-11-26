@@ -11,7 +11,7 @@ import { 公開路徑 } from './publicPath'
  * 加載 JSON 數據文件
  * @param filename 文件名（如 'charAbsoluteFrequencySC.json'）
  */
-export async function 加載JSON數據文件<T = any>(filename: string): Promise<T> {
+export async function 加載JSON數據文件<T = unknown>(filename: string): Promise<T> {
   const url = 公開路徑(`/data/${filename}`)
 
   try {
@@ -34,7 +34,7 @@ export async function 加載JSON數據文件<T = any>(filename: string): Promise
  * @param cacheKey 緩存鍵名
  * @param ttl 緩存時間（毫秒），默認 7 天
  */
-export async function 帶緩存地加載JSON數據文件<T = any>(
+export async function 帶緩存地加載JSON數據文件<T = unknown>(
   filename: string,
   cacheKey: string,
   ttl: number = 7 * 24 * 60 * 60 * 1000

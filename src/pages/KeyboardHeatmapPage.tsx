@@ -523,7 +523,7 @@ export default function KeyboardHeatmapPage() {
   const 已初始化計算 = useRef(false)
 
   // 類型斷言：碼表數據實際上是 處理後的碼表結果
-  const 處理後碼表 = 碼表數據 as 處理後的碼表結果介面 | null
+  const 處理後碼表 = 碼表數據
 
   // 獲取當前字頻數據（使用北語簡體字頻）
   const 當前字頻 = useMemo(() => {
@@ -562,6 +562,7 @@ export default function KeyboardHeatmapPage() {
   }
 
   // 自動計算：碼表就緒且無分析結果時自動觸發
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 已初始化計算 ref 守衛確保只自動計算一次；補全依賴會重複觸發
   useEffect(() => {
     if (!分析結果 && 處理後碼表 && !已初始化計算.current) {
       已初始化計算.current = true

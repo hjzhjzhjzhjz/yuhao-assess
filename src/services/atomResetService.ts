@@ -3,19 +3,26 @@
  * 提供清空所有原子状态、以及把一份方案 JSON 套進所有原子状态的公共函数
  */
 
+import type { 編碼預覽項 } from '@/atoms/codeTable'
+import type { 動態選重分析結果介面 } from '@/atoms/dynamicDuplicate'
+import type { 鍵位熱力分析結果介面 } from '@/atoms/keyboardHeatmap'
+import type { 簡碼效率分析結果介面 } from '@/atoms/shortCodeEfficiency'
+import type { 當量詳情數據介面, 速度當量分析結果介面 } from '@/atoms/speedEquivalent'
+import type { 靜態重碼分析結果介面 } from '@/atoms/staticDuplicate'
+import type { 碼表型别, 處理後的碼表結果介面 } from '@/types'
 import type { 方案配置介面 } from '@/types/scheme'
 import { 從JSON導入 } from './schemeService'
 
 export interface AtomSetters {
-  設置碼表數據: (value: any) => void
+  設置碼表數據: (value: 處理後的碼表結果介面 | null) => void
   設置原始碼表: (value: string) => void
-  設置編碼預覽數據: (value: any[]) => void
-  設置靜態重碼分析結果: (value: any) => void
-  設置動態選重分析結果: (value: any) => void
-  設置速度當量分析結果: (value: any) => void
-  設置當量詳情: (value: any) => void
-  設置簡碼效率分析結果: (value: any) => void
-  設置鍵位熱力分析結果: (value: any) => void
+  設置編碼預覽數據: (value: 編碼預覽項[]) => void
+  設置靜態重碼分析結果: (value: 靜態重碼分析結果介面 | null) => void
+  設置動態選重分析結果: (value: 動態選重分析結果介面 | null) => void
+  設置速度當量分析結果: (value: 速度當量分析結果介面 | null) => void
+  設置當量詳情: (value: 當量詳情數據介面 | null) => void
+  設置簡碼效率分析結果: (value: 簡碼效率分析結果介面 | null) => void
+  設置鍵位熱力分析結果: (value: 鍵位熱力分析結果介面 | null) => void
 }
 
 /**
@@ -48,8 +55,7 @@ export interface 方案應用Setters extends AtomSetters {
  * @returns 驗證後的方案，以及實際載入到的測評結果名稱（供調用方拼提示語）
  */
 export function 應用方案數據(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  導入數據: any,
+  導入數據: 方案配置介面,
   setters: 方案應用Setters
 ): { 方案: 方案配置介面; 已載入結果: string[] } {
   // 先清空，免得上一個方案的結果殘留在這一個方案的頁面上
@@ -62,19 +68,16 @@ export function 應用方案數據(
   setters.設置當前方案(方案)
 
   // 存檔裏的分佈是緊湊格點形式，展開後才能直接餵給圖表
-  const 各項結果: Array<{ 名稱: string; 值: unknown; 寫入: (value: any) => void }> = [
-    { 名稱: '靜態重碼分析', 值: 測評結果?.靜態重碼分析, 寫入: setters.設置靜態重碼分析結果 },
-    { 名稱: '動態選重分析', 值: 測評結果?.動態選重分析, 寫入: setters.設置動態選重分析結果 },
-    { 名稱: '速度當量分析', 值: 測評結果?.速度當量分析, 寫入: setters.設置速度當量分析結果 },
-    { 名稱: '簡碼效率分析', 值: 測評結果?.簡碼效率分析, 寫入: setters.設置簡碼效率分析結果 },
-    { 名稱: '鍵位熱力分析', 值: 測評結果?.鍵位熱力, 寫入: setters.設置鍵位熱力分析結果 },
-  ]
-
   const 已載入結果: string[] = []
-  for (const { 名稱, 值, 寫入 } of 各項結果) {
+  const 寫入結果 = <T>(名稱: string, 值: T | undefined, 寫入: (value: T | null) => void) => {
     寫入(值 ?? null)
     if (值) 已載入結果.push(名稱)
   }
+  寫入結果('靜態重碼分析', 測評結果?.靜態重碼分析, setters.設置靜態重碼分析結果)
+  寫入結果('動態選重分析', 測評結果?.動態選重分析, setters.設置動態選重分析結果)
+  寫入結果('速度當量分析', 測評結果?.速度當量分析, setters.設置速度當量分析結果)
+  寫入結果('簡碼效率分析', 測評結果?.簡碼效率分析, setters.設置簡碼效率分析結果)
+  寫入結果('鍵位熱力分析', 測評結果?.鍵位熱力, setters.設置鍵位熱力分析結果)
 
   return { 方案, 已載入結果 }
 }

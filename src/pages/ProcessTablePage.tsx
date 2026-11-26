@@ -94,8 +94,7 @@ const ProcessTablePage: React.FC = () => {
     設置碼表元數據({
       uploadTime: Date.now(),
     })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    設置碼表(處理結果 as any)
+    設置碼表(處理結果)
 
     // 更新當前方案的碼表元數據和更新時間
     if (當前方案 && 當前方案.碼表元數據) {

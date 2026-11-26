@@ -189,7 +189,7 @@ const ShortCodeEfficiencyPage: React.FC = () => {
   const [詳情搜索關鍵詞, 設置詳情搜索關鍵詞] = useState('')
 
   // 類型斷言：碼表數據實際上是處理後的碼表結果
-  const 處理後碼表 = 碼表數據 as 處理後的碼表結果介面 | null
+  const 處理後碼表 = 碼表數據
 
   /**
    * 計算簡碼效率
@@ -312,6 +312,7 @@ const ShortCodeEfficiencyPage: React.FC = () => {
   /**
    * 自動計算（碼表或字頻表變化時）
    */
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 僅在碼表/字頻表就緒時自動計算一次；分析結果由計算本身寫入，補全會循環觸發
   useEffect(() => {
     if (處理後碼表 && 字頻表緩存 && 字頻表緩存.size > 0 && !分析結果) {
       計算簡碼效率()
@@ -633,6 +634,7 @@ const ShortCodeEfficiencyPage: React.FC = () => {
   /**
    * 構建詳情表格數據
    */
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 獲取簡碼/碼長等爲组件内純函數，依赖的數據已由 詳情字符列表/詳情字頻類型 覆蓋
   const 詳情表格數據 = useMemo<詳情表格行數據[]>(() => {
     return 詳情字符列表.map((字符, 索引) => ({
       序號: 索引 + 1,

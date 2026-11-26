@@ -48,7 +48,7 @@ const SpeedEquivalentPage: React.FC = () => {
   const 已初始化計算 = useRef(false)
 
   // 類型斷言：碼表數據實際上是 處理後的碼表結果
-  const 處理後碼表 = 碼表數據 as 處理後的碼表結果介面 | null
+  const 處理後碼表 = 碼表數據
 
   // 選重鍵按方案配置折算（如二重按 ; 、三重按 '）
   const 選重鍵表 = 當前方案?.方案參數?.選重鍵表 ?? 默認選重鍵表
@@ -448,12 +448,12 @@ const SpeedEquivalentPage: React.FC = () => {
   /**
    * 組件掛載時檢查數據
    */
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 已初始化計算 ref 守衛確保只自動計算一次；補全依賴會重複觸發
   useEffect(() => {
     if (!分析結果 && 處理後碼表 && 字頻表緩存 && !已初始化計算.current) {
       已初始化計算.current = true
       重新計算()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [處理後碼表, 字頻表緩存])
 
   /**

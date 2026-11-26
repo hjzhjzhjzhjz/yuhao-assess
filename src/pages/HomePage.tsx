@@ -138,7 +138,7 @@ function HomePage() {
 
   // 選重鍵若同時也是編碼用鍵，實際輸入時會衝突（如雪·青韻用 ; 編碼）
   const 選重鍵衝突列表 = (() => {
-    const 處理後碼表 = 碼表數據 as { 全碼加選重鍵表?: Map<string, string[]> } | null
+    const 處理後碼表 = 碼表數據
     const 全碼表 = 處理後碼表?.全碼加選重鍵表
     const 選重鍵表 = 當前方案?.方案參數.選重鍵表
     if (!全碼表 || !選重鍵表) return []

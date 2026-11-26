@@ -13,7 +13,11 @@ import {
   選中對比本地方案標識符列表原子狀態,
 } from '@/atoms/localSchemes'
 import { 方案列表原子狀態, 當前方案原子狀態 } from '@/atoms/scheme'
-import type { 簡碼效率分析結果介面 } from '@/atoms/shortCodeEfficiency'
+import type {
+  N值簡碼效率結果介面,
+  單個字頻簡碼效率結果介面,
+  簡碼效率分析結果介面,
+} from '@/atoms/shortCodeEfficiency'
 import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
 import type { 速度當量分析結果介面 } from '@/atoms/speedEquivalent'
 import { 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
@@ -143,7 +147,7 @@ const ComparisonPage: React.FC = () => {
       const 保留 = prev.filter(id => 所有標識符.includes(id))
       return [...保留, ...新增]
     })
-  }, [本地方案列表])
+  }, [本地方案列表, 設置選中本地方案標識符列表])
 
   // 三層選擇狀態
   const [當前分析類型, 設置當前分析類型] = useState<分析型别>('靜態重碼')
@@ -166,6 +170,7 @@ const ComparisonPage: React.FC = () => {
   }
 
   // 加載對比方案數據（内聯於 useEffect 避免閉包問題）
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 刷新計數是手動刷新觸發器，effect 體内不直接讀取但必須以其變化重新執行
   useEffect(() => {
     if (内置方案列表.length === 0) return
 
@@ -398,7 +403,7 @@ const ComparisonPage: React.FC = () => {
           if (!bData || bData.字集覆蓋率 < 靜態重碼分析字集覆蓋率閾值) return -1
           return (aData[碼類型] ?? 0) - (bData[碼類型] ?? 0)
         }),
-        render: (_: any, record: 對比方案數據介面) => {
+        render: (_: unknown, record: 對比方案數據介面) => {
           const data = record.靜態重碼分析?.[dataKey]
           if (!data) return '-'
           const 覆蓋率 = data.字集覆蓋率
@@ -455,7 +460,7 @@ const ComparisonPage: React.FC = () => {
           if (!bData || bData.字集覆蓋率 < 靜態重碼分析字集覆蓋率閾值) return -1
           return (計算選重個數(a, dataKey) ?? 0) - (計算選重個數(b, dataKey) ?? 0)
         }),
-        render: (_: any, record: 對比方案數據介面) => {
+        render: (_: unknown, record: 對比方案數據介面) => {
           const data = record.靜態重碼分析?.[dataKey]
           if (!data) return '-'
           const 覆蓋率 = data.字集覆蓋率
@@ -499,14 +504,14 @@ const ComparisonPage: React.FC = () => {
         title,
         key,
         sorter: 包裝排序((a: 對比方案數據介面, b: 對比方案數據介面) => {
-          const a值 = (a.速度當量分析 as any)?.[`${前綴}${suffix}`]
-          const b值 = (b.速度當量分析 as any)?.[`${前綴}${suffix}`]
+          const a值 = (a.速度當量分析 as Record<string, number> | null)?.[`${前綴}${suffix}`]
+          const b值 = (b.速度當量分析 as Record<string, number> | null)?.[`${前綴}${suffix}`]
           if (a值 === undefined) return 1
           if (b值 === undefined) return -1
           return a值 - b值
         }),
-        render: (_: any, record: 對比方案數據介面) => {
-          const 值 = (record.速度當量分析 as any)?.[`${前綴}${suffix}`]
+        render: (_: unknown, record: 對比方案數據介面) => {
+          const 值 = (record.速度當量分析 as Record<string, number> | null)?.[`${前綴}${suffix}`]
           return 值 !== undefined ? 值.toFixed(3) : '-'
         },
       })),
@@ -551,7 +556,7 @@ const ComparisonPage: React.FC = () => {
           if (b值 === undefined) return -1
           return a值 - b值
         }),
-        render: (_: any, record: 對比方案數據介面) => {
+        render: (_: unknown, record: 對比方案數據介面) => {
           const 對應字集 = 動態選重字頻對應字集[title]
           if (對應字集) {
             const 覆蓋率 = record.靜態重碼分析?.[對應字集]?.字集覆蓋率
@@ -602,7 +607,7 @@ const ComparisonPage: React.FC = () => {
           if (b值 === undefined) return -1
           return a值 - b值
         }),
-        render: (_: any, record: 對比方案數據介面) => {
+        render: (_: unknown, record: 對比方案數據介面) => {
           const 對應字集 = 動態選重字頻對應字集[title]
           if (對應字集) {
             const 覆蓋率 = record.靜態重碼分析?.[對應字集]?.字集覆蓋率
@@ -649,22 +654,22 @@ const ComparisonPage: React.FC = () => {
         title,
         key,
         sorter: 包裝排序((a: 對比方案數據介面, b: 對比方案數據介面) => {
-          const aResult = (a.簡碼效率分析 as any)?.[字頻鍵]?.N值結果?.find(
-            (r: any) => r.最有效率的簡碼個數 === N值
-          )
-          const bResult = (b.簡碼效率分析 as any)?.[字頻鍵]?.N值結果?.find(
-            (r: any) => r.最有效率的簡碼個數 === N值
-          )
+          const aResult = (
+            a.簡碼效率分析 as Partial<Record<string, 單個字頻簡碼效率結果介面>> | null
+          )?.[字頻鍵]?.N值結果?.find((r: N值簡碼效率結果介面) => r.最有效率的簡碼個數 === N值)
+          const bResult = (
+            b.簡碼效率分析 as Partial<Record<string, 單個字頻簡碼效率結果介面>> | null
+          )?.[字頻鍵]?.N值結果?.find((r: N值簡碼效率結果介面) => r.最有效率的簡碼個數 === N值)
           const a值 = aResult?.字頻加權碼長
           const b值 = bResult?.字頻加權碼長
           if (a值 === undefined) return 1
           if (b值 === undefined) return -1
           return a值 - b值
         }),
-        render: (_: any, record: 對比方案數據介面) => {
-          const result = (record.簡碼效率分析 as any)?.[字頻鍵]?.N值結果?.find(
-            (r: any) => r.最有效率的簡碼個數 === N值
-          )
+        render: (_: unknown, record: 對比方案數據介面) => {
+          const result = (
+            record.簡碼效率分析 as Partial<Record<string, 單個字頻簡碼效率結果介面>> | null
+          )?.[字頻鍵]?.N值結果?.find((r: N值簡碼效率結果介面) => r.最有效率的簡碼個數 === N值)
           return result?.字頻加權碼長?.toFixed(3) ?? '-'
         },
       })),
@@ -676,24 +681,26 @@ const ComparisonPage: React.FC = () => {
 
   // 給所有數值列包一層「最優值高亮」：該列最優方案的數字用青瓷緑加粗。
   // 只處理 render 返回值，不碰 sorter/數據；方案名列與 '-'/'缺字' 不參與。
+  // antd render 是 ReactNode | RenderedCell 的联合，此处只需其函数签名
+  type 渲染函數 = (value: unknown, record: 對比方案數據介面, index: number) => React.ReactNode
   const 高亮最優列 = (columns: ColumnsType<對比方案數據介面>) => {
     if (!對比方案列表.length) return columns
     return columns.map(col => {
       if (!col.render || col.key === '顯示名稱' || !col.key) return col
-      const 原渲染 = col.render
+      const 原渲染 = col.render as 渲染函數 | undefined
       const 解析 = (v: unknown): number | null => {
         const n = typeof v === 'number' ? v : typeof v === 'string' ? parseFloat(v) : NaN
         return Number.isFinite(n) ? n : null
       }
       const 有效 = 對比方案列表
-        .map(r => 解析((原渲染 as any)(undefined, r, 0)))
+        .map(r => 解析((原渲染 as 渲染函數)(undefined, r, 0)))
         .filter((v): v is number => v !== null)
       if (!有效.length) return col
       const 最優 = 越低越好 ? Math.min(...有效) : Math.max(...有效)
       return {
         ...col,
-        render: (value: any, record: 對比方案數據介面, index: number) => {
-          const 内容 = (原渲染 as any)(value, record, index)
+        render: (value: unknown, record: 對比方案數據介面, index: number) => {
+          const 内容 = (原渲染 as 渲染函數)(value, record, index)
           const n = 解析(内容)
           return n !== null && n === 最優 ? (
             <b style={{ color: '#2a9d8f', fontWeight: 700 }}>{内容}</b>
@@ -706,6 +713,7 @@ const ComparisonPage: React.FC = () => {
   }
 
   // 根據當前選擇動態生成列定義
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 获取的列函数与高亮函数为组件内纯函数（每次渲染重建，列入依赖会使memo失效）；對比方案列表与越低越好由高亮函数闭包读取，保留以触发重算
   const 當前列定義 = useMemo(() => {
     // 用 IIFE 取得原始列，再統一套上最優值高亮（switch 内的 return 保持原樣，含裁剪錨點分支）
     const 原始列: ColumnsType<對比方案數據介面> = (() => {

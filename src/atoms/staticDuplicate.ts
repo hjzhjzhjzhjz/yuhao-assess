@@ -42,7 +42,7 @@ export interface 靜態重碼分析結果介面 {
 /**
  * 驗證靜態重碼數據結構是否正確
  */
-export function 驗證靜態重碼數據(data: any): data is 靜態重碼分析結果介面 {
+export function 驗證靜態重碼數據(data: unknown): data is 靜態重碼分析結果介面 {
   if (!data || typeof data !== 'object') return false
 
   // 必需的字符集鍵名
@@ -70,17 +70,17 @@ export function 驗證靜態重碼數據(data: any): data is 靜態重碼分析�
       return false
     }
 
-    const charsetData = data[key]
+    const charsetData = (data as Record<string, unknown>)[key]
     // 檢查每個字符集的數據結構
     if (
       !charsetData ||
-      typeof charsetData.全碼重碼組數 !== 'number' ||
-      typeof charsetData.簡碼重碼組數 !== 'number' ||
-      typeof charsetData.全碼重碼字數 !== 'number' ||
-      typeof charsetData.簡碼重碼字數 !== 'number' ||
-      typeof charsetData.實際字符數 !== 'number' ||
-      typeof charsetData.理論字符數 !== 'number' ||
-      typeof charsetData.字集覆蓋率 !== 'number'
+      typeof (charsetData as Record<string, unknown>).全碼重碼組數 !== 'number' ||
+      typeof (charsetData as Record<string, unknown>).簡碼重碼組數 !== 'number' ||
+      typeof (charsetData as Record<string, unknown>).全碼重碼字數 !== 'number' ||
+      typeof (charsetData as Record<string, unknown>).簡碼重碼字數 !== 'number' ||
+      typeof (charsetData as Record<string, unknown>).實際字符數 !== 'number' ||
+      typeof (charsetData as Record<string, unknown>).理論字符數 !== 'number' ||
+      typeof (charsetData as Record<string, unknown>).字集覆蓋率 !== 'number'
     ) {
       console.warn(`⚠️ 字符集 ${key} 的數據結構不正確，將清除舊數據`)
       return false

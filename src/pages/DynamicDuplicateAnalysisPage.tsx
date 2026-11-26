@@ -43,7 +43,7 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
   const [詳情計算中, 設置詳情計算中] = useState(false)
 
   // 類型斷言：碼表數據實際上是 處理後的碼表結果
-  const 處理後碼表 = 碼表數據 as 處理後的碼表結果介面 | null
+  const 處理後碼表 = 碼表數據
 
   /**
    * 檢查數據是否完整
@@ -172,6 +172,7 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
   /**
    * 組件掛載時檢查數據
    */
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 僅掛載時檢查一次；重新計算/分析結果/碼表變化會各自觸發對effect的重新執行，重複計算反而浪费資源
   useEffect(() => {
     if (!分析結果 || !檢查數據完整性()) {
       // 數據不完整，自動觸發計算
@@ -179,7 +180,6 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
         重新計算()
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   /**
