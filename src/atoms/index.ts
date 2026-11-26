@@ -16,10 +16,9 @@ export type { 編碼預覽項 } from './codeTable'
 // 應用設置原子狀態
 export { 設置原子狀態, 分析參數原子狀態 } from './settings'
 
-// 重碼分析原子狀態
-export { 重碼分析原子狀態, 動態選重分析原子狀態 } from './dynamicDuplicate'
+// 動態選重原子狀態
+export { 動態選重分析原子狀態 } from './dynamicDuplicate'
 export type {
-  重碼分析結果介面,
   動態選重分析結果介面,
   動態選重結果介面,
   靜態重碼結果介面,

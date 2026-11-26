@@ -107,20 +107,6 @@ const LogoContainer = styled.div<{ $collapsed: boolean }>`
   }
 `
 
-// const CollapseTrigger = styled.div`
-//   padding: 16px;
-//   cursor: pointer;
-//   text-align: center;
-//   color: rgba(255, 255, 255, 0.65);
-//   background: #16332f;
-//   transition: all 0.2s;
-
-//   &:hover {
-//     color: #fff;
-//     background: #003366;
-//   }
-// `
-
 export interface SidebarProps {
   collapsed?: boolean
   onCollapse?: (collapsed: boolean) => void
@@ -255,10 +241,6 @@ export function Sidebar({ collapsed = false, onCollapse }: SidebarProps) {
         <LogoContainer $collapsed={折疊狀態} onClick={切換折疊}>
           <img src={公開路徑('/logo_blue.png')} alt="宇浩輸入法" />
         </LogoContainer>
-
-        {/* <CollapseTrigger onClick={切換折疊}>
-          {折疊狀態 ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        </CollapseTrigger> */}
 
         <Menu
           theme="dark"
