@@ -215,3 +215,86 @@ textarea:focus {
   background: var(--color-bg-tertiary);
   border-color: var(--color-border-secondary);
 }
+
+/* ============================================================
+   觸摸屏與移動端適配
+   ============================================================ */
+
+/* 消除觸摸點按的藍色高亮方塊，改用自定義反饋 */
+* {
+  -webkit-tap-highlight-color: rgba(0, 122, 204, 0.2);
+}
+
+/* 禁止頁面級橫向滾動——表格自己橫滾，不帶動整頁 */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* 消除移動端點擊 300ms 延遲，並禁止雙擊縮放帶來的誤操作 */
+button,
+a,
+input,
+select,
+textarea,
+.ant-menu-item,
+.ant-select-selector {
+  touch-action: manipulation;
+}
+
+/* antd 表格外層容器：窄屏時可橫向滾動，避免列被壓扁 */
+.ant-table-wrapper,
+.ant-table,
+.ant-table-container {
+  max-width: 100%;
+}
+
+.ant-table-body,
+.ant-table-content {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 觸摸目標：頂欄與表單按鈕在窄屏放大到至少 40px 高度 */
+@media (max-width: 768px) {
+  button,
+  .ant-btn {
+    min-height: 36px;
+  }
+
+  /* iOS Safari 在 input 字體小於 16px 時聚焦會自動放大頁面，統一提到 16px */
+  input,
+  select,
+  textarea,
+  .ant-input,
+  .ant-input-number-input,
+  .ant-select-selection-search-input {
+    font-size: 16px !important;
+  }
+
+  /* 首頁根容器：窄屏減少內邊距 */
+  .home-root {
+    padding: 0 !important;
+  }
+
+  /* 方案選擇框：窄屏撐滿整行 */
+  .home-scheme-select {
+    width: 100% !important;
+  }
+
+  /* 兩列表單網格在窄屏塌成單列 */
+  .responsive-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 跨兩列的元素在單列模式下改為跨一列 */
+  .responsive-grid > [style*='span 2'] {
+    grid-column: span 1 !important;
+  }
+
+  /* 選重鍵表那排標籤＋輸入框在窄屏換行 */
+  .responsive-grid [style*='nowrap'] {
+    white-space: normal !important;
+  }
+}

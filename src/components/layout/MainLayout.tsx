@@ -21,12 +21,24 @@ const StyledHeader = styled(Header)`
   align-items: center;
   height: 56px;
   line-height: 56px;
+
+  /* 移動端：留出左上角漢堡按鈕的位置，頂欄自動換行增高 */
+  @media (max-width: 768px) {
+    padding: 6px 12px 6px 58px;
+    height: auto;
+    min-height: 56px;
+    line-height: normal;
+  }
 `
 
 const StyledContent = styled(Content)`
   padding: 24px;
   background: #f0f2f5;
   overflow: auto;
+
+  @media (max-width: 768px) {
+    padding: 12px;
+  }
 `
 
 const ContentInner = styled.div`
@@ -36,6 +48,11 @@ const ContentInner = styled.div`
   padding: 24px;
   border-radius: 8px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+
+  @media (max-width: 768px) {
+    padding: 12px;
+    border-radius: 6px;
+  }
 `
 
 const StyledFooter = styled(Footer)`

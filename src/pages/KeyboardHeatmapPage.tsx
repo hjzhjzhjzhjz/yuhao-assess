@@ -16,6 +16,10 @@ const PageContainer = styled.div`
   padding: 24px;
   max-width: 1400px;
   margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 12px;
+  }
 `
 
 const KeyboardWrapper = styled.div`
@@ -30,6 +34,15 @@ const KeyboardWrapper = styled.div`
     max-width: 80%;
     margin: 0 auto;
     padding: 16px 0;
+  }
+
+  /* 移動端：鍵盤保持可觸摸的鍵位尺寸，改為橫向滑動查看，不勉強縮小 */
+  @media (max-width: 768px) {
+    overflow-x: auto;
+    overflow-y: hidden;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 12px;
   }
 `
 

@@ -198,14 +198,14 @@ function HomePage() {
   }
 
   return (
-    <Space orientation="vertical" size="large" style={{ width: '100%', padding: '24px' }}>
+    <Space orientation="vertical" size="large" className="home-root">
       {/* 方案選擇 */}
       <div>
         <Text type="secondary" style={{ marginRight: 12 }}>
           選擇預設方案：
         </Text>
         <Select
-          style={{ width: 300 }}
+          className="home-scheme-select"
           placeholder="選擇預設方案"
           disabled={方案載入中}
           loading={方案載入中}
@@ -225,7 +225,7 @@ function HomePage() {
       {當前方案 && (
         <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
           {/* 元數據 */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+          <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
             <div>
               <Text type="secondary">方案名</Text>
               <Input
@@ -390,7 +390,7 @@ function HomePage() {
 
           {/* 方案參數 */}
           <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: '16px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+            <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
               <div style={{ gridColumn: 'span 2' }}>
                 <Text type="secondary">編碼終止指示符（直接連寫，可選）</Text>
                 <Input
@@ -476,7 +476,7 @@ function HomePage() {
           {/* 碼表元數據 */}
           {當前方案.碼表元數據 && (
             <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: '16px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+              <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
                 {當前方案.碼表元數據.總字符數 && (
                   <div>
                     <Text type="secondary">總字符數（已解析）</Text>

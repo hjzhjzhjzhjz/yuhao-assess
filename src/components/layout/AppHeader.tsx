@@ -48,6 +48,13 @@ const HeaderContainer = styled.div`
     border-color: rgba(255, 255, 255, 0.25);
     color: rgba(255, 255, 255, 0.45);
   }
+
+  /* 移動端：標題與操作區上下排列，避免橫向擠壓 */
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
 `
 
 const PageTitle = styled.h1`
@@ -61,6 +68,11 @@ const PageTitle = styled.h1`
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 280px;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    max-width: 100%;
+  }
 `
 
 export function AppHeader() {
