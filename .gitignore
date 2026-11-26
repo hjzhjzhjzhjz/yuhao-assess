@@ -74,3 +74,6 @@ local/
 public/data/
 public/schemes/
 public/texts/
+
+# 打包產物
+宇浩测评.exe

@@ -72,7 +72,12 @@ export default defineConfig([
   // Node.js 環境配置（用於CLI工具）
   {
     name: 'app/node',
-    files: ['src/utils/normalize-traditional-chars.ts', 'scripts/**/*.js', 'src/cli/**/*.ts'],
+    files: [
+      'src/utils/normalize-traditional-chars.ts',
+      'scripts/**/*.js',
+      'src/cli/**/*.ts',
+      '打包/**/*.ts',
+    ],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
@@ -86,6 +91,11 @@ export default defineConfig([
         __filename: 'readonly',
         Buffer: 'readonly',
         NodeJS: 'readonly',
+        // 打包啓動器跑在 Bun 裏
+        Bun: 'readonly',
+        Blob: 'readonly',
+        Response: 'readonly',
+        URL: 'readonly',
       },
     },
     plugins: {
