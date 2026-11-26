@@ -15,7 +15,7 @@ import {
 } from '../services/duplicateAnalysisService'
 import type { 處理後的碼表結果介面 } from '../types'
 
-const { Paragraph, Link } = Typography
+const { Link } = Typography
 
 /**
  * 動態選重率分析頁面
@@ -602,17 +602,6 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
   return (
     <div style={{ padding: 24 }}>
       <Space orientation="vertical" size="large" style={{ width: '100%' }}>
-        {/* 頁面標題 */}
-        <div>
-          <Paragraph>
-            分析不同字頻數據下的選重率。閲讀
-            <Link href="https://shurufa.app/docs/concepts.html" target="_blank">
-              瓊林擷英
-            </Link>
-            瞭解詳細定義。
-          </Paragraph>
-        </div>
-
         {/* 操作按鈕 */}
         <Space>
           <Button

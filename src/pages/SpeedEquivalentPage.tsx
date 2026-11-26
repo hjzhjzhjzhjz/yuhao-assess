@@ -23,7 +23,7 @@ import {
 import type { 處理後的碼表結果介面 } from '../types'
 import { 默認選重鍵表 } from '../types/scheme'
 
-const { Paragraph, Link } = Typography
+const { Link } = Typography
 
 /**
  * 速度當量分析頁面
@@ -690,17 +690,6 @@ const SpeedEquivalentPage: React.FC = () => {
   return (
     <div style={{ padding: 24 }}>
       <Space orientation="vertical" size="large" style={{ width: '100%' }}>
-        {/* 頁面標題 */}
-        <div>
-          <Paragraph>
-            分析輸入法的速度當量，計算基於字頻加權的全碼按鍵組合。閲讀
-            <Link href="https://shurufa.app/docs/concepts.html" target="_blank">
-              瓊林擷英
-            </Link>
-            瞭解詳細定義。
-          </Paragraph>
-        </div>
-
         {/* 操作按鈕 */}
         <Space>
           <Button
