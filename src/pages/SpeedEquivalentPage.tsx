@@ -739,16 +739,6 @@ const SpeedEquivalentPage: React.FC = () => {
             style={{ marginTop: 16 }}
           />
         )}
-
-        {/* 提示信息 */}
-        {分析結果 && (
-          <Alert
-            title="説明"
-            description="點擊字頻來源，可查看該字頻類型下全碼與簡碼的當量對比。選重鍵按實際輸入習慣折算：二重記爲 ; 、三重記爲 ' ，四重及以後仍記爲數字鍵。"
-            type="info"
-            showIcon
-          />
-        )}
       </Space>
 
       {/* 當量分佈 Modal */}

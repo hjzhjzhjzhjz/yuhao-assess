@@ -7,11 +7,9 @@
  * 這樣導入和導出都非常方便，且不需要額外的轉換邏輯。
  */
 
-import type { 最大候選個數分析結果 } from '../atoms/maximumCandidates'
 import type { 速度當量分析結果介面 } from '../atoms/speedEquivalent'
 import type { 簡碼效率分析結果介面 } from '../atoms/shortCodeEfficiency'
 import type { 鍵位熱力分析結果介面 } from '../atoms/keyboardHeatmap'
-import type { 連續文本當量存檔介面 } from '../atoms/continuousEquivalent'
 
 /**
  * 方案元數據
@@ -87,9 +85,6 @@ export interface 方案測評結果介面 {
   // 靜態重碼分析（各字符集的靜態重碼數據）
   靜態重碼分析?: import('@/atoms/staticDuplicate').靜態重碼分析結果介面
 
-  // 最大候選數分析
-  候選個數分析?: 最大候選個數分析結果
-
   // 速度當量分析
   速度當量分析?: 速度當量分析結果介面
 
@@ -98,9 +93,6 @@ export interface 方案測評結果介面 {
 
   // 鍵位熱力分析
   鍵位熱力?: 鍵位熱力分析結果介面
-
-  // 連續文本當量分析（分佈存成緊湊格點形式，導入後無需重算即可出圖）
-  連續文本當量?: 連續文本當量存檔介面
 }
 
 /**

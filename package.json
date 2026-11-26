@@ -24,12 +24,9 @@
     "lint:fix": "biome check --write ."
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "node src/utils/normalize-traditional-chars.ts",
-      "biome check --write --no-errors-on-unmatched"
-    ],
+    "*.{ts,tsx}": ["node src/utils/normalize-traditional-chars.ts", "biome check --write"],
     "*.md": ["node src/utils/normalize-traditional-chars.ts", "markdownlint-cli2 --fix"],
-    "*.{json,css}": ["biome format --write --no-errors-on-unmatched"]
+    "*.{json,css}": ["biome format --write"]
   },
   "dependencies": {
     "@ant-design/icons": "^6.3.4",

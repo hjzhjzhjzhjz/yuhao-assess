@@ -6,7 +6,6 @@
 import { loadCharFrequency, loadEquivTable } from './node-adapter'
 import { analyzeStaticDuplicate } from './analyses/static-duplicate'
 import { analyzeDynamicDuplicate } from './analyses/dynamic-duplicate'
-import { analyzeMaximumCandidates } from './analyses/maximum-candidates'
 import { analyzeSpeedEquivalent } from './analyses/speed-equivalent'
 import { analyzeShortCodeEfficiency } from './analyses/short-code-efficiency'
 import { analyzeKeyboardHeatmap } from './analyses/keyboard-heatmap'
@@ -71,15 +70,6 @@ export async function runAllAnalyses(options: AnalyzerOptions): Promise<方案�
       簡碼加選重鍵表,
       charFrequencies
     )
-    onStepDone(step, Date.now() - t0)
-  }
-
-  // 3. 候選個數分析
-  {
-    const step = '候選個數分析'
-    onStepStart(step)
-    const t0 = Date.now()
-    result.候選個數分析 = await analyzeMaximumCandidates(全碼表)
     onStepDone(step, Date.now() - t0)
   }
 

@@ -9,8 +9,7 @@
  *   避免用户在主頁每次輸入都觸發 localStorage 寫入。
  *   方案配置的持久化由 當前方案原子狀態（atomWithStorage）自身負責。
  * - 測評結果同步加 3000ms debounce，避免重算時多個結果依次完成導致連續寫入。
- * - 收結果走 `收集測評結果`，與導出、克隆同一支：七項一次收齊，
- *   連續文本當量按緊湊格點存檔，否則幾萬個原始樣本值會把 localStorage 撑爆。
+ * - 收結果走 `收集測評結果`，與導出、克隆同一支，一次收齊。
  *
  * 應在 MainLayout 中調用一次。
  */
@@ -20,11 +19,9 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { 當前方案原子狀態 } from '@/atoms/scheme'
 import { 動態選重分析原子狀態 } from '@/atoms/dynamicDuplicate'
 import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
-import { 候選個數分析原子狀態 } from '@/atoms/maximumCandidates'
 import { 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
 import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
 import { 鍵位熱力分析原子狀態 } from '@/atoms/keyboardHeatmap'
-import { 連續文本當量分析原子狀態 } from '@/atoms/continuousEquivalent'
 import { 收集測評結果 } from '@/services/exportService'
 import { 本地方案列表原子狀態, 當前本地方案標識符原子狀態 } from '@/atoms/localSchemes'
 
@@ -42,11 +39,9 @@ export function useLocalSchemeSyncMetrics() {
 
   const 動態選重 = useAtomValue(動態選重分析原子狀態)
   const 靜態重碼 = useAtomValue(靜態重碼分析原子狀態)
-  const 候選個數 = useAtomValue(候選個數分析原子狀態)
   const 速度當量 = useAtomValue(速度當量分析原子狀態)
   const 簡碼效率 = useAtomValue(簡碼效率分析原子狀態)
   const 鍵位熱力 = useAtomValue(鍵位熱力分析原子狀態)
-  const 連續文本當量 = useAtomValue(連續文本當量分析原子狀態)
 
   // 標識符剛切換時跳過一次，避免用空數據覆蓋剛恢復的結果
   const 上次激活標識符 = useRef<string | null>(null)
@@ -82,11 +77,9 @@ export function useLocalSchemeSyncMetrics() {
               ...收集測評結果({
                 靜態重碼分析結果: 靜態重碼,
                 動態選重分析結果: 動態選重,
-                候選個數分析結果: 候選個數,
                 速度當量分析結果: 速度當量,
                 簡碼效率分析結果: 簡碼效率,
                 鍵位熱力分析結果: 鍵位熱力,
-                連續文本當量分析結果: 連續文本當量,
               }),
             },
           }
@@ -99,15 +92,5 @@ export function useLocalSchemeSyncMetrics() {
         clearTimeout(timerRef.current)
       }
     }
-  }, [
-    設置本地方案列表,
-    當前本地方案標識符,
-    動態選重,
-    靜態重碼,
-    候選個數,
-    速度當量,
-    簡碼效率,
-    鍵位熱力,
-    連續文本當量,
-  ])
+  }, [設置本地方案列表, 當前本地方案標識符, 動態選重, 靜態重碼, 速度當量, 簡碼效率, 鍵位熱力])
 }

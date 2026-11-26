@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react'
-import { Card, Tabs, Checkbox, Button, Space, Alert, Modal, Spin, message } from 'antd'
-import { ReloadOutlined, QuestionCircleOutlined } from '@ant-design/icons'
+import { Card, Tabs, Checkbox, Button, Space, Alert, Spin, message } from 'antd'
+import { ReloadOutlined } from '@ant-design/icons'
 import { useAtom } from 'jotai'
 import styled from 'styled-components'
 import { 碼表原子狀態 } from '@/atoms/codeTable'
@@ -36,7 +36,7 @@ const KeyboardWrapper = styled.div`
     padding: 16px 0;
   }
 
-  /* 移動端：鍵盤保持可觸摸的鍵位尺寸，改為橫向滑動查看，不勉強縮小 */
+  /* 移動端：鍵盤保持可觸摸的鍵位尺寸，改爲橫向滑動查看，不勉強縮小 */
   @media (max-width: 768px) {
     overflow-x: auto;
     overflow-y: hidden;
@@ -141,7 +141,7 @@ const KeyButton = styled.button<{
           rgba(185, 104, 42, ${intensity * 0.8 + 0.1})
         )`
       }
-      // 全碼模式：青瓷綠漸變
+      // 全碼模式：青瓷緑漸變
       return `linear-gradient(135deg, 
         rgba(42, 157, 143, ${intensity * 0.9 + 0.1}), 
         rgba(26, 110, 100, ${intensity * 0.8 + 0.1})
@@ -215,7 +215,7 @@ const StatsGrid = styled.div`
   }
 `
 
-// 熱力圖顏色圖例：從低到高的漸變色條
+// 熱力圖顔色圖例：從低到高的漸變色條
 const Legend = styled.div<{ $mode?: string }>`
   display: flex;
   align-items: center;
@@ -516,7 +516,6 @@ export default function KeyboardHeatmapPage() {
   const [分析結果, 設置分析結果] = useAtom(鍵位熱力分析原子狀態)
   const [activeTab, setActiveTab] = useState('full')
   const [simulatePunctuation, setSimulatePunctuation] = useState(true)
-  const [showHelp, setShowHelp] = useState(false)
   const [keyboardScale] = useState(1.0)
   const [計算中, 設置計算中] = useState(false)
   const [錯誤信息, 設置錯誤信息] = useState<string | null>(null)
@@ -707,9 +706,6 @@ export default function KeyboardHeatmapPage() {
         }
         extra={
           <Space>
-            <Button icon={<QuestionCircleOutlined />} onClick={() => setShowHelp(true)}>
-              説明
-            </Button>
             <Button
               type="primary"
               icon={<ReloadOutlined />}
@@ -848,47 +844,6 @@ export default function KeyboardHeatmapPage() {
           </>
         )}
       </Card>
-
-      <Modal
-        title="模擬標點使用頻率説明"
-        open={showHelp}
-        onCancel={() => setShowHelp(false)}
-        footer={[
-          <Button key="ok" type="primary" onClick={() => setShowHelp(false)}>
-            我知道了
-          </Button>,
-        ]}
-      >
-        <p>
-          根據現代漢語文本中標點符號約占 <strong>13%</strong> 的占比，結合碼長計算實際按鍵使用頻率。
-        </p>
-        <p>
-          <strong>分佈規則：</strong>
-        </p>
-        <ul>
-          <li>
-            <code>;</code> 鍵 → 分號、冒號（<strong>10%</strong>）
-          </li>
-          <li>
-            <code>,</code> 鍵 → 逗號、左書名號（<strong>40%</strong>）
-          </li>
-          <li>
-            <code>.</code> 鍵 → 句號、右書名號（<strong>40%</strong>）
-          </li>
-          <li>
-            <code>/</code> 鍵 → 問號（<strong>5%</strong>）
-          </li>
-          <li>
-            <code>&apos;</code> 鍵 → 單引號、雙引號（<strong>5%</strong>）
-          </li>
-        </ul>
-        <p>
-          <strong>説明：</strong>
-        </p>
-        <p>
-          啓用此選項後，將根據上述分佈規則模擬標點符號按鍵的實際使用頻率，並疊加到現有的按鍵使用統計中，使熱力圖更貼近實際打字情况。
-        </p>
-      </Modal>
     </PageContainer>
   )
 }

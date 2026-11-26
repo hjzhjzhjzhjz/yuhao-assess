@@ -1,12 +1,9 @@
 import type { 方案配置介面 } from '@/types/scheme'
 import type { 靜態重碼分析結果介面 } from '@/atoms/staticDuplicate'
 import type { 動態選重分析結果介面 } from '@/atoms/dynamicDuplicate'
-import type { 最大候選個數分析結果 } from '@/atoms/maximumCandidates'
 import type { 速度當量分析結果介面 } from '@/atoms/speedEquivalent'
 import type { 簡碼效率分析結果介面 } from '@/atoms/shortCodeEfficiency'
 import type { 鍵位熱力分析結果介面 } from '@/atoms/keyboardHeatmap'
-import type { 連續文本當量分析結果介面 } from '@/atoms/continuousEquivalent'
-import { 壓縮連續文本當量結果 } from '@/atoms/continuousEquivalent'
 
 /**
  * 分析結果集合
@@ -14,34 +11,24 @@ import { 壓縮連續文本當量結果 } from '@/atoms/continuousEquivalent'
 export interface 分析結果集 {
   靜態重碼分析結果: 靜態重碼分析結果介面 | null
   動態選重分析結果: 動態選重分析結果介面 | null
-  候選個數分析結果: 最大候選個數分析結果 | null
   速度當量分析結果: 速度當量分析結果介面 | null
   簡碼效率分析結果: 簡碼效率分析結果介面 | null
   鍵位熱力分析結果: 鍵位熱力分析結果介面 | null
-  連續文本當量分析結果?: 連續文本當量分析結果介面 | null
 }
 
 /**
  * 把各 atom 裏的測評結果收成一份 `方案配置介面['測評結果']`
  *
- * 這是 `應用方案數據` 的反方向。那一支的註釋説「邏輯抄三份遲早會漏掉某一項
- * 結果」——收集這一側同樣抄過三份（導出、克隆、本地方案自動同步），而且
- * 真的漏了：`連續文本當量` 只有導出那一份寫了，另兩份都没有。
- *
- * 連續文本當量一律壓成緊湊格點（存檔格式），恢復時由 `應用方案數據`
- * 裏的 `展開連續文本當量結果` 還原。
+ * 這是 `應用方案數據` 的反方向：把各 atom 的結果收成存檔格式，
+ * 與導出、克隆、本地方案自動同步共用同一支。
  */
 export function 收集測評結果(分析結果: 分析結果集): 方案配置介面['測評結果'] {
   return {
     靜態重碼分析: 分析結果.靜態重碼分析結果 ?? undefined,
     動態選重分析: 分析結果.動態選重分析結果 ?? undefined,
-    候選個數分析: 分析結果.候選個數分析結果 ?? undefined,
     速度當量分析: 分析結果.速度當量分析結果 ?? undefined,
     簡碼效率分析: 分析結果.簡碼效率分析結果 ?? undefined,
     鍵位熱力: 分析結果.鍵位熱力分析結果 ?? undefined,
-    連續文本當量: 分析結果.連續文本當量分析結果
-      ? 壓縮連續文本當量結果(分析結果.連續文本當量分析結果)
-      : undefined,
   }
 }
 
@@ -89,11 +76,9 @@ export function 導出方案配置JSON(
     const 結果列表 = [
       分析結果.靜態重碼分析結果 && '靜態重碼分析',
       分析結果.動態選重分析結果 && '動態選重分析',
-      分析結果.候選個數分析結果 && '候選個數分析',
       分析結果.速度當量分析結果 && '速度當量分析',
       分析結果.簡碼效率分析結果 && '簡碼效率分析',
       分析結果.鍵位熱力分析結果 && '鍵位熱力分析',
-      分析結果.連續文本當量分析結果 && '連續文本當量分析',
     ].filter(Boolean)
     const 提示 = 結果列表.length > 0 ? `（包含${結果列表.join('、')}結果）` : ''
 

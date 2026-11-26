@@ -838,28 +838,6 @@ const ShortCodeEfficiencyPage: React.FC = () => {
               </MetricsTable>
             </TableContainer>
 
-            <Alert
-              title="説明"
-              description={
-                <div>
-                  <ul style={{ marginBottom: 0 }}>
-                    {有省略行 && (
-                      <li>
-                        <strong>注意：</strong>繼續出簡不再降低碼長（部分行已省略顯示）
-                      </li>
-                    )}
-                    <li>本模塊使用前 N 個（最大爲 2000 個）最有效率的簡碼時的平均碼長</li>
-                    <li>簡碼字的效率取決於漢字字頻 × 節約碼長</li>
-                    <li>僅考慮簡碼長度小於全碼長度且小於最大碼長的漢字，實際簡碼數量可能小於 N</li>
-                    <li>點擊數字可查看該區間所有高效簡碼字的詳細列表</li>
-                  </ul>
-                </div>
-              }
-              type="info"
-              showIcon
-              style={{ marginTop: 16 }}
-            />
-
             {當前方案?.元數據?.方案名 && (
               <div style={{ marginTop: 16, textAlign: 'center', color: '#6b7280', fontSize: 14 }}>
                 當前方案：{當前方案.元數據.方案名}

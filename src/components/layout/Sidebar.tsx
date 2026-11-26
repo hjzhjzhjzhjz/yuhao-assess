@@ -9,14 +9,12 @@ import {
   HomeOutlined,
   UploadOutlined,
   DashboardOutlined,
-  NumberOutlined,
   RocketOutlined,
   FireOutlined,
   SwapOutlined,
   SettingOutlined,
   BarChartOutlined,
   LineChartOutlined,
-  AreaChartOutlined,
 } from '@ant-design/icons'
 import styled from 'styled-components'
 import { 公開路徑 } from '@/utils/publicPath'
@@ -28,7 +26,7 @@ const StyledSider = styled(Sider)`
     background: #1c2b2d;
   }
 
-  /* 移動端抽屜：窄屏時側欄浮在內容之上，滑入滑出，不擠壓正文寬度 */
+  /* 移動端抽屜：窄屏時側欄浮在内容之上，滑入滑出，不擠壓正文寬度 */
   @media (max-width: 768px) {
     position: fixed !important;
     top: 0;
@@ -116,7 +114,7 @@ export function Sidebar({ collapsed = false, onCollapse }: SidebarProps) {
   const navigate = useNavigate()
   const location = useLocation()
   const [内部折疊狀態, 設置内部折疊狀態] = useState(collapsed)
-  // 是否為移動端（窄屏）。移動端側欄改為抽屜，默認收起，避免一進來就擋住正文。
+  // 是否爲移動端（窄屏）。移動端側欄改爲抽屜，默認收起，避免一進來就擋住正文。
   const [是移動端, 設置是移動端] = useState(
     typeof window !== 'undefined' ? window.innerWidth <= 768 : false
   )
@@ -140,7 +138,7 @@ export function Sidebar({ collapsed = false, onCollapse }: SidebarProps) {
   }, [onCollapse])
 
   const 折疊狀態 = onCollapse !== undefined ? collapsed : 内部折疊狀態
-  // 抽屜是否打開：移動端下「非折疊」即為打開
+  // 抽屜是否打開：移動端下「非折疊」即爲打開
   const 抽屜打開 = 是移動端 && !折疊狀態
 
   const 切換折疊 = () => {
@@ -183,19 +181,9 @@ export function Sidebar({ collapsed = false, onCollapse }: SidebarProps) {
       label: '動態選重',
     },
     {
-      key: '/candidates',
-      icon: <NumberOutlined />, // 數字圖標（可換成：FunnelPlotOutlined, StockOutlined）
-      label: '候選個數',
-    },
-    {
       key: '/speed',
       icon: <DashboardOutlined />, // 儀表盤圖標（可換成：ThunderboltOutlined, FastForwardOutlined, ClockCircleOutlined）
       label: '速度當量',
-    },
-    {
-      key: '/continuous',
-      icon: <AreaChartOutlined />, // 面積圖圖標，呼應連續文本當量的分佈圖
-      label: '連續當量', // 側邊欄只放得下四個字，正式名稱是「連續文本當量」
     },
     {
       key: '/efficiency',

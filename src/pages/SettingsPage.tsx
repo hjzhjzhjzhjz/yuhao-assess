@@ -17,11 +17,9 @@ import { 主题配置原子, 重置主题配置原子 } from '@/atoms/theme'
 import { 當前方案原子狀態 } from '@/atoms/scheme'
 import { 動態選重分析原子狀態 } from '@/atoms/dynamicDuplicate'
 import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
-import { 候選個數分析原子狀態 } from '@/atoms/maximumCandidates'
 import { 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
 import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
 import { 鍵位熱力分析原子狀態 } from '@/atoms/keyboardHeatmap'
-import { 連續文本當量分析原子狀態 } from '@/atoms/continuousEquivalent'
 import { 碼表原子狀態 } from '@/atoms/codeTable'
 import { 碼表處理服務實例 } from '@/services/codeTableService'
 import { 導出方案配置JSON } from '@/services/exportService'
@@ -45,11 +43,9 @@ const SettingsPage: React.FC = () => {
   // Atom setters
   const 設置動態選重分析結果 = useSetAtom(動態選重分析原子狀態)
   const 設置靜態重碼分析結果 = useSetAtom(靜態重碼分析原子狀態)
-  const 設置候選個數分析結果 = useSetAtom(候選個數分析原子狀態)
   const 設置速度當量分析結果 = useSetAtom(速度當量分析原子狀態)
   const 設置簡碼效率分析結果 = useSetAtom(簡碼效率分析原子狀態)
   const 設置鍵位熱力分析結果 = useSetAtom(鍵位熱力分析原子狀態)
-  const 設置連續文本當量分析結果 = useSetAtom(連續文本當量分析原子狀態)
   const 設置碼表數據 = useSetAtom(碼表原子狀態)
 
   // 生成并导出当前方案
@@ -99,11 +95,9 @@ const SettingsPage: React.FC = () => {
       console.log('[步驟 2] 清除所有分析结果...')
       設置靜態重碼分析結果(null)
       設置動態選重分析結果(null)
-      設置候選個數分析結果(null)
       設置速度當量分析結果(null)
       設置簡碼效率分析結果(null)
       設置鍵位熱力分析結果(null)
-      設置連續文本當量分析結果(null)
       console.log('  ✓ 分析结果已清空')
 
       message.loading('正在觸發所有分析計算...', 1)
@@ -122,20 +116,16 @@ const SettingsPage: React.FC = () => {
       console.log('[步驟 5] 从 atom 中读取最新分析结果...')
       const 靜態重碼分析結果 = store.get(靜態重碼分析原子狀態)
       const 動態選重分析結果 = store.get(動態選重分析原子狀態)
-      const 候選個數分析結果 = store.get(候選個數分析原子狀態)
       const 速度當量分析結果 = store.get(速度當量分析原子狀態)
       const 簡碼效率分析結果 = store.get(簡碼效率分析原子狀態)
       const 鍵位熱力分析結果 = store.get(鍵位熱力分析原子狀態)
-      const 連續文本當量分析結果 = store.get(連續文本當量分析原子狀態)
 
       console.log('  检查 atom 状态:')
       console.log('  - 靜態重碼:', 靜態重碼分析結果 ? '✓ 有数据' : '✗ 无数据')
       console.log('  - 動態選重:', 動態選重分析結果 ? '✓ 有数据' : '✗ 无数据')
-      console.log('  - 候選個數:', 候選個數分析結果 ? '✓ 有数据' : '✗ 无数据')
       console.log('  - 速度當量:', 速度當量分析結果 ? '✓ 有数据' : '✗ 无数据')
       console.log('  - 簡碼效率:', 簡碼效率分析結果 ? '✓ 有数据' : '✗ 无数据')
       console.log('  - 鍵位熱力:', 鍵位熱力分析結果 ? '✓ 有数据' : '✗ 无数据')
-      console.log('  - 連續文本當量:', 連續文本當量分析結果 ? '✓ 有数据' : '✗ 无数据')
 
       // 步骤6：导出JSON
       console.log('[步驟 6] 导出 JSON...')
@@ -144,11 +134,9 @@ const SettingsPage: React.FC = () => {
         {
           靜態重碼分析結果,
           動態選重分析結果,
-          候選個數分析結果,
           速度當量分析結果,
           簡碼效率分析結果,
           鍵位熱力分析結果,
-          連續文本當量分析結果,
         },
         true
       )
@@ -199,13 +187,6 @@ const SettingsPage: React.FC = () => {
             </Space>
           }
           type="warning"
-          showIcon
-        />
-
-        <Alert
-          title="提示"
-          description="所有設置僅在當前會話有效，刷新頁面後將恢復默認值。"
-          type="info"
           showIcon
         />
 
@@ -380,20 +361,6 @@ const SettingsPage: React.FC = () => {
         >
           恢復默認設置
         </Button>
-
-        {/* 说明 */}
-        <Card size="small">
-          <Space orientation="vertical" size="small">
-            <Text strong>CSS 變量機制説明</Text>
-            <Paragraph type="secondary" style={{ marginBottom: 0 }}>
-              • 表格字體大小使用 <code>var(--table-font-size, 13px)</code>
-              <br />• 優先使用 CSS 變量 <code>--table-font-size</code> 的值
-              <br />• 如果變量未定義，才使用後備值 13px
-              <br />• 當你設置爲 20px 時，實際應用的是 20px（不是 13px）
-              <br />• 所有表格單元格（包括等寬字體）都使用統一的字體大小
-            </Paragraph>
-          </Space>
-        </Card>
       </Space>
     </div>
   )

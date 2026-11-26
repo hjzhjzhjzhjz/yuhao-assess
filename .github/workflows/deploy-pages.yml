@@ -21,22 +21,6 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: 裁剪「连续文本当量」功能（仅部署产物，不改仓库源码）
-        shell: bash
-        run: python3 scripts/strip-continuous.py
-
-      - name: 裁剪「候选个数」功能（仅部署产物，不改仓库源码）
-        shell: bash
-        run: python3 scripts/strip-candidates.py
-
-      - name: 裁剪「方案对比页说明」区块（仅部署产物，不改仓库源码）
-        shell: bash
-        run: python3 scripts/strip-comparison-note.py
-
-      - name: 裁剪「其他页面说明」内容（仅部署产物，不改仓库源码）
-        shell: bash
-        run: python3 scripts/strip-other-notes.py
-
       - uses: pnpm/action-setup@9bbca1e9dc2902adb87e8780fe5c98796985a62d # v6.1.1
         with:
           version: 12.23.0

@@ -5,9 +5,7 @@ import HomePage from './pages/HomePage'
 import ProcessTablePage from './pages/ProcessTablePage'
 import StaticDuplicateAnalysisPage from './pages/StaticDuplicateAnalysisPage'
 import DynamicDuplicateAnalysisPage from './pages/DynamicDuplicateAnalysisPage'
-import MaximumCandidatesPage from './pages/MaximumCandidatesPage'
 import SpeedEquivalentPage from './pages/SpeedEquivalentPage'
-import ContinuousSpeedEquivalentPage from './pages/ContinuousSpeedEquivalentPage'
 import ShortCodeEfficiencyPage from './pages/ShortCodeEfficiencyPage'
 import KeyboardHeatmapPage from './pages/KeyboardHeatmapPage'
 import ComparisonPage from './pages/ComparisonPage'
@@ -37,16 +35,8 @@ const routes = [
         element: <DynamicDuplicateAnalysisPage />,
       },
       {
-        path: '/candidates',
-        element: <MaximumCandidatesPage />,
-      },
-      {
         path: '/speed',
         element: <SpeedEquivalentPage />,
-      },
-      {
-        path: '/continuous',
-        element: <ContinuousSpeedEquivalentPage />,
       },
       {
         path: '/efficiency',
@@ -70,8 +60,7 @@ const routes = [
 
 // 定義所有分析頁面路徑，用於編譯時檢查
 // TypeScript 7 下只保留型别别名，不再生成没有執行期用途的常量陣列
-export type 分析頁面路徑型别 =
-  '/dynamic' | '/static' | '/candidates' | '/speed' | '/continuous' | '/efficiency' | '/heatmap'
+export type 分析頁面路徑型别 = '/dynamic' | '/static' | '/speed' | '/efficiency' | '/heatmap'
 
 function App() {
   const element = useRoutes(routes)

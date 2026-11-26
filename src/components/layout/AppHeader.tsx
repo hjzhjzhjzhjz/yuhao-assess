@@ -15,9 +15,7 @@ import { 當前方案原子狀態, 方案列表原子狀態, 頂欄方案載入�
 import { 等界面繪製 } from '@/utils/wait-for-paint'
 import { 動態選重分析原子狀態 } from '@/atoms/dynamicDuplicate'
 import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
-import { 候選個數分析原子狀態 } from '@/atoms/maximumCandidates'
 import { 速度當量分析原子狀態, 當量詳情原子狀態 } from '@/atoms/speedEquivalent'
-import { 連續文本當量分析原子狀態 } from '@/atoms/continuousEquivalent'
 import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
 import { 鍵位熱力分析原子狀態 } from '@/atoms/keyboardHeatmap'
 import { 碼表原子狀態, 原始碼表原子狀態, 編碼預覽數據原子狀態 } from '@/atoms/codeTable'
@@ -86,7 +84,6 @@ export function AppHeader() {
   const 方案載入中 = 方案切換中 || 頂欄方案載入名 !== null
   const 設置靜態重碼分析結果 = useSetAtom(靜態重碼分析原子狀態)
   const 設置動態選重分析結果 = useSetAtom(動態選重分析原子狀態)
-  const 設置候選個數分析結果 = useSetAtom(候選個數分析原子狀態)
   const 設置速度當量分析結果 = useSetAtom(速度當量分析原子狀態)
   const 設置簡碼效率分析結果 = useSetAtom(簡碼效率分析原子狀態)
   const 設置鍵位熱力分析結果 = useSetAtom(鍵位熱力分析原子狀態)
@@ -97,10 +94,8 @@ export function AppHeader() {
   // 讀取分析結果用於導出和克隆快照
   const 靜態重碼分析結果 = useAtomValue(靜態重碼分析原子狀態)
   const 動態選重分析結果 = useAtomValue(動態選重分析原子狀態)
-  const 候選個數分析結果 = useAtomValue(候選個數分析原子狀態)
   const 速度當量分析結果 = useAtomValue(速度當量分析原子狀態)
   const 設置當量詳情 = useSetAtom(當量詳情原子狀態)
-  const [連續文本當量分析結果, 設置連續文本當量分析結果] = useAtom(連續文本當量分析原子狀態)
   const 簡碼效率分析結果 = useAtomValue(簡碼效率分析原子狀態)
   const 鍵位熱力分析結果 = useAtomValue(鍵位熱力分析原子狀態)
   const 編碼預覽數據 = useAtomValue(編碼預覽數據原子狀態)
@@ -109,11 +104,9 @@ export function AppHeader() {
   const 當前分析結果 = {
     靜態重碼分析結果,
     動態選重分析結果,
-    候選個數分析結果,
     速度當量分析結果,
     簡碼效率分析結果,
     鍵位熱力分析結果,
-    連續文本當量分析結果,
   }
 
   // 本地方案
@@ -131,10 +124,8 @@ export function AppHeader() {
     設置編碼預覽數據,
     設置靜態重碼分析結果,
     設置動態選重分析結果,
-    設置候選個數分析結果,
     設置速度當量分析結果,
     設置當量詳情,
-    設置連續文本當量分析結果,
     設置簡碼效率分析結果,
     設置鍵位熱力分析結果,
   }
@@ -324,7 +315,6 @@ export function AppHeader() {
   const 處理全局重算 = async () => {
     設置靜態重碼分析結果(null)
     設置動態選重分析結果(null)
-    設置候選個數分析結果(null)
     設置速度當量分析結果(null)
     設置簡碼效率分析結果(null)
     設置鍵位熱力分析結果(null)
