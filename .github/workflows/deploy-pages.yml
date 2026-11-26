@@ -25,6 +25,10 @@ jobs:
         shell: bash
         run: python3 scripts/strip-continuous.py
 
+      - name: 裁剪「候选个数」功能（仅部署产物，不改仓库源码）
+        shell: bash
+        run: python3 scripts/strip-candidates.py
+
       - uses: pnpm/action-setup@v6
         with:
           version: 12
