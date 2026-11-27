@@ -344,20 +344,6 @@ const StaticDuplicateAnalysisPage: React.FC = () => {
         width: 120,
       },
       {
-        title: '全碼重碼字數',
-        dataIndex: '全碼重碼字數',
-        key: '全碼重碼字數',
-        align: 'right',
-        width: 120,
-      },
-      {
-        title: '簡碼重碼字數',
-        dataIndex: '簡碼重碼字數',
-        key: '簡碼重碼字數',
-        align: 'right',
-        width: 120,
-      },
-      {
         title: '全碼選重個數',
         dataIndex: '全碼選重個數',
         key: '全碼選重個數',
