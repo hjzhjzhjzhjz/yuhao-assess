@@ -1,7 +1,7 @@
-import { DownloadOutlined, ThunderboltOutlined, UploadOutlined } from '@ant-design/icons'
+import { DownloadOutlined, UploadOutlined } from '@ant-design/icons'
 import type { UploadProps } from 'antd'
 import { App, Button, Space, Upload } from 'antd'
-import { useAtomValue, useSetAtom, useStore } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 import styled from 'styled-components'
 import { 原始碼表原子狀態, 碼表原子狀態, 編碼預覽數據原子狀態 } from '@/atoms/codeTable'
@@ -15,7 +15,6 @@ import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
 import { 解析導入JSON } from '@/schemas/importScheme'
 import { 應用方案數據, type 方案應用Setters } from '@/services/atomResetService'
 import { 導出方案配置JSON } from '@/services/exportService'
-import { 原地重算所有分析 } from '@/services/inPlaceRecomputeService'
 import { 列出可用方案, 加載方案 } from '@/services/schemeService'
 import type { 方案列表項介面 } from '@/types/scheme'
 
@@ -29,7 +28,7 @@ const HeaderContainer = styled.div`
   width: 100%;
 
   /* 頂欄底色是深的，而 antd 的禁用態是 4% 黑底 ＋ 25% 黑字——兩者在深色上
-     都看不見，整顆按鈕連字帶框一起消失。「重算」在没有碼表時就是禁用的，
+     都看不見，整顆按鈕連字帶框一起消失。「導出」在没有方案時就是禁用的，
      於是頂欄上會憑空出現一個黑方塊。這裏把禁用態改成淺色的半透明。 */
   button:disabled {
     background: rgba(255, 255, 255, 0.08);
@@ -64,7 +63,6 @@ const PageTitle = styled.h1`
 `
 
 export function AppHeader() {
-  const store = useStore()
   const { message } = App.useApp()
   const 當前方案 = useAtomValue(當前方案原子狀態)
   const 設置方案列表 = useSetAtom(方案列表原子狀態)
@@ -86,7 +84,6 @@ export function AppHeader() {
   const 設置當量詳情 = useSetAtom(當量詳情原子狀態)
   const 簡碼效率分析結果 = useAtomValue(簡碼效率分析原子狀態)
   const 鍵位熱力分析結果 = useAtomValue(鍵位熱力分析原子狀態)
-  const 編碼預覽數據 = useAtomValue(編碼預覽數據原子狀態)
 
   /** 導出用，收在一處 */
   const 當前分析結果 = {
@@ -98,7 +95,6 @@ export function AppHeader() {
   }
 
   const 顯示標題 = 當前方案 ? 當前方案.元數據.方案名 : '未選擇方案'
-  const 可以全局重算 = 編碼預覽數據.length > 0
 
   // 所有寫入方案狀態的 setter，供 atomResetService 統一調度（導入用）
   const 方案Setters: 方案應用Setters = {
@@ -197,18 +193,6 @@ export function AppHeader() {
     }
   }
 
-  // 全局重算（原地計算，不跳轉頁面）
-  const 處理全局重算 = async () => {
-    const hide = message.loading('正在原地重算所有分析，頁面將保持不變...', 0)
-    const 結果 = await 原地重算所有分析(store)
-    hide()
-    if (結果.成功) {
-      message.success(`已重算：${結果.已計算.join('、')}`)
-    } else {
-      message.error(`重算失敗：${結果.錯誤 ?? '未知錯誤'}`)
-    }
-  }
-
   return (
     <HeaderContainer>
       <PageTitle title={顯示標題}>{顯示標題}</PageTitle>
@@ -225,15 +209,6 @@ export function AppHeader() {
           size="small"
         >
           導出
-        </Button>
-        <Button
-          icon={<ThunderboltOutlined />}
-          onClick={處理全局重算}
-          disabled={!可以全局重算}
-          size="small"
-          type="primary"
-        >
-          重算
         </Button>
       </Space>
     </HeaderContainer>
