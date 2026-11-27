@@ -26,7 +26,7 @@ import { 碼表處理服務實例 } from '@/services/codeTableService'
 import { 導出方案配置JSON } from '@/services/exportService'
 import { 觸發所有分析計算 } from '@/services/triggerAnalysisService'
 
-const { Title, Paragraph, Text } = Typography
+const { Title, Text } = Typography
 
 const SettingsPage: React.FC = () => {
   const navigate = useNavigate()
@@ -162,9 +162,6 @@ const SettingsPage: React.FC = () => {
       <Space orientation="vertical" size="large" style={{ width: '100%' }}>
         <div>
           <Title level={2}>主題設置</Title>
-          <Paragraph type="secondary">
-            自定義應用的外觀樣式。設置會在當前會話期間有效，刷新頁面後恢復默認值。
-          </Paragraph>
         </div>
 
         {/* 开发者功能 */}

@@ -1,5 +1,5 @@
 import { ReloadOutlined } from '@ant-design/icons'
-import { Alert, Button, message, Space, Spin, Table, Typography } from 'antd'
+import { Alert, Button, message, Space, Spin, Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
@@ -9,8 +9,6 @@ import { 靜態重碼分析原子狀態, 驗證靜態重碼數據 } from '../ato
 import { 累積漢字集名稱型别 } from '../services/charsetService'
 import { 計算某字符集的重碼數據 } from '../services/duplicateAnalysisService'
 import type { 處理後的碼表結果介面 } from '../types'
-
-const { Paragraph } = Typography
 
 /**
  * 靜態重碼分析頁面
@@ -410,13 +408,6 @@ const StaticDuplicateAnalysisPage: React.FC = () => {
   return (
     <div style={{ padding: 24 }}>
       <Space orientation="vertical" size="large" style={{ width: '100%' }}>
-        {/* 頁面標題 */}
-        <div>
-          <Paragraph>
-            分析各字符集的靜態重碼數據，包括重碼字數、實際字符數、理論字符數和字集覆蓋率。
-          </Paragraph>
-        </div>
-
         {/* 操作按鈕 */}
         <Space>
           <Button
