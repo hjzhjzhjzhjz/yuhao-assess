@@ -18,7 +18,6 @@ import {
   message,
   Popconfirm,
   Space,
-  Spin,
   Tag,
   Tooltip,
   Typography,
@@ -39,7 +38,6 @@ import { 方案列表原子狀態, 當前方案原子狀態, 頂欄方案載入�
 import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
 import { 當量詳情原子狀態, 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
 import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
-import { useDataPreload } from '@/hooks/useDataPreload'
 import { 應用方案數據, type 方案應用Setters, 清空所有Atom } from '@/services/atomResetService'
 import { 收集測評結果 } from '@/services/exportService'
 import { 創建空白方案, 加載方案, 查找方案鍵名 } from '@/services/schemeService'
@@ -136,23 +134,6 @@ const MetaValue = styled.span`
   font-weight: 600;
   color: #fff;
   white-space: nowrap;
-`
-
-const StatusPill = styled.div<{ $ready: boolean }>`
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 500;
-  background: ${p => (p.$ready ? 'rgba(255,255,255,0.16)' : 'rgba(255,255,255,0.1)')};
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  color: #fff;
-
-  .anticon {
-    color: ${p => (p.$ready ? '#8ee6cf' : '#ffd591')};
-  }
 `
 
 const SectionHead = styled.div`
@@ -368,31 +349,6 @@ const CardActions = styled.div`
   }
 `
 
-/* 紧凑数据状态条 */
-const StatusBar = styled.div<{ $tone: 'loading' | 'ready' | 'partial' }>`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  border-radius: var(--radius-md);
-  font-size: 13px;
-  background: ${p =>
-    p.$tone === 'ready'
-      ? 'var(--color-primary-light)'
-      : p.$tone === 'loading'
-        ? '#fff7e6'
-        : 'var(--color-bg-tertiary)'};
-  border: 1px solid
-    ${p => (p.$tone === 'ready' ? 'var(--color-primary)' : p.$tone === 'loading' ? '#ffd591' : 'var(--color-border-primary)')};
-  color: var(--color-text-primary);
-
-  .status-icon {
-    display: inline-flex;
-    align-items: center;
-    color: ${p => (p.$tone === 'ready' ? 'var(--color-primary)' : p.$tone === 'loading' ? '#d48806' : 'var(--color-text-secondary)')};
-  }
-`
-
 function HomePage() {
   const [當前方案, 設置當前方案] = useAtom(當前方案原子狀態)
   const 方案列表 = useAtomValue(方案列表原子狀態)
@@ -434,12 +390,6 @@ function HomePage() {
     設置簡碼效率分析結果,
     設置鍵位熱力分析結果,
   }
-
-  const {
-    isLoading: 數據加載中,
-    isReady: 核心數據已加載,
-    allLoaded: 所有數據已加載,
-  } = useDataPreload()
 
   const 當前鍵名 = 查找方案鍵名(方案列表, 當前方案)
 
@@ -677,45 +627,8 @@ function HomePage() {
             <MetaLabel>本地方案</MetaLabel>
             <MetaValue>{本地方案列表.length} 個</MetaValue>
           </MetaItem>
-          <StatusPill $ready={所有數據已加載}>
-            {數據加載中 ? (
-              <>
-                <Spin size="small" /> 載入中
-              </>
-            ) : 所有數據已加載 ? (
-              <>
-                <CheckCircleFilled /> 已就緒
-              </>
-            ) : (
-              <>
-                <Spin size="small" /> 後台載入中
-              </>
-            )}
-          </StatusPill>
         </HeroMeta>
       </Hero>
-
-      {/* 數據加載狀態條：三態明確提示 */}
-      <StatusBar $tone={所有數據已加載 ? 'ready' : 數據加載中 ? 'loading' : 'partial'}>
-        <span className="status-icon">
-          {所有數據已加載 ? (
-            <CheckCircleFilled />
-          ) : 數據加載中 ? (
-            <Spin size="small" />
-          ) : (
-            <Spin size="small" />
-          )}
-        </span>
-        <span>
-          {所有數據已加載
-            ? '所有測評數據已加載完畢，可以開始使用全部分析功能。'
-            : 數據加載中
-              ? '正在加載字頻與字符集數據，首次訪問稍候即可。'
-              : 核心數據已加載
-                ? '核心功能已可用，擴展字頻數據正在後台加載。'
-                : '正在準備基礎數據…'}
-        </span>
-      </StatusBar>
 
       {/* 本地方案区 */}
       {本地方案列表.length > 0 && (
