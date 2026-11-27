@@ -4,8 +4,8 @@ import {
   ReloadOutlined,
   ThunderboltOutlined,
 } from '@ant-design/icons'
+import type { UploadProps } from 'antd'
 import { Alert, Button, Input, Select, Space, Table, Typography, Upload } from 'antd'
-import type { RcFile } from 'antd/es/upload'
 import { useAtom, useSetAtom } from 'jotai'
 import React, { useState } from 'react'
 import {
@@ -19,6 +19,9 @@ import type { 編碼預覽項 } from '@/atoms/codeTable'
 import { 當前方案原子狀態 } from '@/atoms/scheme'
 import { 碼表處理服務實例 } from '@/services/codeTableService'
 import type { 原始碼表型别 } from '@/types'
+
+/** antd 6 主入口未直接導出 RcFile，從 UploadProps 推導等價類型 */
+type RcFile = Parameters<NonNullable<UploadProps['beforeUpload']>>[0]
 
 const { Title, Paragraph, Text, Link } = Typography
 const { Option } = Select

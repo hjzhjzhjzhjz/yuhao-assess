@@ -1,6 +1,6 @@
 import { CopyOutlined, ReloadOutlined } from '@ant-design/icons'
+import type { TableColumnsType } from 'antd'
 import { Alert, Button, Input, Modal, message, Space, Spin, Table } from 'antd'
-import type { ColumnsType } from 'antd/es/table'
 import { useAtom } from 'jotai'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
@@ -661,7 +661,7 @@ const ShortCodeEfficiencyPage: React.FC = () => {
   /**
    * 詳情表格列定義
    */
-  const 詳情列定義: ColumnsType<詳情表格行數據> = [
+  const 詳情列定義: TableColumnsType<詳情表格行數據> = [
     {
       title: '#',
       dataIndex: '序號',

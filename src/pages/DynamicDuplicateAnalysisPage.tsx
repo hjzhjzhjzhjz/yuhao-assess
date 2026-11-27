@@ -1,6 +1,6 @@
 import { ReloadOutlined } from '@ant-design/icons'
+import type { TableColumnsType } from 'antd'
 import { Alert, Button, Input, Modal, message, Space, Spin, Table, Tooltip } from 'antd'
-import type { ColumnsType } from 'antd/es/table'
 import { useAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
 import { 碼表原子狀態 } from '../atoms/codeTable'
@@ -456,7 +456,7 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
       },
     ]
 
-    const 列定義: ColumnsType<表格數據項> = [
+    const 列定義: TableColumnsType<表格數據項> = [
       {
         title: '單字指標',
         dataIndex: '指標',
@@ -532,7 +532,7 @@ const DynamicDuplicateAnalysisPage: React.FC = () => {
     重碼字符列表: string
   }
 
-  const 詳情列定義: ColumnsType<詳情表格數據項> = [
+  const 詳情列定義: TableColumnsType<詳情表格數據項> = [
     { title: '#', dataIndex: '序號', key: '序號', width: 60 },
     { title: '重碼字', dataIndex: '字符', key: '字符', width: 80 },
     { title: '編碼', dataIndex: '編碼', key: '編碼', width: 100 },

@@ -1,6 +1,6 @@
 import { ReloadOutlined } from '@ant-design/icons'
+import type { TableColumnsType } from 'antd'
 import { Alert, Button, message, Space, Spin, Table } from 'antd'
-import type { ColumnsType } from 'antd/es/table'
 import { useAtom } from 'jotai'
 import React, { useEffect, useState } from 'react'
 import { 碼表原子狀態 } from '../atoms/codeTable'
@@ -321,7 +321,7 @@ const StaticDuplicateAnalysisPage: React.FC = () => {
       }
     })
 
-    const 列定義: ColumnsType<表格數據項> = [
+    const 列定義: TableColumnsType<表格數據項> = [
       {
         title: '字集名稱',
         dataIndex: '字集名稱',

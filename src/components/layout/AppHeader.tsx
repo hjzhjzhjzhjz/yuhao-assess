@@ -6,8 +6,8 @@ import {
   ThunderboltOutlined,
   UploadOutlined,
 } from '@ant-design/icons'
+import type { UploadProps } from 'antd'
 import { App, Button, Popconfirm, Select, Space, Tooltip, Upload } from 'antd'
-import type { RcFile } from 'antd/es/upload'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -32,6 +32,9 @@ import { 列出可用方案, 創建空白方案, 加載方案, 查找方案鍵�
 import { 觸發所有分析計算 } from '@/services/triggerAnalysisService'
 import type { 方案列表項介面, 方案配置介面 } from '@/types/scheme'
 import { 等界面繪製 } from '@/utils/wait-for-paint'
+
+/** antd 6 主入口未直接導出 RcFile，從 UploadProps 推導等價類型 */
+type RcFile = Parameters<NonNullable<UploadProps['beforeUpload']>>[0]
 
 const HeaderContainer = styled.div`
   display: flex;

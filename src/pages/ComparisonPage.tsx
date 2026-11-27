@@ -1,6 +1,6 @@
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons'
+import type { TableColumnsType, TableColumnType } from 'antd'
 import { Button, Checkbox, Input, Modal, message, Segmented, Space, Spin, Table, Tag } from 'antd'
-import type { ColumnsType, ColumnType } from 'antd/es/table'
 import { useAtom, useAtomValue } from 'jotai'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
@@ -261,7 +261,7 @@ type 分析型别 =
 
 // 帶「數值提取器」的列：高亮直接取原始數值，不再解析渲染後的字符串
 type 數值提取器 = (record: 對比方案數據介面) => number | undefined
-type 對比列 = ColumnType<對比方案數據介面> & { 提取數值?: 數值提取器 }
+type 對比列 = TableColumnType<對比方案數據介面> & { 提取數值?: 數值提取器 }
 
 // 方案名列（所有表格共用）
 const 方案名列: 對比列 = {
@@ -566,7 +566,7 @@ const ComparisonPage: React.FC = () => {
   }
 
   // 靜態重碼字數表格列定義（根據全碼/簡碼動態生成，顯示7個字符集）
-  const 獲取靜態重碼字數列 = (全碼簡碼: 全碼簡碼型别): ColumnsType<對比方案數據介面> => {
+  const 獲取靜態重碼字數列 = (全碼簡碼: 全碼簡碼型别): TableColumnsType<對比方案數據介面> => {
     const 碼類型: 靜態數值鍵 = 全碼簡碼 === '全碼' ? '全碼重碼字數' : '簡碼重碼字數'
 
     return [
@@ -592,7 +592,7 @@ const ComparisonPage: React.FC = () => {
 
   // 靜態選重個數表格列定義
   // 選重個數 = 重碼字數 - 重碼組數，爲運行時直接計算，不參與導入導出
-  const 獲取靜態選重個數列 = (全碼簡碼: 全碼簡碼型别): ColumnsType<對比方案數據介面> => {
+  const 獲取靜態選重個數列 = (全碼簡碼: 全碼簡碼型别): TableColumnsType<對比方案數據介面> => {
     const 字數鍵: 靜態數值鍵 = 全碼簡碼 === '全碼' ? '全碼重碼字數' : '簡碼重碼字數'
     const 組數鍵: 靜態數值鍵 = 全碼簡碼 === '全碼' ? '全碼重碼組數' : '簡碼重碼組數'
 
@@ -627,7 +627,7 @@ const ComparisonPage: React.FC = () => {
   }
 
   // 速度當量列（根據字頻來源動態生成，顯示4列）
-  const 獲取速度當量列 = (字頻來源: 字頻來源型别): ColumnsType<對比方案數據介面> => {
+  const 獲取速度當量列 = (字頻來源: 字頻來源型别): TableColumnsType<對比方案數據介面> => {
     const 前綴 = 字頻前綴映射[字頻來源]
     const 取值 = (record: 對比方案數據介面, suffix: string): number | undefined =>
       (record.速度當量分析 as Record<string, number> | null)?.[`${前綴}${suffix}`]
@@ -659,7 +659,7 @@ const ComparisonPage: React.FC = () => {
   const 建立動態重碼率列 = (
     全碼簡碼: 全碼簡碼型别,
     配置: readonly { key: string; title: string; dataKey: string }[]
-  ): ColumnsType<對比方案數據介面> => {
+  ): TableColumnsType<對比方案數據介面> => {
     const 碼類型 = 全碼簡碼 === '全碼' ? '全碼' : '簡碼'
     type 動態率分析 = Record<string, Record<string, number> | undefined>
 
@@ -705,7 +705,7 @@ const ComparisonPage: React.FC = () => {
   }
 
   // 簡碼效率列（根據字頻來源動態生成，顯示6個N值）
-  const 獲取簡碼效率列 = (字頻來源: 字頻來源型别): ColumnsType<對比方案數據介面> => {
+  const 獲取簡碼效率列 = (字頻來源: 字頻來源型别): TableColumnsType<對比方案數據介面> => {
     const 字頻鍵 = 字頻鍵名映射[字頻來源]
 
     const 取值 = (record: 對比方案數據介面, N值: number): number | undefined => {
@@ -745,7 +745,7 @@ const ComparisonPage: React.FC = () => {
   // toLocaleString 的千分位逗號（如 "1,234"）會被 parseFloat 錯當成 1。
   // 方案名列與 '-'/'缺字'（提取數值返回 undefined）不參與。
   type 渲染函數 = (value: unknown, record: 對比方案數據介面, index: number) => React.ReactNode
-  const 高亮最優列 = (columns: ColumnsType<對比方案數據介面>) => {
+  const 高亮最優列 = (columns: TableColumnsType<對比方案數據介面>) => {
     if (!對比方案列表.length) return columns
     return columns.map(col => {
       const 提取 = (col as 對比列).提取數值
@@ -773,7 +773,7 @@ const ComparisonPage: React.FC = () => {
   // 根據當前選擇動態生成列定義
   // biome-ignore lint/correctness/useExhaustiveDependencies: 获取的列函数与高亮函数为组件内纯函数（每次渲染重建，列入依赖会使memo失效）；對比方案列表由高亮函数闭包读取，保留以触发重算
   const 當前列定義 = useMemo(() => {
-    const 原始列: ColumnsType<對比方案數據介面> = (() => {
+    const 原始列: TableColumnsType<對比方案數據介面> = (() => {
       switch (當前分析類型) {
         case '靜態重碼':
           return 獲取靜態重碼字數列(當前全碼簡碼)

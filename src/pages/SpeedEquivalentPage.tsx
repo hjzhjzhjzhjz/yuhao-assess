@@ -1,6 +1,6 @@
 import { ReloadOutlined } from '@ant-design/icons'
+import type { TableColumnsType } from 'antd'
 import { Alert, Button, Input, Modal, message, Space, Spin, Table } from 'antd'
-import type { ColumnsType } from 'antd/es/table'
 import { useAtom } from 'jotai'
 import React, { useEffect, useRef, useState } from 'react'
 import { 字頻表緩存原子狀態 } from '../atoms/charFrequency'
@@ -512,7 +512,7 @@ const SpeedEquivalentPage: React.FC = () => {
       },
     ]
 
-    const 列定義: ColumnsType<表格數據項型别> = [
+    const 列定義: TableColumnsType<表格數據項型别> = [
       {
         title: '字頻來源',
         dataIndex: '字頻來源',
@@ -604,7 +604,7 @@ const SpeedEquivalentPage: React.FC = () => {
   /**
    * 詳情表格列定義
    */
-  const 詳情列定義: ColumnsType<當量例字信息介面> = [
+  const 詳情列定義: TableColumnsType<當量例字信息介面> = [
     {
       title: '#',
       render: (_text: unknown, _record: unknown, index: number) => index + 1,
