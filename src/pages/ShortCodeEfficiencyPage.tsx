@@ -1,5 +1,5 @@
 import { CopyOutlined, ReloadOutlined } from '@ant-design/icons'
-import { Alert, Button, Input, Modal, message, Space, Spin, Table, Typography } from 'antd'
+import { Alert, Button, Input, Modal, message, Space, Spin, Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useAtom } from 'jotai'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -10,8 +10,6 @@ import { 當前方案原子狀態 } from '../atoms/scheme'
 import { 簡碼效率分析原子狀態 } from '../atoms/shortCodeEfficiency'
 import { 簡碼效率N值列表, 計算指定字頻下之簡碼效率 } from '../services/shortCodeEfficiencyService'
 import type { 處理後的碼表結果介面 } from '../types'
-
-const { Paragraph } = Typography
 
 // ===================
 // 樣式組件
@@ -706,10 +704,6 @@ const ShortCodeEfficiencyPage: React.FC = () => {
   return (
     <div style={{ padding: 24 }}>
       <Space orientation="vertical" size="large" style={{ width: '100%' }}>
-        <div>
-          <Paragraph>計算使用效率最高的若干簡碼下的字頻加權平均碼長</Paragraph>
-        </div>
-
         {/* 操作按鈕 */}
         <Space>
           <Button

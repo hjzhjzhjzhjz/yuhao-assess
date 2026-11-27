@@ -1,5 +1,5 @@
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons'
-import { Button, Checkbox, Modal, message, Space, Spin, Table, Tag, Typography } from 'antd'
+import { Button, Checkbox, Modal, message, Space, Spin, Table, Tag } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useAtom, useAtomValue } from 'jotai'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
@@ -27,8 +27,6 @@ import { 累積漢字集名稱型别 } from '@/services/charsetService'
 import { type 内置方案配置, 加載方案, 獲取内置方案列表 } from '@/services/schemeService'
 import type { 全碼簡碼型别, 字頻來源型别 } from '@/types'
 import type { 方案配置介面 } from '@/types/scheme'
-
-const { Paragraph } = Typography
 
 // 對比頁容器：窄屏收緊内邊距
 const ComparisonContainer = styled.div`
@@ -740,14 +738,6 @@ const ComparisonPage: React.FC = () => {
   return (
     <ComparisonContainer>
       <Space orientation="vertical" size="large" style={{ width: '100%' }}>
-        <div>
-          <Paragraph>
-            對比當前方案與内置方案的各項指標。
-            <br />
-            選擇分析種類後，根據需要選擇字頻來源或全碼/簡碼，表格會自動更新。
-          </Paragraph>
-        </div>
-
         {/* 第一行：分析種類選擇 */}
         <Space wrap>
           <Button
