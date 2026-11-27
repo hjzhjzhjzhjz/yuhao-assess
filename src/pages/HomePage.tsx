@@ -343,9 +343,12 @@ function HomePage() {
     }
   }
 
-  // 先把目標方案設爲當前方案，再打開配置窗口
-  const 打開方案配置 = async (準備: () => boolean | Promise<boolean>) => {
-    if (await 準備()) 設置配置窗口(true)
+  // 先把目標方案設爲當前方案，再打開指定窗口
+  const 打開方案窗口 = async (
+    準備: () => boolean | Promise<boolean>,
+    設置窗口: (值: boolean) => void
+  ) => {
+    if (await 準備()) 設置窗口(true)
   }
 
   // 新建空白方案（與頂欄「新建」按鈕同一套邏輯）
@@ -805,6 +808,18 @@ function HomePage() {
                       <UserOutlined /> {元數據.作者 || '本地'}
                     </Author>
                     <CardActions>
+                      <Tooltip title="碼表解析">
+                        <Button
+                          type="text"
+                          size="small"
+                          icon={<UploadOutlined />}
+                          disabled={方案載入中}
+                          onClick={e => {
+                            e.stopPropagation()
+                            void 打開方案窗口(() => 處理切換本地方案(標識符), 設置碼表解析窗口)
+                          }}
+                        />
+                      </Tooltip>
                       <Tooltip title="配置此方案">
                         <Button
                           type="text"
@@ -813,7 +828,7 @@ function HomePage() {
                           disabled={方案載入中}
                           onClick={e => {
                             e.stopPropagation()
-                            void 打開方案配置(() => 處理切換本地方案(標識符))
+                            void 打開方案窗口(() => 處理切換本地方案(標識符), 設置配置窗口)
                           }}
                         />
                       </Tooltip>
@@ -898,6 +913,18 @@ function HomePage() {
                   <Space size={4}>
                     <Version>{元數據.版本}</Version>
                     <CardActions>
+                      <Tooltip title="碼表解析">
+                        <Button
+                          type="text"
+                          size="small"
+                          icon={<UploadOutlined />}
+                          disabled={方案載入中}
+                          onClick={e => {
+                            e.stopPropagation()
+                            void 打開方案窗口(() => 處理選擇方案(項.鍵名), 設置碼表解析窗口)
+                          }}
+                        />
+                      </Tooltip>
                       <Tooltip title="配置此方案">
                         <Button
                           type="text"
@@ -906,7 +933,7 @@ function HomePage() {
                           disabled={方案載入中}
                           onClick={e => {
                             e.stopPropagation()
-                            void 打開方案配置(() => 處理選擇方案(項.鍵名))
+                            void 打開方案窗口(() => 處理選擇方案(項.鍵名), 設置配置窗口)
                           }}
                         />
                       </Tooltip>
@@ -934,20 +961,6 @@ function HomePage() {
             <span>新建空白方案</span>
           </NewSchemeCard>
         </SchemeGrid>
-      </div>
-
-      {/* 碼表解析入口 */}
-      <div>
-        <SectionHead>
-          <SectionTitle level={4}>碼表解析</SectionTitle>
-        </SectionHead>
-        <Button
-          icon={<UploadOutlined />}
-          onClick={() => 設置碼表解析窗口(true)}
-          disabled={方案載入中}
-        >
-          打開碼表解析窗口
-        </Button>
       </div>
 
       {/* 當前方案配置窗口 */}
