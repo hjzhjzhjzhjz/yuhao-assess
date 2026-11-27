@@ -871,6 +871,9 @@ const ComparisonPage: React.FC = () => {
             dataSource={對比方案列表}
             rowKey="唯一鍵"
             pagination={false}
+            // 只保留「升序 → 降序」两态循环，去掉第三态「取消排序」：
+            // antd 依 sortDirections[目前索引 + 1] 切换；末尾再补一個 ascend 讓 descend 後回到 ascend，永不落在 undefined。
+            sortDirections={['ascend', 'descend', 'ascend']}
             scroll={{ x: 'max-content', y: 560 }}
             locale={{ emptyText: '尚未選擇對比方案，請點「選擇對比方案」開始' }}
           />
