@@ -1,6 +1,5 @@
 import {
   CheckCircleFilled,
-  CloudDownloadOutlined,
   CopyOutlined,
   DeleteOutlined,
   PlusCircleOutlined,
@@ -9,7 +8,6 @@ import {
   UserOutlined,
 } from '@ant-design/icons'
 import {
-  Alert,
   Button,
   Card,
   Checkbox,
@@ -45,7 +43,7 @@ import { 創建空白方案, 加載方案, 查找方案鍵名 } from '@/services
 import type { 方案列表項介面, 方案配置介面 } from '@/types/scheme'
 import { 等界面繪製 } from '@/utils/wait-for-paint'
 
-const { Title, Text, Paragraph } = Typography
+const { Title, Text } = Typography
 const { TextArea } = Input
 
 /* ============================================================
@@ -98,12 +96,6 @@ const HeroTitle = styled(Title)`
   }
 `
 
-const HeroSubtitle = styled(Text)`
-  && {
-    color: rgba(255, 255, 255, 0.75);
-  }
-`
-
 const HeroMeta = styled.div`
   display: flex;
   align-items: center;
@@ -150,12 +142,6 @@ const SectionTitle = styled(Title)`
     font-size: 17px;
     font-weight: 600;
     color: var(--color-text-primary);
-  }
-`
-
-const SectionHint = styled(Text)`
-  && {
-    font-size: 12px;
   }
 `
 
@@ -850,7 +836,6 @@ function HomePage() {
       <Hero>
         <div style={{ position: 'relative', zIndex: 1 }}>
           <HeroTitle level={2}>方案工作台</HeroTitle>
-          <HeroSubtitle>選擇一個輸入方案開始測評，或繼續編輯當前方案</HeroSubtitle>
         </div>
         <HeroMeta>
           <MetaItem>
@@ -873,7 +858,6 @@ function HomePage() {
         <div>
           <SectionHead>
             <SectionTitle level={4}>本地方案</SectionTitle>
-            <SectionHint type="secondary">導入或克隆的方案，自動保存在本機</SectionHint>
           </SectionHead>
           <SchemeGrid>
             {本地方案列表.map(方案 => {
@@ -966,9 +950,6 @@ function HomePage() {
       <div>
         <SectionHead>
           <SectionTitle level={4}>預設方案</SectionTitle>
-          <SectionHint type="secondary">
-            點擊卡片加載方案與測評結果，點卡片右上角齒輪圖標可配置方案
-          </SectionHint>
         </SectionHead>
         <SchemeGrid>
           {方案列表.map((項: 方案列表項介面) => {
@@ -1044,22 +1025,7 @@ function HomePage() {
             <span>新建空白方案</span>
           </NewSchemeCard>
         </SchemeGrid>
-        {方案列表.length === 0 && (
-          <Paragraph type="secondary" style={{ marginTop: 8 }}>
-            未讀取到預設方案，請檢查數據文件。
-          </Paragraph>
-        )}
       </div>
-
-      {!當前方案 && (
-        <Alert
-          title="尚未選擇方案"
-          description="請從上方卡片選擇一個預設方案，或點擊「新建空白方案」開始自訂配置。"
-          type="info"
-          showIcon
-          icon={<CloudDownloadOutlined />}
-        />
-      )}
 
       {/* 當前方案配置窗口 */}
       <Modal
