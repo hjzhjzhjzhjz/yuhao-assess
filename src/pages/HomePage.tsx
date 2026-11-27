@@ -5,6 +5,7 @@ import {
   DeleteOutlined,
   PlusCircleOutlined,
   PlusOutlined,
+  SettingOutlined,
   UserOutlined,
 } from '@ant-design/icons'
 import {
@@ -377,6 +378,7 @@ function HomePage() {
   const [標籤草稿, 設置標籤草稿] = useState('')
   const [鏈接對話框, 設置鏈接對話框] = useState(false)
   const [鏈接草稿, 設置鏈接草稿] = useState('')
+  const [配置窗口, 設置配置窗口] = useState(false)
 
   const 方案Setters: 方案應用Setters = {
     設置當前方案,
@@ -402,9 +404,9 @@ function HomePage() {
     鍵位熱力分析結果,
   }
 
-  // 加載預設方案（卡片點擊）
-  const 處理選擇方案 = async (方案鍵名: string) => {
-    if (方案鍵名 === 當前鍵名 && 當前方案) return
+  // 加載預設方案（卡片點擊），返回是否成功將其設爲當前方案
+  const 處理選擇方案 = async (方案鍵名: string): Promise<boolean> => {
+    if (方案鍵名 === 當前鍵名 && 當前方案) return true
     const 方案名 = 方案列表.find(項 => 項.鍵名 === 方案鍵名)?.配置.元數據.方案名 ?? 方案鍵名
     設置加載中(true)
     設置頂欄方案載入名(方案名)
@@ -414,13 +416,20 @@ function HomePage() {
       const { 方案, 已載入結果 } = 應用方案數據(加載的數據, 方案Setters)
       const 完整提示 = 已載入結果.length > 0 ? `（包含${已載入結果.join('、')}結果）` : ''
       message.success(`已加載方案「${方案.元數據.方案名}」${完整提示}`)
+      return true
     } catch (錯誤) {
       console.error('[HomePage] 加載方案失敗:', 錯誤)
       message.error(錯誤 instanceof Error ? 錯誤.message : '加載方案失敗')
+      return false
     } finally {
       設置加載中(false)
       設置頂欄方案載入名(null)
     }
+  }
+
+  // 先把目標方案設爲當前方案，再打開配置窗口
+  const 打開方案配置 = async (準備: () => boolean | Promise<boolean>) => {
+    if (await 準備()) 設置配置窗口(true)
   }
 
   // 新建空白方案（與頂欄「新建」按鈕同一套邏輯）
@@ -466,14 +475,15 @@ function HomePage() {
     message.success(`已克隆爲「${新方案名}」`)
   }
 
-  // 切換本地方案
-  const 處理切換本地方案 = (標識符: string) => {
-    if (標識符 === 當前本地方案標識符 && 當前方案) return
+  // 切換本地方案，返回是否成功
+  const 處理切換本地方案 = (標識符: string): boolean => {
+    if (標識符 === 當前本地方案標識符 && 當前方案) return true
     const 目標 = 本地方案列表.find(s => s.元數據.標識符 === 標識符)
-    if (!目標) return
+    if (!目標) return false
     應用方案數據(目標, 方案Setters)
     設置當前本地方案標識符(標識符)
     message.success(`已切換到「${目標.元數據.方案名}」`)
+    return true
   }
 
   // 删除本地方案
@@ -606,6 +616,234 @@ function HomePage() {
     </Field>
   )
 
+  // 當前方案配置面板（在配置窗口中渲染）
+  const 配置面板 = 當前方案 && (
+    <>
+      <div>
+        <ConfigGrid>
+          <Card title="基本信息" size="small">
+            <div
+              className="responsive-grid"
+              style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px' }}
+            >
+              {普通字段('方案名', '方案名')}
+              {普通字段('標識符', '標識符')}
+              {普通字段('作者', '作者', true)}
+              {普通字段('版本', '版本')}
+              <div style={{ gridColumn: 'span 2' }}>
+                <Field>
+                  <FieldLabel type="secondary">描述</FieldLabel>
+                  <TextArea
+                    value={當前方案.元數據.描述 || ''}
+                    placeholder="可選"
+                    rows={2}
+                    onChange={e =>
+                      設置當前方案({
+                        ...當前方案,
+                        元數據: { ...當前方案.元數據, 描述: e.target.value },
+                      })
+                    }
+                    onBlur={e => 更新元數據('描述', e.target.value)}
+                  />
+                </Field>
+              </div>
+              <div style={{ gridColumn: 'span 2' }}>
+                <Field>
+                  <FieldLabel type="secondary">官網</FieldLabel>
+                  <Input
+                    value={當前方案.元數據.官網 || ''}
+                    placeholder="可選"
+                    onChange={e =>
+                      設置當前方案({
+                        ...當前方案,
+                        元數據: { ...當前方案.元數據, 官網: e.target.value },
+                      })
+                    }
+                    onBlur={e => 更新元數據('官網', e.target.value)}
+                  />
+                </Field>
+              </div>
+              <div style={{ gridColumn: 'span 2' }}>
+                <FieldLabel type="secondary">標籤</FieldLabel>
+                <Space wrap style={{ marginTop: 6 }}>
+                  {(當前方案.元數據.標籤 || []).map((標籤, index) => (
+                    <Tag key={index} closable onClose={() => 删除標籤(index)}>
+                      {標籤}
+                    </Tag>
+                  ))}
+                  <Tag
+                    icon={<PlusCircleOutlined />}
+                    style={{ cursor: 'pointer', borderStyle: 'dashed' }}
+                    onClick={() => {
+                      設置標籤草稿('')
+                      設置標籤對話框(true)
+                    }}
+                  >
+                    添加標籤
+                  </Tag>
+                </Space>
+              </div>
+              <div style={{ gridColumn: 'span 2' }}>
+                <FieldLabel type="secondary">相關資源鏈接</FieldLabel>
+                <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {(當前方案.元數據.相關資源鏈接 || []).map((鏈接, index) => (
+                    <Space.Compact key={index} style={{ width: '100%' }}>
+                      <Input
+                        value={鏈接}
+                        onChange={e => {
+                          const 新鏈接 = [...(當前方案.元數據.相關資源鏈接 || [])]
+                          新鏈接[index] = e.target.value
+                          設置當前方案({
+                            ...當前方案,
+                            元數據: { ...當前方案.元數據, 相關資源鏈接: 新鏈接 },
+                          })
+                        }}
+                        onBlur={e => {
+                          const 新鏈接 = [...(當前方案.元數據.相關資源鏈接 || [])]
+                          新鏈接[index] = e.target.value
+                          更新元數據('相關資源鏈接', 新鏈接)
+                        }}
+                      />
+                      <Button danger onClick={() => 删除鏈接(index)}>
+                        删除
+                      </Button>
+                    </Space.Compact>
+                  ))}
+                  <Button
+                    type="dashed"
+                    icon={<PlusOutlined />}
+                    onClick={() => {
+                      設置鏈接草稿('')
+                      設置鏈接對話框(true)
+                    }}
+                    block
+                  >
+                    添加鏈接
+                  </Button>
+                </div>
+              </div>
+              <div style={{ gridColumn: 'span 2' }}>
+                {普通字段('碼表下載鏈接', '碼表下載鏈接', true)}
+              </div>
+            </div>
+          </Card>
+
+          <Card title="編碼參數" size="small">
+            <div
+              className="responsive-grid"
+              style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px' }}
+            >
+              <div style={{ gridColumn: 'span 2' }}>
+                <Field>
+                  <FieldLabel type="secondary">編碼終止指示符（直接連寫，可選）</FieldLabel>
+                  <Input
+                    value={(當前方案.方案參數.編碼終止指示符列表 || []).join('')}
+                    placeholder="例如：aoeiu_"
+                    onChange={e =>
+                      設置當前方案({
+                        ...當前方案,
+                        方案參數: {
+                          ...當前方案.方案參數,
+                          編碼終止指示符列表: e.target.value.trim().split(''),
+                        },
+                      })
+                    }
+                    onBlur={e => {
+                      const 指示符 = e.target.value.trim().split('')
+                      更新方案參數('編碼終止指示符列表', 指示符.length > 0 ? 指示符 : undefined)
+                    }}
+                  />
+                </Field>
+              </div>
+              <Field>
+                <FieldLabel type="secondary">最大碼長</FieldLabel>
+                <InputNumber
+                  value={當前方案.方案參數.最大碼長}
+                  min={1}
+                  max={10}
+                  style={{ width: '100%' }}
+                  onChange={值 => 更新方案參數('最大碼長', 值 as number)}
+                />
+              </Field>
+              <Field>
+                <FieldLabel type="secondary">碼表選項</FieldLabel>
+                <Space size={16} wrap>
+                  <Checkbox
+                    checked={!!當前方案.方案參數.選重編碼化}
+                    onChange={e => 更新方案參數('選重編碼化', e.target.checked)}
+                  >
+                    選重編碼化
+                  </Checkbox>
+                  <Checkbox
+                    checked={!!當前方案.方案參數.出簡不出全}
+                    onChange={e => 更新方案參數('出簡不出全', e.target.checked)}
+                  >
+                    出簡不出全
+                  </Checkbox>
+                </Space>
+              </Field>
+              <div style={{ gridColumn: 'span 2' }}>
+                <FieldLabel type="secondary">選重鍵（首選由空格上屏；留空則沿用數字鍵）</FieldLabel>
+                <Space size={12} wrap style={{ marginTop: 6 }}>
+                  {['2', '3'].map(位次 => (
+                    <Space key={位次} size={6}>
+                      <Text type="secondary" style={{ whiteSpace: 'nowrap' }}>
+                        第 {位次} 選
+                      </Text>
+                      <Input
+                        value={當前方案.方案參數.選重鍵表?.[位次] ?? ''}
+                        maxLength={1}
+                        placeholder={位次}
+                        style={{ width: 56, textAlign: 'center', fontFamily: 'monospace' }}
+                        onChange={e => 更新選重鍵(位次, e.target.value)}
+                      />
+                    </Space>
+                  ))}
+                  {選重鍵衝突列表.length > 0 && (
+                    <Text type="warning">
+                      {選重鍵衝突列表.join('、')} 也出現在編碼裏，實際輸入時會衝突
+                    </Text>
+                  )}
+                </Space>
+              </div>
+            </div>
+          </Card>
+        </ConfigGrid>
+      </div>
+
+      {/* 只读信息 */}
+      <Card title="碼表與時間信息" size="small">
+        <div
+          className="responsive-grid"
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px' }}
+        >
+          {當前方案.碼表元數據?.總字符數 != null && (
+            <Field>
+              <FieldLabel type="secondary">總字符數（已解析）</FieldLabel>
+              <Input value={當前方案.碼表元數據.總字符數.toLocaleString()} disabled />
+            </Field>
+          )}
+          {當前方案.碼表元數據?.哈希值 && (
+            <Field>
+              <FieldLabel type="secondary">哈希值（SHA-256）</FieldLabel>
+              <Input value={當前方案.碼表元數據.哈希值} disabled />
+            </Field>
+          )}
+          <div style={{ gridColumn: 'span 2' }}>
+            <Space wrap size={24}>
+              <Text type="secondary">
+                創建時間：{new Date(當前方案.元數據.創建時間).toLocaleString('zh-CN')}
+              </Text>
+              <Text type="secondary">
+                更新時間：{new Date(當前方案.元數據.更新時間).toLocaleString('zh-CN')}
+              </Text>
+            </Space>
+          </div>
+        </div>
+      </Card>
+    </>
+  )
+
   return (
     <Page className="home-root">
       {/* Hero 概览 */}
@@ -674,6 +912,18 @@ function HomePage() {
                       <UserOutlined /> {元數據.作者 || '本地'}
                     </Author>
                     <CardActions>
+                      <Tooltip title="配置此方案">
+                        <Button
+                          type="text"
+                          size="small"
+                          icon={<SettingOutlined />}
+                          disabled={方案載入中}
+                          onClick={e => {
+                            e.stopPropagation()
+                            void 打開方案配置(() => 處理切換本地方案(標識符))
+                          }}
+                        />
+                      </Tooltip>
                       <Tooltip title="克隆">
                         <Button
                           type="text"
@@ -716,7 +966,9 @@ function HomePage() {
       <div>
         <SectionHead>
           <SectionTitle level={4}>預設方案</SectionTitle>
-          <SectionHint type="secondary">點擊卡片即可加载方案與其測評結果</SectionHint>
+          <SectionHint type="secondary">
+            點擊卡片加載方案與測評結果，點卡片右上角齒輪圖標可配置方案
+          </SectionHint>
         </SectionHead>
         <SchemeGrid>
           {方案列表.map((項: 方案列表項介面) => {
@@ -756,6 +1008,18 @@ function HomePage() {
                   <Space size={4}>
                     <Version>{元數據.版本}</Version>
                     <CardActions>
+                      <Tooltip title="配置此方案">
+                        <Button
+                          type="text"
+                          size="small"
+                          icon={<SettingOutlined />}
+                          disabled={方案載入中}
+                          onClick={e => {
+                            e.stopPropagation()
+                            void 打開方案配置(() => 處理選擇方案(項.鍵名))
+                          }}
+                        />
+                      </Tooltip>
                       <Tooltip title="克隆爲本地方案">
                         <Button
                           type="text"
@@ -787,240 +1051,6 @@ function HomePage() {
         )}
       </div>
 
-      {/* 当前方案配置：分组卡片 */}
-      {當前方案 && (
-        <>
-          <div>
-            <SectionHead>
-              <SectionTitle level={4}>當前方案配置</SectionTitle>
-              <SectionHint type="secondary">修改後自動保存</SectionHint>
-            </SectionHead>
-            <ConfigGrid>
-              <Card title="基本信息" size="small">
-                <div
-                  className="responsive-grid"
-                  style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px' }}
-                >
-                  {普通字段('方案名', '方案名')}
-                  {普通字段('標識符', '標識符')}
-                  {普通字段('作者', '作者', true)}
-                  {普通字段('版本', '版本')}
-                  <div style={{ gridColumn: 'span 2' }}>
-                    <Field>
-                      <FieldLabel type="secondary">描述</FieldLabel>
-                      <TextArea
-                        value={當前方案.元數據.描述 || ''}
-                        placeholder="可選"
-                        rows={2}
-                        onChange={e =>
-                          設置當前方案({
-                            ...當前方案,
-                            元數據: { ...當前方案.元數據, 描述: e.target.value },
-                          })
-                        }
-                        onBlur={e => 更新元數據('描述', e.target.value)}
-                      />
-                    </Field>
-                  </div>
-                  <div style={{ gridColumn: 'span 2' }}>
-                    <Field>
-                      <FieldLabel type="secondary">官網</FieldLabel>
-                      <Input
-                        value={當前方案.元數據.官網 || ''}
-                        placeholder="可選"
-                        onChange={e =>
-                          設置當前方案({
-                            ...當前方案,
-                            元數據: { ...當前方案.元數據, 官網: e.target.value },
-                          })
-                        }
-                        onBlur={e => 更新元數據('官網', e.target.value)}
-                      />
-                    </Field>
-                  </div>
-                  <div style={{ gridColumn: 'span 2' }}>
-                    <FieldLabel type="secondary">標籤</FieldLabel>
-                    <Space wrap style={{ marginTop: 6 }}>
-                      {(當前方案.元數據.標籤 || []).map((標籤, index) => (
-                        <Tag key={index} closable onClose={() => 删除標籤(index)}>
-                          {標籤}
-                        </Tag>
-                      ))}
-                      <Tag
-                        icon={<PlusCircleOutlined />}
-                        style={{ cursor: 'pointer', borderStyle: 'dashed' }}
-                        onClick={() => {
-                          設置標籤草稿('')
-                          設置標籤對話框(true)
-                        }}
-                      >
-                        添加標籤
-                      </Tag>
-                    </Space>
-                  </div>
-                  <div style={{ gridColumn: 'span 2' }}>
-                    <FieldLabel type="secondary">相關資源鏈接</FieldLabel>
-                    <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                      {(當前方案.元數據.相關資源鏈接 || []).map((鏈接, index) => (
-                        <Space.Compact key={index} style={{ width: '100%' }}>
-                          <Input
-                            value={鏈接}
-                            onChange={e => {
-                              const 新鏈接 = [...(當前方案.元數據.相關資源鏈接 || [])]
-                              新鏈接[index] = e.target.value
-                              設置當前方案({
-                                ...當前方案,
-                                元數據: { ...當前方案.元數據, 相關資源鏈接: 新鏈接 },
-                              })
-                            }}
-                            onBlur={e => {
-                              const 新鏈接 = [...(當前方案.元數據.相關資源鏈接 || [])]
-                              新鏈接[index] = e.target.value
-                              更新元數據('相關資源鏈接', 新鏈接)
-                            }}
-                          />
-                          <Button danger onClick={() => 删除鏈接(index)}>
-                            删除
-                          </Button>
-                        </Space.Compact>
-                      ))}
-                      <Button
-                        type="dashed"
-                        icon={<PlusOutlined />}
-                        onClick={() => {
-                          設置鏈接草稿('')
-                          設置鏈接對話框(true)
-                        }}
-                        block
-                      >
-                        添加鏈接
-                      </Button>
-                    </div>
-                  </div>
-                  <div style={{ gridColumn: 'span 2' }}>
-                    {普通字段('碼表下載鏈接', '碼表下載鏈接', true)}
-                  </div>
-                </div>
-              </Card>
-
-              <Card title="編碼參數" size="small">
-                <div
-                  className="responsive-grid"
-                  style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px' }}
-                >
-                  <div style={{ gridColumn: 'span 2' }}>
-                    <Field>
-                      <FieldLabel type="secondary">編碼終止指示符（直接連寫，可選）</FieldLabel>
-                      <Input
-                        value={(當前方案.方案參數.編碼終止指示符列表 || []).join('')}
-                        placeholder="例如：aoeiu_"
-                        onChange={e =>
-                          設置當前方案({
-                            ...當前方案,
-                            方案參數: {
-                              ...當前方案.方案參數,
-                              編碼終止指示符列表: e.target.value.trim().split(''),
-                            },
-                          })
-                        }
-                        onBlur={e => {
-                          const 指示符 = e.target.value.trim().split('')
-                          更新方案參數('編碼終止指示符列表', 指示符.length > 0 ? 指示符 : undefined)
-                        }}
-                      />
-                    </Field>
-                  </div>
-                  <Field>
-                    <FieldLabel type="secondary">最大碼長</FieldLabel>
-                    <InputNumber
-                      value={當前方案.方案參數.最大碼長}
-                      min={1}
-                      max={10}
-                      style={{ width: '100%' }}
-                      onChange={值 => 更新方案參數('最大碼長', 值 as number)}
-                    />
-                  </Field>
-                  <Field>
-                    <FieldLabel type="secondary">碼表選項</FieldLabel>
-                    <Space size={16} wrap>
-                      <Checkbox
-                        checked={!!當前方案.方案參數.選重編碼化}
-                        onChange={e => 更新方案參數('選重編碼化', e.target.checked)}
-                      >
-                        選重編碼化
-                      </Checkbox>
-                      <Checkbox
-                        checked={!!當前方案.方案參數.出簡不出全}
-                        onChange={e => 更新方案參數('出簡不出全', e.target.checked)}
-                      >
-                        出簡不出全
-                      </Checkbox>
-                    </Space>
-                  </Field>
-                  <div style={{ gridColumn: 'span 2' }}>
-                    <FieldLabel type="secondary">
-                      選重鍵（首選由空格上屏；留空則沿用數字鍵）
-                    </FieldLabel>
-                    <Space size={12} wrap style={{ marginTop: 6 }}>
-                      {['2', '3'].map(位次 => (
-                        <Space key={位次} size={6}>
-                          <Text type="secondary" style={{ whiteSpace: 'nowrap' }}>
-                            第 {位次} 選
-                          </Text>
-                          <Input
-                            value={當前方案.方案參數.選重鍵表?.[位次] ?? ''}
-                            maxLength={1}
-                            placeholder={位次}
-                            style={{ width: 56, textAlign: 'center', fontFamily: 'monospace' }}
-                            onChange={e => 更新選重鍵(位次, e.target.value)}
-                          />
-                        </Space>
-                      ))}
-                      {選重鍵衝突列表.length > 0 && (
-                        <Text type="warning">
-                          {選重鍵衝突列表.join('、')} 也出現在編碼裏，實際輸入時會衝突
-                        </Text>
-                      )}
-                    </Space>
-                  </div>
-                </div>
-              </Card>
-            </ConfigGrid>
-          </div>
-
-          {/* 只读信息 */}
-          <Card title="碼表與時間信息" size="small">
-            <div
-              className="responsive-grid"
-              style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px' }}
-            >
-              {當前方案.碼表元數據?.總字符數 != null && (
-                <Field>
-                  <FieldLabel type="secondary">總字符數（已解析）</FieldLabel>
-                  <Input value={當前方案.碼表元數據.總字符數.toLocaleString()} disabled />
-                </Field>
-              )}
-              {當前方案.碼表元數據?.哈希值 && (
-                <Field>
-                  <FieldLabel type="secondary">哈希值（SHA-256）</FieldLabel>
-                  <Input value={當前方案.碼表元數據.哈希值} disabled />
-                </Field>
-              )}
-              <div style={{ gridColumn: 'span 2' }}>
-                <Space wrap size={24}>
-                  <Text type="secondary">
-                    創建時間：{new Date(當前方案.元數據.創建時間).toLocaleString('zh-CN')}
-                  </Text>
-                  <Text type="secondary">
-                    更新時間：{new Date(當前方案.元數據.更新時間).toLocaleString('zh-CN')}
-                  </Text>
-                </Space>
-              </div>
-            </div>
-          </Card>
-        </>
-      )}
-
       {!當前方案 && (
         <Alert
           title="尚未選擇方案"
@@ -1030,6 +1060,17 @@ function HomePage() {
           icon={<CloudDownloadOutlined />}
         />
       )}
+
+      {/* 當前方案配置窗口 */}
+      <Modal
+        title={`當前方案配置 · ${當前方案?.元數據.方案名 ?? ''}`}
+        open={配置窗口 && !!當前方案}
+        onCancel={() => 設置配置窗口(false)}
+        footer={null}
+        width={880}
+      >
+        {配置面板}
+      </Modal>
 
       {/* 添加标签对话框 */}
       <Modal
