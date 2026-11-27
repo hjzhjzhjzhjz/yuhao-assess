@@ -20,7 +20,7 @@
     "tc": "node src/utils/normalize-traditional-chars.ts \"src/**/*.ts\" \"src/**/*.tsx\" \"docs/**/*.md\"",
     "cli": "tsx src/cli/index.ts",
     "test:e2e": "node tests/e2e/local-schemes.mjs",
-    "test": "tsx tests/shortcode-efficiency.mts",
+    "test": "tsx tests/shortcode-efficiency.mts && tsx tests/ts-opt.mts",
     "prepare": "husky",
     "lint:fix": "biome check --write ."
   },

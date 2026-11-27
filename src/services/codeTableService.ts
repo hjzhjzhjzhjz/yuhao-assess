@@ -186,7 +186,7 @@ export class 碼表處理服務 {
 
     for (const [, [char, code, position]] of sortedEntries) {
       // 只處理單個 CJK 漢字
-      if (Array.from(char).length !== 1 || !isInCJKToJ(char)) {
+      if (!isSingleChar(char) || !isInCJKToJ(char)) {
         continue
       }
 
@@ -535,9 +535,37 @@ export interface 清理結果 {
 
 /**
  * 簡單的單字符檢查函數
+ *
+ * 零分配实现：Array.from(char).length === 1 会为每个字符创建一个临时数组，
+ * 在 10 萬字符級的遍歷裏是可觀的分配開銷。等價的碼點判斷：
+ * - 長度 1：BMP 字符，必爲單碼點；
+ * - 長度 2：僅當是高代理項 + 低代理項時才是單碼點（CJK 擴 B 及以上）。
  */
 function isSingleChar(char: string): boolean {
-  return Array.from(char).length === 1
+  if (char.length === 1) return true
+  return (
+    char.length === 2 &&
+    char.charCodeAt(0) >= 0xd800 &&
+    char.charCodeAt(0) <= 0xdbff &&
+    char.charCodeAt(1) >= 0xdc00 &&
+    char.charCodeAt(1) <= 0xdfff
+  )
+}
+
+/**
+ * 是否多於一個碼點，等價於 Array.from(char).length > 1，同樣零分配。
+ */
+function 碼點數大於一(char: string): boolean {
+  if (char.length > 2) return true
+  if (char.length === 2) {
+    return !(
+      char.charCodeAt(0) >= 0xd800 &&
+      char.charCodeAt(0) <= 0xdbff &&
+      char.charCodeAt(1) >= 0xdc00 &&
+      char.charCodeAt(1) <= 0xdfff
+    )
+  }
+  return false
 }
 
 /**
@@ -651,7 +679,7 @@ export function 驗證碼表(codeTable: 碼表型别): {
       errors.push('發現空字符')
     }
 
-    if (Array.from(char).length > 1) {
+    if (碼點數大於一(char)) {
       warnings.push(`字符 "${char}" 不是單字符`)
     }
 
@@ -698,7 +726,7 @@ export function 獲取碼表統計(codeTable: 碼表型别): {
   for (const [char, codes] of codeTable.entries()) {
     totalCodes += codes.length
 
-    if (Array.from(char).length === 1) {
+    if (isSingleChar(char)) {
       singleChars++
       if (isInCJKToJ(char)) {
         cjkChars++

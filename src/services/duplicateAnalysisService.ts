@@ -131,8 +131,9 @@ export function 計算原始碼表的動態選重率(全碼加選重鍵表: 碼�
     totalFreq += freq
 
     // 檢查編碼最後一位是否爲數字 0-9（表示需要選重）
+    // 字符碼區間比較等價於 /[0-9]/.test，避免每字建立正則匹配
     const lastChar = code.slice(-1)
-    const isSelection = /[0-9]/.test(lastChar)
+    const isSelection = lastChar >= '0' && lastChar <= '9'
 
     if (isSelection) {
       totalDupFreq += freq
@@ -148,7 +149,15 @@ export function 計算原始碼表的動態選重率(全碼加選重鍵表: 碼�
  * 位置 = 1 且未達最大碼長時末尾補 '_'；達最大碼長時不補。
  */
 function 剥選重鍵(編碼: string): string {
-  let c = 編碼.replace(/[0-9]+$/, '')
+  // 從尾部向後掃描數字字符碼，等價於 /[0-9]+$/ 的 replace，但避免正則開銷。
+  // 該函數在 10 萬字級循環中被呼叫兩次，是 CLI 熱點之一。
+  let end = 編碼.length
+  while (end > 0) {
+    const cc = 編碼.charCodeAt(end - 1)
+    if (cc >= 48 && cc <= 57) end--
+    else break
+  }
+  let c = end === 編碼.length ? 編碼 : 編碼.slice(0, end)
   if (c.endsWith('_')) c = c.slice(0, -1)
   return c
 }
@@ -437,7 +446,7 @@ export function getWordDynamicDupRate(
 
     // 檢查編碼最後一位是否爲數字 0-9（表示需要選重）
     const lastChar = code.slice(-1)
-    const isSelection = /[0-9]/.test(lastChar)
+    const isSelection = lastChar >= '0' && lastChar <= '9'
 
     if (isSelection) {
       totalDupFreq += freq
@@ -473,7 +482,7 @@ export function getNonFirstWordDuplicateDetails(
 
     // 檢查是否有選重鍵
     const lastChar = codeWithSelection.slice(-1)
-    const hasSelection = /[0-9]/.test(lastChar)
+    const hasSelection = lastChar >= '0' && lastChar <= '9'
 
     // 去掉選重鍵得到基礎編碼
     const baseCode = hasSelection ? codeWithSelection.slice(0, -1) : codeWithSelection
