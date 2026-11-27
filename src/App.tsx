@@ -7,7 +7,6 @@ import DynamicDuplicateAnalysisPage from './pages/DynamicDuplicateAnalysisPage'
 import HomePage from './pages/HomePage'
 import KeyboardHeatmapPage from './pages/KeyboardHeatmapPage'
 import ProcessTablePage from './pages/ProcessTablePage'
-import SettingsPage from './pages/SettingsPage'
 import ShortCodeEfficiencyPage from './pages/ShortCodeEfficiencyPage'
 import SpeedEquivalentPage from './pages/SpeedEquivalentPage'
 import StaticDuplicateAnalysisPage from './pages/StaticDuplicateAnalysisPage'
@@ -49,10 +48,6 @@ const routes = [
       {
         path: '/comparison',
         element: <ComparisonPage />,
-      },
-      {
-        path: '/settings',
-        element: <SettingsPage />,
       },
     ],
   },

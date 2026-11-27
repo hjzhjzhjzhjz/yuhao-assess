@@ -1,16 +1,12 @@
 import { App as AntdApp, ConfigProvider } from 'antd'
 import zhTW from 'antd/locale/zh_TW'
-import { useAtomValue } from 'jotai'
 import React from 'react'
-import { 主题配置原子 } from '@/atoms/theme'
 
 /**
  * Ant Design 配置提供者
- * 根据主题配置动态设置 Ant Design 的样式
+ * 应用固化的墨青主题到 Ant Design
  */
 export const AntdConfigProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const 主题配置 = useAtomValue(主题配置原子)
-
   return (
     <ConfigProvider
       locale={zhTW}
@@ -27,22 +23,22 @@ export const AntdConfigProvider: React.FC<{ children: React.ReactNode }> = ({ ch
           colorBorder: '#ded8c8',
           colorBorderSecondary: '#ebe6d9',
           // 全局字體大小（影響所有文字和組件）
-          fontSize: 主题配置.全局字体大小,
+          fontSize: 14,
           // 全局行高（文字垂直間距）
-          lineHeight: 主题配置.全局行高,
+          lineHeight: 1.4,
         },
         components: {
           Table: {
             // 表格字體大小（統一應用到所有表格單元格）
-            fontSize: 主题配置.表格.字体大小,
+            fontSize: 13,
 
             // 表格單元格 padding（上下、左右）
-            cellPaddingBlock: 主题配置.表格.单元格垂直内边距,
-            cellPaddingInline: 主题配置.表格.单元格水平内边距,
+            cellPaddingBlock: 4,
+            cellPaddingInline: 8,
 
             // 表頭樣式
-            headerBg: 主题配置.表格.表头背景色,
-            headerColor: 主题配置.表格.表头文字颜色,
+            headerBg: '#ebe6d9',
+            headerColor: '#1c2b2d',
           },
         },
       }}

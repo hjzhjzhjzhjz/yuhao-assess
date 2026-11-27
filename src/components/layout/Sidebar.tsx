@@ -9,7 +9,6 @@ import {
   HomeOutlined,
   LineChartOutlined,
   RocketOutlined,
-  SettingOutlined,
   SwapOutlined,
   UploadOutlined,
 } from '@ant-design/icons'
@@ -199,11 +198,6 @@ export function Sidebar({ collapsed = false, onCollapse }: SidebarProps) {
       key: '/comparison',
       icon: <SwapOutlined />, // 交換圖標（可換成：FundOutlined, PieChartOutlined）
       label: '方案對比',
-    },
-    {
-      key: '/settings',
-      icon: <SettingOutlined />, // 設置圖標
-      label: '設置',
     },
   ]
 
