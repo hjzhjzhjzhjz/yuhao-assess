@@ -25,6 +25,7 @@ import { 方案列表原子狀態, 當前方案原子狀態, 頂欄方案載入�
 import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
 import { 當量詳情原子狀態, 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
 import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
+import { 解析導入JSON } from '@/schemas/importScheme'
 import { 應用方案數據, type 方案應用Setters, 清空所有Atom } from '@/services/atomResetService'
 import { 導出方案配置JSON, 收集測評結果 } from '@/services/exportService'
 import { 列出可用方案, 創建空白方案, 加載方案, 查找方案鍵名 } from '@/services/schemeService'
@@ -187,23 +188,39 @@ export function AppHeader() {
     }
   }
 
-  // 導入配置
+  // 導入配置：Zod 校驗（方案骨架 + 5 類測評結果逐類），錯誤精確到字段
   const 處理導入JSON = (file: RcFile): boolean => {
     const reader = new FileReader()
     reader.onload = e => {
       try {
-        const 導入數據 = JSON.parse(e.target?.result as string)
-        console.log('[AppHeader] 從文件導入的原始數據:', 導入數據)
+        const 文本 = e.target?.result as string
+        const 校驗 = 解析導入JSON(文本)
+        if (!校驗.成功) {
+          // 校驗失败时不动任何 atom，用户当前工作方案保持原样
+          message.error({ content: `導入失敗：${校驗.錯誤}`, duration: 8 })
+          return
+        }
 
+        const { 方案, 已載入結果, 跳過的結果 } = 應用方案數據(校驗.方案, 方案Setters)
         設置當前本地方案標識符(null)
-        const { 方案, 已載入結果 } = 應用方案數據(導入數據, 方案Setters)
+
         const 完整提示 = 已載入結果.length > 0 ? `（包含${已載入結果.join('、')}結果）` : ''
         message.success(`已導入配置「${方案.元數據.方案名}」${完整提示}`)
+        if (跳過的結果.length > 0) {
+          message.warning({
+            content: `以下結果格式不正確已跳過：${跳過的結果.join('、')}。方案配置已正常導入。`,
+            duration: 8,
+          })
+        }
       } catch (錯誤) {
         console.error('[AppHeader] 導入配置失敗:', 錯誤)
-        message.error('導入配置失敗：文件格式不正確')
+        message.error({
+          content: `導入失敗：${錯誤 instanceof Error ? 錯誤.message : '文件格式不正確'}`,
+          duration: 8,
+        })
       }
     }
+    reader.onerror = () => message.error('讀取文件失敗，請重試')
     reader.readAsText(file)
     return false
   }
@@ -362,7 +379,7 @@ export function AppHeader() {
             popupMatchSelectWidth={false}
           />
         )}
-        <Upload beforeUpload={處理導入JSON} showUploadList={false} accept="application/json">
+        <Upload beforeUpload={處理導入JSON} showUploadList={false} accept="application/json,.json">
           <Button icon={<UploadOutlined />} size="small">
             導入
           </Button>
