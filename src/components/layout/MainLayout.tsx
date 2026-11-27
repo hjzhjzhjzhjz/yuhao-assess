@@ -1,7 +1,7 @@
 import { MenuOutlined } from '@ant-design/icons'
 import { Layout, Spin } from 'antd'
 import { useAtomValue } from 'jotai'
-import { type MouseEvent, useState } from 'react'
+import { type MouseEvent, Suspense, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import styled from 'styled-components'
 import { 頂欄方案載入名原子狀態 } from '@/atoms/scheme'
@@ -86,6 +86,14 @@ const ContentInner = styled.div`
     padding: 12px;
     border-radius: 6px;
   }
+`
+
+/* 懶加載分析頁時的内容區佔位，尺寸與内容區一致避免布局跳動 */
+const PageLoading = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
 `
 
 const StyledFooter = styled(Footer)`
@@ -193,7 +201,15 @@ function MainLayout() {
         </StyledHeader>
         <StyledContent>
           <ContentInner onClick={處理内容點擊}>
-            <Outlet />
+            <Suspense
+              fallback={
+                <PageLoading>
+                  <Spin size="large" />
+                </PageLoading>
+              }
+            >
+              <Outlet />
+            </Suspense>
           </ContentInner>
         </StyledContent>
         <StyledFooter>宇浩漢字輸入法測評系統 © {new Date().getFullYear()}</StyledFooter>

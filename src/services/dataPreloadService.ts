@@ -6,6 +6,11 @@ import { 數據預加載狀態原子 } from '../atoms/dataPreload'
 import { 加載JSON數據文件 } from '../utils/data-loader'
 import { 字頻表服務類别 } from './charFrequencyService'
 
+/** 僅開發環境輸出預加載日誌，生産環境保持控制台安靜 */
+const 調試日誌 = (...參數: unknown[]): void => {
+  if (import.meta.env.DEV) console.log(...參數)
+}
+
 /**
  * 數據預加載服務
  * 在應用啓動時預加載常用數據，提升後續頁面加載速度
@@ -148,18 +153,18 @@ export class 數據預加載服務類别 {
    */
   static 啓動預加載(): void {
     // 立即加載核心數據
-    console.log('🚀 開始預加載核心數據...')
+    調試日誌('🚀 開始預加載核心數據...')
     this.預加載核心數據().then(() => {
-      console.log('✅ 核心數據加載完成')
+      調試日誌('✅ 核心數據加載完成')
     })
 
     // 空閒時加載擴展數據
     if ('requestIdleCallback' in window) {
       requestIdleCallback(
         () => {
-          console.log('⏰ 瀏覽器空閒，開始加載擴展數據...')
+          調試日誌('⏰ 瀏覽器空閒，開始加載擴展數據...')
           this.預加載擴展數據().then(() => {
-            console.log('✅ 擴展數據加載完成')
+            調試日誌('✅ 擴展數據加載完成')
           })
         },
         { timeout: 3000 } // 最多等待3秒
@@ -167,7 +172,7 @@ export class 數據預加載服務類别 {
     } else {
       // 不支持 requestIdleCallback 的瀏覽器，延遲2秒後加載
       setTimeout(() => {
-        console.log('⏰ 延遲加載擴展數據...')
+        調試日誌('⏰ 延遲加載擴展數據...')
         this.預加載擴展數據()
       }, 2000)
     }

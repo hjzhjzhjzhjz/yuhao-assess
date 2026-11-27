@@ -1,15 +1,17 @@
-import { useEffect } from 'react'
+import { lazy, useEffect } from 'react'
 import { Navigate, useRoutes } from 'react-router-dom'
 import MainLayout from './components/layout/MainLayout'
 import { ThemeProvider } from './components/ThemeProvider'
-import ComparisonPage from './pages/ComparisonPage'
-import DynamicDuplicateAnalysisPage from './pages/DynamicDuplicateAnalysisPage'
 import HomePage from './pages/HomePage'
-import KeyboardHeatmapPage from './pages/KeyboardHeatmapPage'
-import ShortCodeEfficiencyPage from './pages/ShortCodeEfficiencyPage'
-import SpeedEquivalentPage from './pages/SpeedEquivalentPage'
-import StaticDuplicateAnalysisPage from './pages/StaticDuplicateAnalysisPage'
 import { 數據預加載服務類别 } from './services/dataPreloadService'
+
+// 分析頁按路由懶加載：首屏只下載框架與首頁，其餘頁面進入時才下載，降低初始 JS 體積
+const StaticDuplicateAnalysisPage = lazy(() => import('./pages/StaticDuplicateAnalysisPage'))
+const DynamicDuplicateAnalysisPage = lazy(() => import('./pages/DynamicDuplicateAnalysisPage'))
+const SpeedEquivalentPage = lazy(() => import('./pages/SpeedEquivalentPage'))
+const ShortCodeEfficiencyPage = lazy(() => import('./pages/ShortCodeEfficiencyPage'))
+const KeyboardHeatmapPage = lazy(() => import('./pages/KeyboardHeatmapPage'))
+const ComparisonPage = lazy(() => import('./pages/ComparisonPage'))
 
 const routes = [
   {
