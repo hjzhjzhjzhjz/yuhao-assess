@@ -1,5 +1,7 @@
+import { MenuOutlined } from '@ant-design/icons'
 import { Layout, Spin } from 'antd'
 import { useAtomValue } from 'jotai'
+import { type MouseEvent, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import styled from 'styled-components'
 import { 頂欄方案載入名原子狀態 } from '@/atoms/scheme'
@@ -22,13 +24,44 @@ const StyledHeader = styled(Header)`
   height: 56px;
   line-height: 56px;
 
-  /* 移動端：留出左上角漢堡按鈕的位置，頂欄自動換行增高 */
   @media (max-width: 768px) {
-    padding: 6px 12px 6px 58px;
+    padding: 6px 12px;
     height: auto;
     min-height: 56px;
     line-height: normal;
   }
+`
+
+/* 頂欄左側的導航觸發按鈕，點一下喚出左側導航抽屜 */
+const NavTrigger = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  margin-right: 12px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+`
+
+/* 包住顶栏原有内容，避免其 width:100% 与导航按钮相加溢出 */
+const HeaderContent = styled.div`
+  flex: 1;
+  min-width: 0;
 `
 
 const StyledContent = styled(Content)`
@@ -90,19 +123,76 @@ const SchemeLoadingContent = styled.div`
   color: rgba(0, 0, 0, 0.65);
 `
 
+/* 點擊「空白處」時視爲喚出導航。這裏列出所有不應觸發導航的可交互元素，
+   命中其中任一個就跳過，避免誤觸（按鈕、連結、表單、表格、卡片、ant 组件等）。 */
+const 交互元素選擇器 = [
+  'a',
+  'button',
+  'input',
+  'textarea',
+  'select',
+  'label',
+  'summary',
+  '[role="button"]',
+  '[role="menuitem"]',
+  '[role="tab"]',
+  '[role="checkbox"]',
+  '[role="radio"]',
+  '[role="switch"]',
+  '[role="link"]',
+  'table',
+  'th',
+  'td',
+  'tr',
+  '.ant-btn',
+  '.ant-select',
+  '.ant-input',
+  '.ant-table',
+  '.ant-segmented',
+  '.ant-upload',
+  '.ant-card',
+  '.ant-alert',
+  '.ant-tag',
+  '.ant-checkbox-wrapper',
+  '.ant-radio-wrapper',
+  '.ant-switch',
+  '.ant-slider',
+  '.ant-menu',
+  '.ant-modal',
+  '.ant-drawer',
+  '.ant-popover',
+  '.ant-tooltip',
+  '.ant-dropdown',
+].join(',')
+
 function MainLayout() {
   useLocalSchemeSyncMetrics()
   const 頂欄方案載入名 = useAtomValue(頂欄方案載入名原子狀態)
+  const [導航打開, 設置導航打開] = useState(false)
+
+  const 打開導航 = () => 設置導航打開(true)
+
+  // 點内容區空白處彈出導航；點在交互元素上、或正在選中文字時不觸發
+  const 處理内容點擊 = (event: MouseEvent<HTMLDivElement>) => {
+    const 目標 = event.target as HTMLElement
+    if (窗口有選中文字()) return
+    if (目標.closest(交互元素選擇器)) return
+    打開導航()
+  }
 
   return (
     <StyledLayout>
-      <Sidebar />
       <MainColumn>
         <StyledHeader>
-          <AppHeader />
+          <NavTrigger onClick={打開導航} aria-label="打開導航選單">
+            <MenuOutlined />
+          </NavTrigger>
+          <HeaderContent>
+            <AppHeader />
+          </HeaderContent>
         </StyledHeader>
         <StyledContent>
-          <ContentInner>
+          <ContentInner onClick={處理内容點擊}>
             <Outlet />
           </ContentInner>
         </StyledContent>
@@ -116,8 +206,14 @@ function MainLayout() {
           </SchemeLoadingMask>
         )}
       </MainColumn>
+      <Sidebar open={導航打開} onClose={() => 設置導航打開(false)} />
     </StyledLayout>
   )
+}
+
+/** 使用者正在選中文字時不彈導航，避免干擾複製等操作 */
+function 窗口有選中文字(): boolean {
+  return typeof window !== 'undefined' && (window.getSelection()?.toString().length ?? 0) > 0
 }
 
 export default MainLayout

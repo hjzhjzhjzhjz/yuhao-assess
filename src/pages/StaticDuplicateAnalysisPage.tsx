@@ -365,13 +365,6 @@ const StaticDuplicateAnalysisPage: React.FC = () => {
         width: 120,
       },
       {
-        title: '理論字符數',
-        dataIndex: '理論字符數',
-        key: '理論字符數',
-        align: 'right',
-        width: 120,
-      },
-      {
         title: '字集覆蓋率',
         dataIndex: '字集覆蓋率',
         key: '字集覆蓋率',
