@@ -45,6 +45,60 @@ const 主題色 = {
   載入遮罩: 'rgba(245, 242, 234, 0.86)',
 } as const
 
+// 分析類型切换控件：桌面用 Segmented，手机用两列按钮组，6 個選項全部可見
+const 分析類型手機容器 = styled.div`
+  display: none;
+
+  @media (max-width: 576px) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    width: 100%;
+  }
+`
+
+const 分析類型手機按鈕 = styled.button<{ $選中: boolean }>`
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid ${p => (p.$選中 ? 主題色.青瓷緑 : '#d9d9d9')};
+  border-radius: 6px;
+  background: ${p => (p.$選中 ? 主題色.青瓷緑 : '#fff')};
+  color: ${p => (p.$選中 ? '#fff' : 主題色.正文)};
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+
+  &:active {
+    opacity: 0.75;
+  }
+`
+
+// 桌面端的 Segmented 分析類型控件在手机上隐藏（改用上面的两列按钮组）
+const 分析類型桌面控件 = styled.div`
+  @media (max-width: 576px) {
+    display: none;
+  }
+`
+
+// 可横滑容器：字頻來源等选项较多的 Segmented 在手机上允许横向滑动，避免末项被裁剪
+const 横滑容器 = styled.div`
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  & > .ant-segmented {
+    width: max-content;
+    max-width: none;
+  }
+`
+
 // 覆蓋率閾值
 const 靜態重碼分析字集覆蓋率閾值 = 0.99 // 低於此覆蓋率的字集將被標記爲「缺字」
 const 動態重碼分析字集覆蓋率閾值 = 0.975 // 低於此覆蓋率的字集將被標記爲「缺字」
@@ -744,21 +798,37 @@ const ComparisonPage: React.FC = () => {
   return (
     <ComparisonContainer>
       <Space orientation="vertical" size="large" style={{ width: '100%' }}>
-        {/* 第一行：分析種類選擇 */}
-        <Segmented
-          options={分析類型選項}
-          value={當前分析類型}
-          onChange={value => 設置當前分析類型(value as 分析型别)}
-        />
+        {/* 第一行：分析種類選擇（桌面 Segmented / 手机两列按钮组） */}
+        <分析類型桌面控件>
+          <Segmented
+            options={分析類型選項}
+            value={當前分析類型}
+            onChange={value => 設置當前分析類型(value as 分析型别)}
+          />
+        </分析類型桌面控件>
+        <分析類型手機容器>
+          {分析類型選項.map(選項 => (
+            <分析類型手機按鈕
+              key={選項.value}
+              type="button"
+              $選中={當前分析類型 === 選項.value}
+              onClick={() => 設置當前分析類型(選項.value as 分析型别)}
+            >
+              {選項.label}
+            </分析類型手機按鈕>
+          ))}
+        </分析類型手機容器>
 
         {/* 第二行：字頻來源選擇（僅在當量和簡碼效率時顯示） */}
         {(當前分析類型 === '速度當量' || 當前分析類型 === '簡碼效率') && (
-          <Segmented
-            size="small"
-            options={字頻來源選項}
-            value={當前字頻來源}
-            onChange={value => 設置當前字頻來源(value as 字頻來源型别)}
-          />
+          <横滑容器>
+            <Segmented
+              size="small"
+              options={字頻來源選項}
+              value={當前字頻來源}
+              onChange={value => 設置當前字頻來源(value as 字頻來源型别)}
+            />
+          </横滑容器>
         )}
 
         {/* 第三行：全碼/簡碼選擇 */}
