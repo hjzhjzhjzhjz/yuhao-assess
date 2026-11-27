@@ -1,5 +1,8 @@
 import {
   CheckCircleFilled,
+  CloudDownloadOutlined,
+  CopyOutlined,
+  DeleteOutlined,
   PlusCircleOutlined,
   PlusOutlined,
   UserOutlined,
@@ -13,9 +16,11 @@ import {
   InputNumber,
   Modal,
   message,
+  Popconfirm,
   Space,
   Spin,
   Tag,
+  Tooltip,
   Typography,
 } from 'antd'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -24,13 +29,20 @@ import styled from 'styled-components'
 import { 原始碼表原子狀態, 碼表原子狀態, 編碼預覽數據原子狀態 } from '@/atoms/codeTable'
 import { 動態選重分析原子狀態 } from '@/atoms/dynamicDuplicate'
 import { 鍵位熱力分析原子狀態 } from '@/atoms/keyboardHeatmap'
+import {
+  本地方案列表原子狀態,
+  生成克隆後綴,
+  生成本地標識符,
+  當前本地方案標識符原子狀態,
+} from '@/atoms/localSchemes'
 import { 方案列表原子狀態, 當前方案原子狀態, 頂欄方案載入名原子狀態 } from '@/atoms/scheme'
 import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
 import { 當量詳情原子狀態, 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
 import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
 import { useDataPreload } from '@/hooks/useDataPreload'
-import { 應用方案數據, type 方案應用Setters } from '@/services/atomResetService'
-import { 加載方案, 查找方案鍵名 } from '@/services/schemeService'
+import { 應用方案數據, type 方案應用Setters, 清空所有Atom } from '@/services/atomResetService'
+import { 收集測評結果 } from '@/services/exportService'
+import { 創建空白方案, 加載方案, 查找方案鍵名 } from '@/services/schemeService'
 import type { 方案列表項介面, 方案配置介面 } from '@/types/scheme'
 import { 等界面繪製 } from '@/utils/wait-for-paint'
 
@@ -309,9 +321,86 @@ const FieldLabel = styled(Text)`
   }
 `
 
+/* 新建方案入口卡片 */
+const NewSchemeCard = styled.button`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 138px;
+  padding: 16px;
+  cursor: pointer;
+  border: 1.5px dashed var(--color-primary);
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: var(--color-primary);
+  transition: all var(--transition-base);
+
+  &:hover {
+    background: var(--color-primary-light);
+    box-shadow: var(--shadow-md);
+  }
+
+  .anticon {
+    font-size: 26px;
+  }
+
+  @media (max-width: 768px) {
+    min-height: 120px;
+    padding: 12px;
+  }
+`
+
+/* 卡片右上角操作按钮容器 */
+const CardActions = styled.div`
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+
+  ${SchemeCard}:hover & {
+    opacity: 1;
+  }
+
+  @media (hover: none) {
+    opacity: 1;
+  }
+`
+
+/* 紧凑数据状态条 */
+const StatusBar = styled.div<{ $tone: 'loading' | 'ready' | 'partial' }>`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  background: ${p =>
+    p.$tone === 'ready'
+      ? 'var(--color-primary-light)'
+      : p.$tone === 'loading'
+        ? '#fff7e6'
+        : 'var(--color-bg-tertiary)'};
+  border: 1px solid
+    ${p => (p.$tone === 'ready' ? 'var(--color-primary)' : p.$tone === 'loading' ? '#ffd591' : 'var(--color-border-primary)')};
+  color: var(--color-text-primary);
+
+  .status-icon {
+    display: inline-flex;
+    align-items: center;
+    color: ${p => (p.$tone === 'ready' ? 'var(--color-primary)' : p.$tone === 'loading' ? '#d48806' : 'var(--color-text-secondary)')};
+  }
+`
+
 function HomePage() {
   const [當前方案, 設置當前方案] = useAtom(當前方案原子狀態)
   const 方案列表 = useAtomValue(方案列表原子狀態)
+  const 動態選重分析結果 = useAtomValue(動態選重分析原子狀態)
+  const 靜態重碼分析結果 = useAtomValue(靜態重碼分析原子狀態)
+  const 速度當量分析結果 = useAtomValue(速度當量分析原子狀態)
+  const 簡碼效率分析結果 = useAtomValue(簡碼效率分析原子狀態)
+  const 鍵位熱力分析結果 = useAtomValue(鍵位熱力分析原子狀態)
   const 設置動態選重分析結果 = useSetAtom(動態選重分析原子狀態)
   const 設置靜態重碼分析結果 = useSetAtom(靜態重碼分析原子狀態)
   const 設置速度當量分析結果 = useSetAtom(速度當量分析原子狀態)
@@ -322,6 +411,8 @@ function HomePage() {
   const 碼表數據 = useAtomValue(碼表原子狀態)
   const 設置原始碼表 = useSetAtom(原始碼表原子狀態)
   const 設置編碼預覽數據 = useSetAtom(編碼預覽數據原子狀態)
+  const [本地方案列表, 設置本地方案列表] = useAtom(本地方案列表原子狀態)
+  const [當前本地方案標識符, 設置當前本地方案標識符] = useAtom(當前本地方案標識符原子狀態)
   const [加載中, 設置加載中] = useState(false)
   const 頂欄方案載入名 = useAtomValue(頂欄方案載入名原子狀態)
   const 設置頂欄方案載入名 = useSetAtom(頂欄方案載入名原子狀態)
@@ -344,9 +435,22 @@ function HomePage() {
     設置鍵位熱力分析結果,
   }
 
-  const { isLoading: 數據加載中, allLoaded: 所有數據已加載 } = useDataPreload()
+  const {
+    isLoading: 數據加載中,
+    isReady: 核心數據已加載,
+    allLoaded: 所有數據已加載,
+  } = useDataPreload()
 
   const 當前鍵名 = 查找方案鍵名(方案列表, 當前方案)
+
+  /** 導出與克隆都要這一份，收在一處免得兩邊各列各的 */
+  const 當前分析結果 = {
+    靜態重碼分析結果,
+    動態選重分析結果,
+    速度當量分析結果,
+    簡碼效率分析結果,
+    鍵位熱力分析結果,
+  }
 
   // 加載預設方案（卡片點擊）
   const 處理選擇方案 = async (方案鍵名: string) => {
@@ -367,6 +471,78 @@ function HomePage() {
       設置加載中(false)
       設置頂欄方案載入名(null)
     }
+  }
+
+  // 新建空白方案（與頂欄「新建」按鈕同一套邏輯）
+  const 處理新建方案 = () => {
+    清空所有Atom(方案Setters)
+    const 新方案 = 創建空白方案()
+    設置當前方案(新方案)
+    設置本地方案列表(prev => [...prev, 新方案])
+    設置當前本地方案標識符(新方案.元數據.標識符)
+    message.success('已創建新方案')
+  }
+
+  // 克隆當前方案：原方案快照 + 當前方案改爲克隆名，都帶上測評結果
+  const 處理克隆方案 = (方案: 方案配置介面) => {
+    const 現在 = new Date().toISOString()
+    const 快照結果 = 收集測評結果(當前分析結果)
+
+    // 1. 源方案快照存入本地方案列表（若源是按鍵名加載的預設方案，這一步让它成爲可持久化本地方案）
+    const 快照: 方案配置介面 = { ...方案, 測評結果: 快照結果 }
+    const 原標識符 = 方案.元數據.標識符
+    設置本地方案列表(prev => {
+      const 已存在 = prev.some(s => s.元數據.標識符 === 原標識符)
+      return 已存在 ? prev.map(s => (s.元數據.標識符 === 原標識符 ? 快照 : s)) : [...prev, 快照]
+    })
+
+    // 2. 克隆體作爲新的當前方案
+    const 新標識符 = 生成本地標識符()
+    const 新方案名 = 方案.元數據.方案名 + 生成克隆後綴()
+    const 克隆方案: 方案配置介面 = {
+      ...方案,
+      元數據: {
+        ...方案.元數據,
+        方案名: 新方案名,
+        標識符: 新標識符,
+        創建時間: 現在,
+        更新時間: 現在,
+      },
+      測評結果: 快照結果,
+    }
+    設置本地方案列表(prev => [...prev.filter(s => s.元數據.標識符 !== 新標識符), 克隆方案])
+    應用方案數據(克隆方案, 方案Setters)
+    設置當前本地方案標識符(新標識符)
+    message.success(`已克隆爲「${新方案名}」`)
+  }
+
+  // 切換本地方案
+  const 處理切換本地方案 = (標識符: string) => {
+    if (標識符 === 當前本地方案標識符 && 當前方案) return
+    const 目標 = 本地方案列表.find(s => s.元數據.標識符 === 標識符)
+    if (!目標) return
+    應用方案數據(目標, 方案Setters)
+    設置當前本地方案標識符(標識符)
+    message.success(`已切換到「${目標.元數據.方案名}」`)
+  }
+
+  // 删除本地方案
+  const 處理删除本地方案 = (標識符: string) => {
+    const 被删 = 本地方案列表.find(s => s.元數據.標識符 === 標識符)
+    const 新列表 = 本地方案列表.filter(s => s.元數據.標識符 !== 標識符)
+    設置本地方案列表(新列表)
+    if (標識符 === 當前本地方案標識符) {
+      if (新列表.length > 0) {
+        const 末尾 = 新列表[新列表.length - 1]!
+        應用方案數據(末尾, 方案Setters)
+        設置當前本地方案標識符(末尾.元數據.標識符)
+      } else {
+        清空所有Atom(方案Setters)
+        設置當前方案(null)
+        設置當前本地方案標識符(null)
+      }
+    }
+    message.success(`已删除「${被删?.元數據.方案名 ?? '方案'}」`)
   }
 
   const 更新元數據 = (字段名: keyof 方案配置介面['元數據'], 值: string | string[]) => {
@@ -497,14 +673,18 @@ function HomePage() {
             <MetaLabel>當前方案</MetaLabel>
             <MetaValue>{當前方案?.元數據.方案名 ?? '未選擇'}</MetaValue>
           </MetaItem>
+          <MetaItem>
+            <MetaLabel>本地方案</MetaLabel>
+            <MetaValue>{本地方案列表.length} 個</MetaValue>
+          </MetaItem>
           <StatusPill $ready={所有數據已加載}>
             {數據加載中 ? (
               <>
-                <Spin size="small" /> 數據載入中
+                <Spin size="small" /> 載入中
               </>
             ) : 所有數據已加載 ? (
               <>
-                <CheckCircleFilled /> 數據已就緒
+                <CheckCircleFilled /> 已就緒
               </>
             ) : (
               <>
@@ -515,7 +695,111 @@ function HomePage() {
         </HeroMeta>
       </Hero>
 
-      {/* 方案卡片网格 */}
+      {/* 數據加載狀態條：三態明確提示 */}
+      <StatusBar $tone={所有數據已加載 ? 'ready' : 數據加載中 ? 'loading' : 'partial'}>
+        <span className="status-icon">
+          {所有數據已加載 ? (
+            <CheckCircleFilled />
+          ) : 數據加載中 ? (
+            <Spin size="small" />
+          ) : (
+            <Spin size="small" />
+          )}
+        </span>
+        <span>
+          {所有數據已加載
+            ? '所有測評數據已加載完畢，可以開始使用全部分析功能。'
+            : 數據加載中
+              ? '正在加載字頻與字符集數據，首次訪問稍候即可。'
+              : 核心數據已加載
+                ? '核心功能已可用，擴展字頻數據正在後台加載。'
+                : '正在準備基礎數據…'}
+        </span>
+      </StatusBar>
+
+      {/* 本地方案区 */}
+      {本地方案列表.length > 0 && (
+        <div>
+          <SectionHead>
+            <SectionTitle level={4}>本地方案</SectionTitle>
+            <SectionHint type="secondary">導入或克隆的方案，自動保存在本機</SectionHint>
+          </SectionHead>
+          <SchemeGrid>
+            {本地方案列表.map(方案 => {
+              const 元數據 = 方案.元數據
+              const 標識符 = 元數據.標識符
+              const 活化 = 標識符 === 當前本地方案標識符
+              return (
+                <SchemeCard
+                  key={標識符}
+                  type="button"
+                  $active={活化}
+                  disabled={方案載入中}
+                  onClick={() => 處理切換本地方案(標識符)}
+                  aria-pressed={活化}
+                >
+                  <CardTop>
+                    <SchemeName>{元數據.方案名}</SchemeName>
+                    {活化 && (
+                      <ActiveBadge>
+                        <CheckCircleFilled /> 當前
+                      </ActiveBadge>
+                    )}
+                  </CardTop>
+                  {元數據.描述 && <SchemeDesc>{元數據.描述}</SchemeDesc>}
+                  {!!元數據.標籤?.length && (
+                    <TagRow>
+                      {元數據.標籤.slice(0, 3).map(標籤 => (
+                        <Tag key={標籤} color={活化 ? 'cyan' : undefined}>
+                          {標籤}
+                        </Tag>
+                      ))}
+                    </TagRow>
+                  )}
+                  <CardFoot>
+                    <Author>
+                      <UserOutlined /> {元數據.作者 || '本地'}
+                    </Author>
+                    <CardActions>
+                      <Tooltip title="克隆">
+                        <Button
+                          type="text"
+                          size="small"
+                          icon={<CopyOutlined />}
+                          disabled={方案載入中}
+                          onClick={e => {
+                            e.stopPropagation()
+                            處理克隆方案(方案)
+                          }}
+                        />
+                      </Tooltip>
+                      <Popconfirm
+                        title="删除此本地方案？"
+                        onConfirm={e => {
+                          e?.stopPropagation()
+                          處理删除本地方案(標識符)
+                        }}
+                      >
+                        <Tooltip title="删除">
+                          <Button
+                            type="text"
+                            size="small"
+                            danger
+                            icon={<DeleteOutlined />}
+                            onClick={e => e.stopPropagation()}
+                          />
+                        </Tooltip>
+                      </Popconfirm>
+                    </CardActions>
+                  </CardFoot>
+                </SchemeCard>
+              )
+            })}
+          </SchemeGrid>
+        </div>
+      )}
+
+      {/* 预设方案卡片网格 */}
       <div>
         <SectionHead>
           <SectionTitle level={4}>預設方案</SectionTitle>
@@ -556,11 +840,32 @@ function HomePage() {
                   <Author>
                     <UserOutlined /> {元數據.作者 || '佚名'}
                   </Author>
-                  <Version>{元數據.版本}</Version>
+                  <Space size={4}>
+                    <Version>{元數據.版本}</Version>
+                    <CardActions>
+                      <Tooltip title="克隆爲本地方案">
+                        <Button
+                          type="text"
+                          size="small"
+                          icon={<CopyOutlined />}
+                          disabled={方案載入中}
+                          onClick={e => {
+                            e.stopPropagation()
+                            處理克隆方案(項.配置)
+                          }}
+                        />
+                      </Tooltip>
+                    </CardActions>
+                  </Space>
                 </CardFoot>
               </SchemeCard>
             )
           })}
+          {/* 新建方案入口 */}
+          <NewSchemeCard type="button" onClick={處理新建方案} disabled={方案載入中}>
+            <PlusCircleOutlined />
+            <span>新建空白方案</span>
+          </NewSchemeCard>
         </SchemeGrid>
         {方案列表.length === 0 && (
           <Paragraph type="secondary" style={{ marginTop: 8 }}>
@@ -806,9 +1111,10 @@ function HomePage() {
       {!當前方案 && (
         <Alert
           title="尚未選擇方案"
-          description="請從上方卡片選擇一個預設方案，即可加載碼表與測評結果並開始配置。"
+          description="請從上方卡片選擇一個預設方案，或點擊「新建空白方案」開始自訂配置。"
           type="info"
           showIcon
+          icon={<CloudDownloadOutlined />}
         />
       )}
 
