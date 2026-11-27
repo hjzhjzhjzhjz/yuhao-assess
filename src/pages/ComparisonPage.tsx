@@ -217,20 +217,6 @@ interface 對比方案數據介面 {
   簡碼效率分析?: 簡碼效率分析結果介面 | null
 }
 
-// 判斷一個方案是否含有特殊參數（選重編碼化或出簡不出全）
-const 是否特殊方案 = (r: 對比方案數據介面): boolean => !!r.選重編碼化 || !!r.出簡不出全
-
-// 包裝排序函數：始終將特殊方案置於底部（升序時）
-const 包裝排序 = (基礎: (a: 對比方案數據介面, b: 對比方案數據介面) => number) => {
-  return (a: 對比方案數據介面, b: 對比方案數據介面): number => {
-    const aSpecial = 是否特殊方案(a)
-    const bSpecial = 是否特殊方案(b)
-    if (aSpecial && !bSpecial) return 1
-    if (!aSpecial && bSpecial) return -1
-    return 基礎(a, b)
-  }
-}
-
 // 在方案名後追加標記符號：
 // † = 出簡不出全；‡ = 選重編碼化
 const 渲染方案名 = (_: unknown, record: 對比方案數據介面) => {
@@ -575,13 +561,13 @@ const ComparisonPage: React.FC = () => {
         ({ key, title, dataKey }): 對比列 => ({
           title,
           key,
-          sorter: 包裝排序((a, b) => {
+          sorter: (a, b) => {
             const a值 = 取靜態數值(a, dataKey, 碼類型)
             const b值 = 取靜態數值(b, dataKey, 碼類型)
             if (a值 === undefined) return 1
             if (b值 === undefined) return -1
             return a值 - b值
-          }),
+          },
           提取數值: record => 取靜態數值(record, dataKey, 碼類型),
           render: (_: unknown, record: 對比方案數據介面) =>
             取靜態數值(record, dataKey, 碼類型) ?? 靜態缺失顯示(record, dataKey),
@@ -609,13 +595,13 @@ const ComparisonPage: React.FC = () => {
         ({ key, title, dataKey }): 對比列 => ({
           title,
           key,
-          sorter: 包裝排序((a, b) => {
+          sorter: (a, b) => {
             const a值 = 計算(a, dataKey)
             const b值 = 計算(b, dataKey)
             if (a值 === undefined) return 1
             if (b值 === undefined) return -1
             return a值 - b值
-          }),
+          },
           提取數值: record => 計算(record, dataKey),
           render: (_: unknown, record: 對比方案數據介面) => {
             const 值 = 計算(record, dataKey)
@@ -638,13 +624,13 @@ const ComparisonPage: React.FC = () => {
         ({ key, title, suffix }): 對比列 => ({
           title,
           key,
-          sorter: 包裝排序((a, b) => {
+          sorter: (a, b) => {
             const a值 = 取值(a, suffix)
             const b值 = 取值(b, suffix)
             if (a值 === undefined) return 1
             if (b值 === undefined) return -1
             return a值 - b值
-          }),
+          },
           提取數值: record => 取值(record, suffix),
           render: (_: unknown, record: 對比方案數據介面) => {
             const 值 = 取值(record, suffix)
@@ -687,13 +673,13 @@ const ComparisonPage: React.FC = () => {
         ({ key, title, dataKey }): 對比列 => ({
           title,
           key,
-          sorter: 包裝排序((a, b) => {
+          sorter: (a, b) => {
             const a值 = 取值(a, title, dataKey)
             const b值 = 取值(b, title, dataKey)
             if (a值 === undefined) return 1
             if (b值 === undefined) return -1
             return a值 - b值
-          }),
+          },
           提取數值: record => 取值(record, title, dataKey),
           render: (_: unknown, record: 對比方案數據介面) => {
             const 值 = 取值(record, title, dataKey)
@@ -721,13 +707,13 @@ const ComparisonPage: React.FC = () => {
         ({ key, title, N值 }): 對比列 => ({
           title,
           key,
-          sorter: 包裝排序((a, b) => {
+          sorter: (a, b) => {
             const a值 = 取值(a, N值)
             const b值 = 取值(b, N值)
             if (a值 === undefined) return 1
             if (b值 === undefined) return -1
             return a值 - b值
-          }),
+          },
           提取數值: record => 取值(record, N值),
           render: (_: unknown, record: 對比方案數據介面) => {
             const 值 = 取值(record, N值)
