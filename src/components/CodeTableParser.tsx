@@ -5,8 +5,8 @@ import {
   ThunderboltOutlined,
 } from '@ant-design/icons'
 import type { UploadProps } from 'antd'
-import { Alert, Button, Input, Select, Space, Table, Typography, Upload } from 'antd'
-import { useAtom, useSetAtom } from 'jotai'
+import { Alert, Button, Input, Select, Space, Spin, Table, Typography, Upload } from 'antd'
+import { useAtom, useSetAtom, useStore } from 'jotai'
 import React, { useState } from 'react'
 import {
   原始碼表原子狀態,
@@ -18,6 +18,7 @@ import {
 import type { 編碼預覽項 } from '@/atoms/codeTable'
 import { 當前方案原子狀態 } from '@/atoms/scheme'
 import { 碼表處理服務實例 } from '@/services/codeTableService'
+import { 原地重算所有分析 } from '@/services/inPlaceRecomputeService'
 import type { 原始碼表型别 } from '@/types'
 
 /** antd 6 主入口未直接導出 RcFile，從 UploadProps 推導等價類型 */
@@ -27,6 +28,8 @@ const { Title, Paragraph, Text, Link } = Typography
 const { Option } = Select
 
 const 碼表解析内容: React.FC = () => {
+  const store = useStore()
+
   // Jotai 狀態
   const [當前方案, 設置當前方案] = useAtom(當前方案原子狀態)
   const 設置原始碼表 = useSetAtom(原始碼表原子狀態)
@@ -44,6 +47,8 @@ const 碼表解析内容: React.FC = () => {
   const [成功信息, 設置成功信息] = useState<string | null>(null)
   const [文件搜索關鍵詞, 設置文件搜索關鍵詞] = useState('')
   const [編碼搜索關鍵詞, 設置編碼搜索關鍵詞] = useState('')
+  const [重算中, 設置重算中] = useState(false)
+  const [重算進度, 設置重算進度] = useState('')
 
   // 服務實例（不再需要 useRef，直接使用單例）
   // 生成碼表哈希值（SHA-256）
@@ -137,6 +142,29 @@ const 碼表解析内容: React.FC = () => {
     設置成功信息(
       `碼表解析完成！共 ${總字符數} 個字符，${處理結果.詞語全碼加選重鍵表 ? '包含詞語數據' : '僅單字數據'}，哈希值：${哈希值.substring(0, 16)}...`
     )
+
+    // 解析成功後原地重算所有分析（不跳轉頁面、不關閉彈窗）
+    設置重算中(true)
+    設置重算進度('正在準備數據...')
+    try {
+      const 結果 = await 原地重算所有分析(store, ({ 完成項, 總項, 當前名稱 }) => {
+        設置重算進度(`正在計算 ${當前名稱}（${完成項}/${總項}）`)
+      })
+      if (結果.成功) {
+        設置成功信息(
+          `碼表解析完成（${總字符數} 字符），並已重算全部分析：${結果.已計算.join('、')}`
+        )
+      } else {
+        設置錯誤信息(`碼表解析完成，但重算失敗：${結果.錯誤 ?? '未知錯誤'}`)
+      }
+    } catch (error) {
+      設置錯誤信息(
+        `碼表解析完成，但重算失敗：${error instanceof Error ? error.message : '未知錯誤'}`
+      )
+    } finally {
+      設置重算中(false)
+      設置重算進度('')
+    }
   }
 
   // 解析指定文件（不管理加載中狀態，由調用方負責）
@@ -465,6 +493,21 @@ const 碼表解析内容: React.FC = () => {
             </Button>
           )}
         </Space>
+
+        {/* 重算進度 */}
+        {重算中 && (
+          <Alert
+            title="正在重算所有分析"
+            description={
+              <Space>
+                <Spin size="small" />
+                <span>{重算進度}，頁面將保持不變</span>
+              </Space>
+            }
+            type="info"
+            showIcon
+          />
+        )}
 
         {/* 錯誤提示 */}
         {錯誤信息 && (

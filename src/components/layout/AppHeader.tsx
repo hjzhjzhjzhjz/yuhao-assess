@@ -1,9 +1,8 @@
 import { DownloadOutlined, ThunderboltOutlined, UploadOutlined } from '@ant-design/icons'
 import type { UploadProps } from 'antd'
 import { App, Button, Space, Upload } from 'antd'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom, useStore } from 'jotai'
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { 原始碼表原子狀態, 碼表原子狀態, 編碼預覽數據原子狀態 } from '@/atoms/codeTable'
 import { 動態選重分析原子狀態 } from '@/atoms/dynamicDuplicate'
@@ -16,8 +15,8 @@ import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
 import { 解析導入JSON } from '@/schemas/importScheme'
 import { 應用方案數據, type 方案應用Setters } from '@/services/atomResetService'
 import { 導出方案配置JSON } from '@/services/exportService'
+import { 原地重算所有分析 } from '@/services/inPlaceRecomputeService'
 import { 列出可用方案, 加載方案 } from '@/services/schemeService'
-import { 觸發所有分析計算 } from '@/services/triggerAnalysisService'
 import type { 方案列表項介面 } from '@/types/scheme'
 
 /** antd 6 主入口未直接導出 RcFile，從 UploadProps 推導等價類型 */
@@ -65,7 +64,7 @@ const PageTitle = styled.h1`
 `
 
 export function AppHeader() {
-  const navigate = useNavigate()
+  const store = useStore()
   const { message } = App.useApp()
   const 當前方案 = useAtomValue(當前方案原子狀態)
   const 設置方案列表 = useSetAtom(方案列表原子狀態)
@@ -198,16 +197,16 @@ export function AppHeader() {
     }
   }
 
-  // 全局重算
+  // 全局重算（原地計算，不跳轉頁面）
   const 處理全局重算 = async () => {
-    設置靜態重碼分析結果(null)
-    設置動態選重分析結果(null)
-    設置速度當量分析結果(null)
-    設置簡碼效率分析結果(null)
-    設置鍵位熱力分析結果(null)
-    message.loading('正在清除舊數據並觸發重新計算...', 1)
-    await 觸發所有分析計算(navigate, '/')
-    message.success('所有分析已觸發！')
+    const hide = message.loading('正在原地重算所有分析，頁面將保持不變...', 0)
+    const 結果 = await 原地重算所有分析(store)
+    hide()
+    if (結果.成功) {
+      message.success(`已重算：${結果.已計算.join('、')}`)
+    } else {
+      message.error(`重算失敗：${結果.錯誤 ?? '未知錯誤'}`)
+    }
   }
 
   return (
