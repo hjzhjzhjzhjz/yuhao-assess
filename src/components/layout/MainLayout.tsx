@@ -1,11 +1,18 @@
 import { MenuOutlined } from '@ant-design/icons'
 import { Layout, Spin } from 'antd'
-import { useAtomValue } from 'jotai'
-import { type MouseEvent, Suspense, useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { useAtomValue, useStore } from 'jotai'
+import { type MouseEvent, Suspense, useEffect, useRef, useState } from 'react'
+import { Outlet, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
+import { 碼表原子狀態 } from '@/atoms/codeTable'
+import { 動態選重分析原子狀態 } from '@/atoms/dynamicDuplicate'
+import { 鍵位熱力分析原子狀態 } from '@/atoms/keyboardHeatmap'
 import { 頂欄方案載入名原子狀態 } from '@/atoms/scheme'
+import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
+import { 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
+import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
 import { useLocalSchemeSyncMetrics } from '@/hooks/useLocalSchemeSyncMetrics'
+import { 原地重算所有分析 } from '@/services/inPlaceRecomputeService'
 import { AppHeader } from './AppHeader'
 import { Sidebar } from './Sidebar'
 
@@ -74,8 +81,9 @@ const StyledContent = styled(Content)`
   }
 `
 
-const ContentInner = styled.div`
-  max-width: 1400px;
+/* 對比頁表格列多，放寬容器減少大屏留白；其餘頁面維持 1400px */
+const ContentInner = styled.div<{ $wide?: boolean }>`
+  max-width: ${p => (p.$wide ? '1800px' : '1400px')};
   margin: 0 auto;
   background: #fffdf8;
   padding: 24px;
@@ -175,8 +183,33 @@ const 交互元素選擇器 = [
 
 function MainLayout() {
   useLocalSchemeSyncMetrics()
+  const store = useStore()
+  const 位置 = useLocation()
+  const 是對比頁 = 位置.pathname === '/comparison'
+  const 碼表 = useAtomValue(碼表原子狀態)
   const 頂欄方案載入名 = useAtomValue(頂欄方案載入名原子狀態)
   const [導航打開, 設置導航打開] = useState(false)
+  const 已調度補算 = useRef<unknown>(null)
+
+  // 自動補齊：若有碼表但五類分析結果全缺（導入無結果方案、舊數據等），
+  // 延遲一小段時間後原地重算一次。延遲是爲讓碼表解析彈窗自身的重算先完成，
+  // 避免重複計算——檢查時只要任一結果非空就跳過。
+  useEffect(() => {
+    if (!碼表 || 已調度補算.current === 碼表) return
+    const 定時器 = window.setTimeout(() => {
+      if (已調度補算.current === 碼表) return
+      const 結果完備 =
+        store.get(靜態重碼分析原子狀態) !== null ||
+        store.get(動態選重分析原子狀態) !== null ||
+        store.get(速度當量分析原子狀態) !== null ||
+        store.get(簡碼效率分析原子狀態) !== null ||
+        store.get(鍵位熱力分析原子狀態) !== null
+      if (結果完備) return
+      已調度補算.current = 碼表
+      void 原地重算所有分析(store)
+    }, 1200)
+    return () => window.clearTimeout(定時器)
+  }, [碼表, store])
 
   const 打開導航 = () => 設置導航打開(true)
 
@@ -200,7 +233,7 @@ function MainLayout() {
           </HeaderContent>
         </StyledHeader>
         <StyledContent>
-          <ContentInner onClick={處理内容點擊}>
+          <ContentInner $wide={是對比頁} onClick={處理内容點擊}>
             <Suspense
               fallback={
                 <PageLoading>
