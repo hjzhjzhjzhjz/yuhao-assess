@@ -634,7 +634,7 @@ const ComparisonPage: React.FC = () => {
           提取數值: record => 取值(record, suffix),
           render: (_: unknown, record: 對比方案數據介面) => {
             const 值 = 取值(record, suffix)
-            return 值 !== undefined ? 值.toFixed(6) : '-'
+            return 值 !== undefined ? 值.toFixed(4) : '-'
           },
         })
       ),
@@ -717,7 +717,7 @@ const ComparisonPage: React.FC = () => {
           提取數值: record => 取值(record, N值),
           render: (_: unknown, record: 對比方案數據介面) => {
             const 值 = 取值(record, N值)
-            return 值 !== undefined ? 值.toFixed(6) : '-'
+            return 值 !== undefined ? 值.toFixed(4) : '-'
           },
         })
       ),
