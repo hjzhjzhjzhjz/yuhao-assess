@@ -37,12 +37,6 @@
       "enabled": true
     },
     {
-      "key": "wubi-06",
-      "name": "五筆06",
-      "description": "",
-      "enabled": true
-    },
-    {
       "key": "tiger",
       "name": "虎碼",
       "description": "",
