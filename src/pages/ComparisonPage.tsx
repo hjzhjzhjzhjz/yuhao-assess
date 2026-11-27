@@ -738,10 +738,9 @@ const ComparisonPage: React.FC = () => {
     ]
   }
 
-  // 是否爲「越低越好」的指標（速度當量、簡碼效率則越高越好）
-  const 越低越好 = !['速度當量', '簡碼效率'].includes(當前分析類型)
-
   // 給所有數值列包一層「最優值高亮」：該列最優方案的數字用青瓷緑加粗。
+  // 所有指標都是越低越好：重碼/選重/動重越少越好，速度當量（加權按鍵成本）
+  // 與簡碼效率（加權平均碼長）同樣越小越好，故最優值一律取最小值。
   // 數值直接從原始數據提取（提取數值），不再解析渲染後的字符串——後者遇到
   // toLocaleString 的千分位逗號（如 "1,234"）會被 parseFloat 錯當成 1。
   // 方案名列與 '-'/'缺字'（提取數值返回 undefined）不參與。
@@ -755,7 +754,7 @@ const ComparisonPage: React.FC = () => {
         .map(r => 提取(r))
         .filter((v): v is number => v !== undefined && Number.isFinite(v))
       if (!有效.length) return col
-      const 最優 = 越低越好 ? Math.min(...有效) : Math.max(...有效)
+      const 最優 = Math.min(...有效)
       const 原渲染 = col.render as 渲染函數
       return {
         ...col,
@@ -772,7 +771,7 @@ const ComparisonPage: React.FC = () => {
   }
 
   // 根據當前選擇動態生成列定義
-  // biome-ignore lint/correctness/useExhaustiveDependencies: 获取的列函数与高亮函数为组件内纯函数（每次渲染重建，列入依赖会使memo失效）；對比方案列表与越低越好由高亮函数闭包读取，保留以触发重算
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 获取的列函数与高亮函数为组件内纯函数（每次渲染重建，列入依赖会使memo失效）；對比方案列表由高亮函数闭包读取，保留以触发重算
   const 當前列定義 = useMemo(() => {
     const 原始列: ColumnsType<對比方案數據介面> = (() => {
       switch (當前分析類型) {
@@ -793,7 +792,7 @@ const ComparisonPage: React.FC = () => {
       }
     })()
     return 高亮最優列(原始列)
-  }, [當前分析類型, 當前字頻來源, 當前全碼簡碼, 對比方案列表, 越低越好])
+  }, [當前分析類型, 當前字頻來源, 當前全碼簡碼, 對比方案列表])
 
   return (
     <ComparisonContainer>
