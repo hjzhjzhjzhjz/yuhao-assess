@@ -10,7 +10,6 @@ import {
   LineChartOutlined,
   RocketOutlined,
   SwapOutlined,
-  UploadOutlined,
 } from '@ant-design/icons'
 import { Layout, Menu } from 'antd'
 import { useEffect, useState } from 'react'
@@ -163,11 +162,6 @@ export function Sidebar({ collapsed = false, onCollapse }: SidebarProps) {
       key: '/',
       icon: <HomeOutlined />, // 首頁圖標
       label: '首頁',
-    },
-    {
-      key: '/process',
-      icon: <UploadOutlined />, // 上傳/處理圖標
-      label: '碼表解析',
     },
     {
       key: '/static',

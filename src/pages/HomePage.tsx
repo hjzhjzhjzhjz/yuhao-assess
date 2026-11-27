@@ -5,6 +5,7 @@ import {
   PlusCircleOutlined,
   PlusOutlined,
   SettingOutlined,
+  UploadOutlined,
   UserOutlined,
 } from '@ant-design/icons'
 import {
@@ -37,6 +38,7 @@ import { 方案列表原子狀態, 當前方案原子狀態, 頂欄方案載入�
 import { 簡碼效率分析原子狀態 } from '@/atoms/shortCodeEfficiency'
 import { 當量詳情原子狀態, 速度當量分析原子狀態 } from '@/atoms/speedEquivalent'
 import { 靜態重碼分析原子狀態 } from '@/atoms/staticDuplicate'
+import 碼表解析内容 from '@/components/CodeTableParser'
 import { 應用方案數據, type 方案應用Setters, 清空所有Atom } from '@/services/atomResetService'
 import { 收集測評結果 } from '@/services/exportService'
 import { 創建空白方案, 加載方案, 查找方案鍵名 } from '@/services/schemeService'
@@ -292,6 +294,7 @@ function HomePage() {
   const [鏈接對話框, 設置鏈接對話框] = useState(false)
   const [鏈接草稿, 設置鏈接草稿] = useState('')
   const [配置窗口, 設置配置窗口] = useState(false)
+  const [碼表解析窗口, 設置碼表解析窗口] = useState(false)
 
   const 方案Setters: 方案應用Setters = {
     設置當前方案,
@@ -933,6 +936,20 @@ function HomePage() {
         </SchemeGrid>
       </div>
 
+      {/* 碼表解析入口 */}
+      <div>
+        <SectionHead>
+          <SectionTitle level={4}>碼表解析</SectionTitle>
+        </SectionHead>
+        <Button
+          icon={<UploadOutlined />}
+          onClick={() => 設置碼表解析窗口(true)}
+          disabled={方案載入中}
+        >
+          打開碼表解析窗口
+        </Button>
+      </div>
+
       {/* 當前方案配置窗口 */}
       <Modal
         title={`當前方案配置 · ${當前方案?.元數據.方案名 ?? ''}`}
@@ -942,6 +959,18 @@ function HomePage() {
         width={880}
       >
         {配置面板}
+      </Modal>
+
+      {/* 碼表解析窗口 */}
+      <Modal
+        title="碼表解析"
+        open={碼表解析窗口}
+        onCancel={() => 設置碼表解析窗口(false)}
+        footer={null}
+        width={1000}
+        styles={{ body: { paddingTop: 12 } }}
+      >
+        <碼表解析内容 />
       </Modal>
 
       {/* 添加标签对话框 */}

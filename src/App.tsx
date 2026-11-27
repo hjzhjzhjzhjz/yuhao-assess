@@ -1,12 +1,11 @@
 import { useEffect } from 'react'
-import { useRoutes } from 'react-router-dom'
+import { Navigate, useRoutes } from 'react-router-dom'
 import MainLayout from './components/layout/MainLayout'
 import { ThemeProvider } from './components/ThemeProvider'
 import ComparisonPage from './pages/ComparisonPage'
 import DynamicDuplicateAnalysisPage from './pages/DynamicDuplicateAnalysisPage'
 import HomePage from './pages/HomePage'
 import KeyboardHeatmapPage from './pages/KeyboardHeatmapPage'
-import ProcessTablePage from './pages/ProcessTablePage'
 import ShortCodeEfficiencyPage from './pages/ShortCodeEfficiencyPage'
 import SpeedEquivalentPage from './pages/SpeedEquivalentPage'
 import StaticDuplicateAnalysisPage from './pages/StaticDuplicateAnalysisPage'
@@ -20,10 +19,6 @@ const routes = [
       {
         index: true,
         element: <HomePage />,
-      },
-      {
-        path: '/process',
-        element: <ProcessTablePage />,
       },
       {
         path: '/static',
@@ -49,6 +44,7 @@ const routes = [
         path: '/comparison',
         element: <ComparisonPage />,
       },
+      { path: '*', element: <Navigate to="/" replace /> },
     ],
   },
 ]

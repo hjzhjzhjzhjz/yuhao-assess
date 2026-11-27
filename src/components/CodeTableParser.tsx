@@ -26,7 +26,7 @@ type RcFile = Parameters<NonNullable<UploadProps['beforeUpload']>>[0]
 const { Title, Paragraph, Text, Link } = Typography
 const { Option } = Select
 
-const ProcessTablePage: React.FC = () => {
+const 碼表解析内容: React.FC = () => {
   // Jotai 狀態
   const [當前方案, 設置當前方案] = useAtom(當前方案原子狀態)
   const 設置原始碼表 = useSetAtom(原始碼表原子狀態)
@@ -285,7 +285,7 @@ const ProcessTablePage: React.FC = () => {
   }
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div>
       <Space orientation="vertical" style={{ width: '100%' }} size="large">
         <div>
           {當前方案 ? (
@@ -541,4 +541,4 @@ const ProcessTablePage: React.FC = () => {
   )
 }
 
-export default ProcessTablePage
+export default 碼表解析内容
