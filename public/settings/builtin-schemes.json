@@ -31,62 +31,14 @@
       "enabled": true
     },
     {
-      "key": "yuhao-light",
-      "name": "光華",
-      "description": "宇浩系列",
-      "enabled": true
-    },
-    {
       "key": "cangjie-5",
       "name": "倉頡五代",
       "description": "",
       "enabled": true
     },
     {
-      "key": "cangjie-6",
-      "name": "蒼頡檢字法",
-      "description": "倉頡六代",
-      "enabled": true
-    },
-    {
-      "key": "wubi-86",
-      "name": "五筆86",
-      "description": "",
-      "enabled": true
-    },
-    {
-      "key": "wubi-98",
-      "name": "五筆98",
-      "description": "",
-      "enabled": true
-    },
-    {
       "key": "wubi-06",
       "name": "五筆06",
-      "description": "",
-      "enabled": true
-    },
-    {
-      "key": "zhengma",
-      "name": "鄭碼",
-      "description": "",
-      "enabled": true
-    },
-    {
-      "key": "zhangma",
-      "name": "張碼",
-      "description": "",
-      "enabled": true
-    },
-    {
-      "key": "zhenma",
-      "name": "真碼",
-      "description": "",
-      "enabled": true
-    },
-    {
-      "key": "wubi-986",
-      "name": "五筆986",
       "description": "",
       "enabled": true
     },
