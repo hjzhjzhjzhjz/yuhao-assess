@@ -56,79 +56,6 @@ const Page = styled.div`
   gap: 20px;
 `
 
-const Hero = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 24px 28px;
-  border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, #1c2b2d 0%, #24413e 55%, #2a9d8f 160%);
-  color: #fff;
-  overflow: hidden;
-
-  &::after {
-    content: '';
-    position: absolute;
-    right: -60px;
-    top: -80px;
-    width: 260px;
-    height: 260px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.07);
-    pointer-events: none;
-  }
-
-  @media (max-width: 768px) {
-    padding: 18px;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-`
-
-const HeroTitle = styled(Title)`
-  && {
-    margin: 0 0 4px;
-    color: #fff;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-  }
-`
-
-const HeroMeta = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  position: relative;
-  z-index: 1;
-
-  @media (max-width: 768px) {
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-`
-
-const MetaItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 64px;
-`
-
-const MetaLabel = styled.span`
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.6);
-  letter-spacing: 1px;
-`
-
-const MetaValue = styled.span`
-  font-size: 15px;
-  font-weight: 600;
-  color: #fff;
-  white-space: nowrap;
-`
-
 const SectionHead = styled.div`
   display: flex;
   align-items: baseline;
@@ -832,27 +759,6 @@ function HomePage() {
 
   return (
     <Page className="home-root">
-      {/* Hero 概览 */}
-      <Hero>
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <HeroTitle level={2}>方案工作台</HeroTitle>
-        </div>
-        <HeroMeta>
-          <MetaItem>
-            <MetaLabel>預設方案</MetaLabel>
-            <MetaValue>{方案列表.length} 個</MetaValue>
-          </MetaItem>
-          <MetaItem>
-            <MetaLabel>當前方案</MetaLabel>
-            <MetaValue>{當前方案?.元數據.方案名 ?? '未選擇'}</MetaValue>
-          </MetaItem>
-          <MetaItem>
-            <MetaLabel>本地方案</MetaLabel>
-            <MetaValue>{本地方案列表.length} 個</MetaValue>
-          </MetaItem>
-        </HeroMeta>
-      </Hero>
-
       {/* 本地方案区 */}
       {本地方案列表.length > 0 && (
         <div>
